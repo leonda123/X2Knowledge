@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X2Knowledge - 知识提取器工具 - API文档</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- 引入Marked库用于Markdown渲染 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
+    <!-- 引入highlight.js用于代码高亮 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/highlight.min.js"></script>
+    <style>
+        .api-section {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .endpoint {
+            background-color: #e9f5ff;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        
+        .method {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        pre {
+            background-color: #f1f1f1;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        code {
+            font-family: monospace;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        .test-section {
+            background-color: #f0f8ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .response-container {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .nav-link {
+            display: inline-block;
+            margin-right: 15px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+        
+        .tab-content {
+            margin-top: 20px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .tab-controls {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab-button {
+            padding: 10px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .tab-button.active {
+            border-bottom: 3px solid #3498db;
+            color: #3498db;
+        }
+        
+        .api-tab-content {
+            display: none;
+        }
+        
+        .api-tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="language-switch">
+            <button class="language-btn active" data-lang="zh">中文</button>
+            <button class="language-btn" data-lang="en">English</button>
+        </div>
+        
+        <header>
+            <h1 data-i18n="api-doc-title">X2Knowledge - 知识提取器工具 - API文档</h1>
+            <div class="nav-links">
+                <a href="/" class="nav-link" data-i18n="back-to-home">返回首页</a>
+                <a href="#api-docs" class="nav-link" data-i18n="api-docs-anchor">API文档</a>
+            </div>
+        </header>
+
+        <main>
+            <section id="api-docs" class="api-section">
+                <h2 data-i18n="api-docs-heading">API文档</h2>
+                <p data-i18n="api-docs-intro">本工具提供了REST API接口，可以通过程序调用实现文档转换功能。</p>
+                
+                <div class="tab-controls">
+                    <button class="tab-button active" data-api-tab="text" data-i18n="api-tab-text">转为文本API</button>
+                    <button class="tab-button" data-api-tab="markdown" data-i18n="api-tab-markdown">转为Markdown API</button>
+                </div>
+                
+                <div class="api-tab-content active" id="api-tab-text">
+                    <h3 data-i18n="text-api-title">文档转文本API</h3>
+                    <div class="endpoint">
+                        <span class="method">POST</span> /api/convert
+                    </div>
+                    <p data-i18n="content-type">内容类型: <code>multipart/form-data</code></p>
+                    
+                    <h4 data-i18n="request-params">请求参数</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th data-i18n="param-name">参数名</th>
+                                <th data-i18n="param-type">类型</th>
+                                <th data-i18n="param-required">必填</th>
+                                <th data-i18n="param-desc">描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>file</td>
+                                <td data-i18n="file-type">文件</td>
+                                <td data-i18n="yes">是</td>
+                                <td data-i18n="file-desc">要转换的文档文件</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4 data-i18n="supported-file-types">支持的文件类型</h4>
+                    <ul>
+                        <li data-i18n="word-files">Word文档 (.doc, .docx)</li>
+                        <li data-i18n="excel-files">Excel表格 (.xls, .xlsx)</li>
+                        <li data-i18n="ppt-files">PowerPoint演示文稿 (.ppt, .pptx)</li>
+                        <li data-i18n="pdf-files">PDF文档 (.pdf)</li>
+                        <li data-i18n="text-files">文本文件 (.txt)</li>
+                        <li data-i18n="md-files">Markdown文件 (.md)</li>
+                    </ul>
+                    
+                    <h4 data-i18n="response-format">响应格式</h4>
+                    <p data-i18n="success-response">成功响应 (HTTP 200):</p>
+                    <pre><code>{
+  "text": "转换后的文本内容",
+  "filename": "原始文件名",
+  "file_size": "文件大小(字节)",
+  "processing_time": "处理时间(秒)"
+}</code></pre>
+                    
+                    <p data-i18n="error-response">错误响应 (HTTP 4xx/5xx):</p>
+                    <pre><code>{
+  "error": "错误信息",
+  "details": "详细错误信息(如有)"
+}</code></pre>
+                </div>
+                
+                <div class="api-tab-content" id="api-tab-markdown">
+                    <h3 data-i18n="md-api-title">文档转Markdown API</h3>
+                    <div class="endpoint">
+                        <span class="method">POST</span> /api/convert-to-md
+                    </div>
+                    <p data-i18n="content-type">内容类型: <code>multipart/form-data</code></p>
+                    
+                    <h4 data-i18n="request-params">请求参数</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th data-i18n="param-name">参数名</th>
+                                <th data-i18n="param-type">类型</th>
+                                <th data-i18n="param-required">必填</th>
+                                <th data-i18n="param-desc">描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>file</td>
+                                <td data-i18n="file-type">文件</td>
+                                <td data-i18n="yes">是</td>
+                                <td data-i18n="file-desc">要转换的文档文件</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4 data-i18n="supported-file-types">支持的文件类型</h4>
+                    <ul>
+                        <li data-i18n="word-files">Word文档 (.doc, .docx)</li>
+                        <li data-i18n="excel-files">Excel表格 (.xls, .xlsx)</li>
+                        <li data-i18n="ppt-files">PowerPoint演示文稿 (.ppt, .pptx)</li>
+                        <li data-i18n="pdf-files">PDF文档 (.pdf)</li>
+                        <li data-i18n="text-files">文本文件 (.txt)</li>
+                        <li data-i18n="md-files">Markdown文件 (.md)</li>
+                        <li data-i18n="audio-files">音频文件 (.mp3, .wav) - <span style="color: #4CAF50;" data-i18n="new-tag">新增</span></li>
+                    </ul>
+                    
+                    <h4 data-i18n="response-format">响应格式</h4>
+                    <p data-i18n="success-response">成功响应 (HTTP 200):</p>
+                    <pre><code>{
+  "text": "转换后的Markdown内容",
+  "filename": "原始文件名",
+  "file_size": "文件大小(字节)",
+  "processing_time": "处理时间(秒)"
+}</code></pre>
+                    
+                    <p data-i18n="error-response">错误响应 (HTTP 4xx/5xx):</p>
+                    <pre><code>{
+  "error": "错误信息",
+  "details": "详细错误信息(如有)"
+}</code></pre>
+                    
+                    <h4 data-i18n="md-features">特点</h4>
+                    <p data-i18n="md-features-intro">与普通文本转换不同，Markdown转换将保留更多的原始文档结构：</p>
+                    <ul>
+                        <li data-i18n="md-feature-1">保留标题层级结构</li>
+                        <li data-i18n="md-feature-2">保留列表格式</li>
+                        <li data-i18n="md-feature-3">保留表格结构</li>
+                        <li data-i18n="md-feature-4">保留超链接</li>
+                        <li data-i18n="md-feature-5">对音频文件提取元数据，包括时长、声道数和采样率</li>
+                    </ul>
+                </div>
+                
+                <h3 data-i18n="code-examples">示例代码</h3>
+                
+                <div class="code-example">
+                    <h4 data-i18n="python-text-example">Python示例 - 转为文本</h4>
+                    <pre><code>import requests
+
+url = "http://127.0.0.1:5000/api/convert"
+file_path = "example.docx"  # 替换为您的文件路径
+
+with open(file_path, "rb") as f:
+    files = {"file": (file_path, f)}
+    response = requests.post(url, files=files)
+
+if response.status_code == 200:
+    result = response.json()
+    print("转换成功!")
+    print(f"文本内容: {result['text'][:100]}...")  # 打印前100个字符
+    print(f"文件名: {result['filename']}")
+    print(f"文件大小: {result['file_size']} 字节")
+    print(f"处理时间: {result['processing_time']} 秒")
+else:
+    print(f"转换失败: {response.json()['error']}")</code></pre>
+                </div>
+                
+                <div class="code-example">
+                    <h4 data-i18n="python-md-example">Python示例 - 转为Markdown</h4>
+                    <pre><code>import requests
+
+url = "http://127.0.0.1:5000/api/convert-to-md"
+file_path = "example.docx"  # 替换为您的文件路径
+
+with open(file_path, "rb") as f:
+    files = {"file": (file_path, f)}
+    response = requests.post(url, files=files)
+
+if response.status_code == 200:
+    result = response.json()
+    print("转换成功!")
+    print(f"Markdown内容: {result['text'][:100]}...")  # 打印前100个字符
+    print(f"文件名: {result['filename']}")
+    print(f"文件大小: {result['file_size']} 字节")
+    print(f"处理时间: {result['processing_time']} 秒")
+else:
+    print(f"转换失败: {response.json()['error']}")</code></pre>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p data-i18n="footer">© 2025 X2Knowledge - 知识提取器工具 | 使用Flask和JavaScript构建</p>
+            <div class="github-links">
+                <a href="https://github.com/leonda123/X2Knowledge.git" class="github-link" target="_blank">
+                    <svg class="github-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                    GitHub
+                </a>
+                <a href="https://gitee.com/leonda/X2Knowledge.git" class="github-link" target="_blank">
+                    <svg class="github-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                        <path d="M8 0a8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8 8 8 0 0 0-8-8zm0.24 3.088a4.912 4.912 0 0 1 4.794 5.542H5.726c-.02 1.311 1.425 1.993 2.761 1.993 1.155 0 2.206-.606 2.657-1.44h2.342a5.083 5.083 0 0 1-5.038 3.392 4.919 4.919 0 0 1-4.82-5.585 4.916 4.916 0 0 1 4.612-3.902z"/>
+                    </svg>
+                    Gitee
+                </a>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api-test.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // API Tab切换功能
+            const apiTabButtons = document.querySelectorAll('[data-api-tab]');
+            const apiTabContents = document.querySelectorAll('.api-tab-content');
+            
+            apiTabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 更新按钮状态
+                    apiTabButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 更新内容状态
+                    apiTabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // 添加active类到当前tab
+                    const tabId = `api-tab-${this.dataset.apiTab}`;
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // 检查是否存在语言偏好并应用
+            const savedLang = localStorage.getItem('x2knowledge_lang');
+            if (savedLang) {
+                const langButtons = document.querySelectorAll('.language-btn');
+                langButtons.forEach(btn => {
+                    if (btn.dataset.lang === savedLang) {
+                        btn.click(); // 触发保存的语言按钮点击事件
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

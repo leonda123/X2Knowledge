@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  x2knowledge:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: x2knowledge
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    # 如果需要通过环境变量定制应用行为，可以在这里添加
+    # - CUSTOM_VARIABLE=value
+    networks:
+      - x2knowledge-net
+
+networks:
+  x2knowledge-net:
+    driver: bridge 
