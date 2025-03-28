@@ -65,24 +65,24 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 ## 系统截图
 ###界面
 #### 主页
-![主页](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/home.png?raw=true)
+![主页](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/home.png)
 #### API调用
-![API调用](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/API.png?raw=true)
+![API调用](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/API.png)
 #### 原始格式
-![原始格式](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/original%20format.png?raw=true)
+![原始格式](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/original%20format.png)
 #### MD格式
-![MD格式](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/original%20format.png?raw=true)
+![MD格式](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/original%20format.png)
 ### 效果
 #### WORD文件
-![WORD文件](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/word1.png?raw=true)
+![WORD文件](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/word1.png)
 #### WORD转换效果
-![WORD转换效果](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/word2.png?raw=true)
+![WORD转换效果](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/word2.png)
 #### WORD中表格转换效果
-![WORD中表格转换效果](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/word4.png?raw=true)
+![WORD中表格转换效果](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/word4.png)
 #### Execel效果
-![Execel效果](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/excel2.png?raw=true)
+![Execel效果](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/excel2.png)
 #### PPT效果
-![PPT效果](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/ppt1.png?raw=true)
+![PPT效果](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/ppt1.png)
 
 ## 安装与部署
 
@@ -229,5 +229,8 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 ---
 
 使用Flask和JavaScript开发，充满❤️
+
+QQ：176942734
+邮箱：dada_jiu45@hotmail.com
 
 项目地址：[GitHub](https://github.com/leonda123/X2Knowledge.git) | [Gitee](https://gitee.com/leonda/X2Knowledge.git)
