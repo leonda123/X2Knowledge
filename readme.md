@@ -4,6 +4,8 @@
 
 X2Knowledge is an efficient open source knowledge extractor tool designed for enterprise knowledge base construction. It supports intelligent conversion of files in various formats such as PDF, Word, PPT, Excel, WAV, MP3, etc. into structured TXT or Markdown formats, helping users to quickly and standardizedly enter various types of documents into the enterprise knowledge base system. Through advanced format parsing and content extraction technology, the project significantly improves the efficiency and accuracy of knowledge conversion and is an ideal pre-processing tool for RAG (retrieval enhancement generation) applications and enterprise knowledge management.
 
+[Demo website](http://115.190.8.7/)：http://115.190.8.7/
+
 This is a Python Flask-based web application that can convert various document formats (Word, Excel, PowerPoint, PDF, TXT and Markdown) into plain text or structured Markdown.
 
 ## Latest Updates (v2.1.0)
@@ -13,8 +15,6 @@ This is a Python Flask-based web application that can convert various document f
 - **Code Syntax Highlighting**: Added highlight.js for syntax highlighting of code blocks
 - **Docker Deployment Support**: Added Dockerfile and docker-compose configuration
 - **Fixed API Documentation**: Improved Markdown tab switching in API documentation
-
--[X2Knowledge - Document Conversion Tool](app/static/img/screenshot.png)
 
 ## Features
 
@@ -116,7 +116,7 @@ For detailed documentation and testing, visit the API Documentation page through
 
 4. Run the application:
    ```
-   flask run
+   python app.py
    ```
 
 5. Open a web browser and navigate to `http://127.0.0.1:5000/`
