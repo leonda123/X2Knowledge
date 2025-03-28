@@ -1,4 +1,7 @@
 # X2Knowledge - 知识提取器工具
+
+[<a href="/readme_cn.md">中文(简体)</a>] | [<a href="/readme.md">English</a>] 
+
 X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识库建设而设计。它支持将PDF、Word、PPT、Excel、WAV、MP3等多种格式的文件智能转换为结构化的TXT或Markdown格式，帮助用户快速将各类文档资料标准化地录入企业知识库系统。通过先进的格式解析和内容提取技术，该项目显著提升知识转换的效率和准确性，是RAG（检索增强生成）应用和企业知识管理的理想预处理工具。
 
 这是一个基于Python Flask的Web应用，可以将各种文档格式（Word、Excel、PowerPoint、PDF、TXT和Markdown）转换为纯文本或结构化的Markdown。
