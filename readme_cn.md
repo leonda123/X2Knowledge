@@ -62,7 +62,9 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 有关详细文档和测试，请通过Web界面访问API文档页面。
 
 ## 系统截图
+
 ###界面
+
 #### 主页
 ![主页](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/home.png)
 #### API调用
@@ -70,7 +72,7 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 #### 原始格式
 ![原始格式](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/original%20format.png)
 #### MD格式
-![MD格式](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/original%20format.png)
+![MD格式](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/MD%20format.png)
 ### 效果
 #### WORD文件
 ![WORD文件](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/word1.png)

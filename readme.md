@@ -62,7 +62,9 @@ The tool provides a REST API for programmatic access:
 For detailed documentation and testing, visit the API Documentation page through the web interface.
 
 ## System screenshot
+
 ### Interface
+
 #### Home page
 ![Home page](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/home.png?raw=true)
 #### API call
@@ -70,7 +72,7 @@ For detailed documentation and testing, visit the API Documentation page through
 #### Original format
 ![Original format](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/original%20format.png?raw=true)
 #### MD format
-![MD format](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/original%20format.png?raw=true)
+![MD format](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/MD%20format.png?raw=true)
 ### Effect
 #### WORD file
 ![WORD file](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/word1.png?raw=true)
