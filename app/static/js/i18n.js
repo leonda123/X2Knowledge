@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'zh': {
             // 标题和导航
             'title': 'X2Knowledge - 知识提取器工具',
-            'subtitle': '支持Word、Excel、PowerPoint、PDF、TXT和Markdown文件转换',
+            'subtitle': '知识库原生支持：输出带元数据的Markdown，与RAG/LangChain/Agent等框架无缝对接',
             'api-docs-link': 'API文档',
             
             // 标签和上传区域
@@ -27,10 +27,14 @@ document.addEventListener('DOMContentLoaded', function() {
             'markdown-feature-structure': 'Markdown功能: 保留文档标题、列表、表格等结构',
             'markdown-feature-audio': '新增功能: 支持音频文件(.mp3, .wav)转换为Markdown描述',
             
+            // 视图切换
+            'source-view': '源码视图',
+            'preview-view': '预览视图',
+            
             // 结果区域
             'conversion-result': '转换结果',
             'copy-text': '复制文本',
-            'download-text': '下载文本',
+            'download-text': '下载文件',
             'new-conversion': '新的转换',
             'fullscreen': '全屏预览',
             'fullscreen-preview': '预览内容',
@@ -68,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'encoding-benefit': '此功能可以有效解决中文乱码问题，无需用户手动设置编码。',
             
             // 页脚
-            'footer': '© 2025 X2Knowledge - 知识提取器工具 | 使用Flask和JavaScript构建',
+            'footer': '© 2025 X2Knowledge v0.2.1 - 知识提取器工具 | 使用Flask和JavaScript构建',
             
             // API文档页面
             'api-doc-title': 'X2Knowledge - 知识提取器工具 - API文档',
@@ -127,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'en': {
             // Title and Navigation
             'title': 'X2Knowledge - Document Conversion Tool',
-            'subtitle': 'Supports Word, Excel, PowerPoint, PDF, TXT and Markdown file conversion',
+            'subtitle': 'Knowledge base native support: Output Markdown with metadata, seamlessly integrates with RAG/LangChain/Agent frameworks',
             'ocr-badge': 'OCR Image Text Recognition',
             'encoding-badge': 'UTF-8 Encoding Conversion',
             'markdown-badge': 'New Feature: Convert to Markdown',
@@ -143,6 +147,10 @@ document.addEventListener('DOMContentLoaded', function() {
             'doc-note': 'Note: Processing older Word documents (.doc) may take longer, we recommend converting to .docx format before uploading',
             'markdown-note-structure': 'Note: Converting to Markdown format better preserves document structure',
             
+            // 视图切换
+            'source-view': 'Source View',
+            'preview-view': 'Preview View',
+            
             // Feature Notes
             'ocr-feature': 'OCR Feature: Automatically recognizes text in document images',
             'encoding-feature': 'Encoding Feature: Automatically converts documents to UTF-8 encoding, solving Chinese character issues',
@@ -152,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Results Area
             'conversion-result': 'Conversion Result',
             'copy-text': 'Copy Text',
-            'download-text': 'Download Text',
+            'download-text': 'Download File',
             'new-conversion': 'New Conversion',
             'fullscreen': 'Fullscreen Preview',
             'fullscreen-preview': 'Preview Content',
@@ -190,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'encoding-benefit': 'This feature effectively solves Chinese character encoding issues without manual encoding settings.',
             
             // Footer
-            'footer': '© 2025 X2Knowledge - Document Conversion Tool | Built with Flask and JavaScript',
+            'footer': '© 2025 X2Knowledge v0.2.1 - Document Conversion Tool | Built with Flask and JavaScript',
             
             // API Documentation Page
             'api-doc-title': 'X2Knowledge - Document Conversion Tool - API Documentation',

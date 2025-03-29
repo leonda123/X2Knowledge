@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let currentFileName = '';
     let conversionStartTime = 0;
-    let activeTab = 'text'; // 默认为文本转换
+    let activeTab = 'markdown'; // 默认为Markdown转换
     let originalMarkdown = ''; // 保存原始的Markdown文本
     
     // 创建错误提示元素
@@ -73,8 +73,8 @@ document.addEventListener('DOMContentLoaded', function() {
     markdownViewControls.className = 'markdown-view-controls';
     markdownViewControls.style.display = 'none';
     markdownViewControls.innerHTML = `
-        <button class="view-btn active" data-view="raw">源码视图</button>
-        <button class="view-btn" data-view="preview">预览视图</button>
+        <button class="view-btn active" data-view="raw" data-i18n="source-view">源码视图</button>
+        <button class="view-btn" data-view="preview" data-i18n="preview-view">预览视图</button>
     `;
     
     // 创建Markdown预览元素

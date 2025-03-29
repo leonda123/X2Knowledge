@@ -168,11 +168,11 @@
                 <p data-i18n="api-docs-intro">本工具提供了REST API接口，可以通过程序调用实现文档转换功能。</p>
                 
                 <div class="tab-controls">
-                    <button class="tab-button active" data-api-tab="text" data-i18n="api-tab-text">转为文本API</button>
-                    <button class="tab-button" data-api-tab="markdown" data-i18n="api-tab-markdown">转为Markdown API</button>
+                    <button class="tab-button" data-api-tab="text" data-i18n="api-tab-text">转为文本API</button>
+                    <button class="tab-button active" data-api-tab="markdown" data-i18n="api-tab-markdown">转为Markdown API</button>
                 </div>
                 
-                <div class="api-tab-content active" id="api-tab-text">
+                <div class="api-tab-content" id="api-tab-text">
                     <h3 data-i18n="text-api-title">文档转文本API</h3>
                     <div class="endpoint">
                         <span class="method">POST</span> /api/convert
@@ -225,7 +225,7 @@
 }</code></pre>
                 </div>
                 
-                <div class="api-tab-content" id="api-tab-markdown">
+                <div class="api-tab-content active" id="api-tab-markdown">
                     <h3 data-i18n="md-api-title">文档转Markdown API</h3>
                     <div class="endpoint">
                         <span class="method">POST</span> /api/convert-to-md
@@ -338,7 +338,7 @@ else:
         </main>
 
         <footer>
-            <p data-i18n="footer">© 2025 X2Knowledge - 知识提取器工具 | 使用Flask和JavaScript构建</p>
+            <p data-i18n="footer">© 2025 X2Knowledge v0.2.1 - 知识提取器工具 | 使用Flask和JavaScript构建</p>
             <div class="github-links">
                 <a href="https://github.com/leonda123/X2Knowledge.git" class="github-link" target="_blank">
                     <svg class="github-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
@@ -360,20 +360,18 @@ else:
     <script src="{{ url_for('static', filename='js/api-test.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // API Tab切换功能
+            // API标签切换
             const apiTabButtons = document.querySelectorAll('[data-api-tab]');
             const apiTabContents = document.querySelectorAll('.api-tab-content');
             
             apiTabButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    // 更新按钮状态
+                    // 移除所有active类
                     apiTabButtons.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // 更新内容状态
                     apiTabContents.forEach(content => content.classList.remove('active'));
                     
                     // 添加active类到当前tab
+                    this.classList.add('active');
                     const tabId = `api-tab-${this.dataset.apiTab}`;
                     document.getElementById(tabId).classList.add('active');
                 });

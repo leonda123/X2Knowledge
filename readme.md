@@ -8,7 +8,7 @@ X2Knowledge is an efficient open source knowledge extractor tool designed for en
 
 This is a Python Flask-based web application that can convert various document formats (Word, Excel, PowerPoint, PDF, TXT and Markdown) into plain text or structured Markdown.
 
-## Latest Updates (v2.1.0)
+## Latest Updates (v0.2.1)
 
 - **Enhanced Markdown Preview**: Using marked.js library for better Markdown rendering with perfect support for tables and images
 - **Added Image Interaction**: Click on images to view them in fullscreen mode
@@ -191,13 +191,13 @@ Docker makes deploying X2Knowledge easier by avoiding environment configuration 
 
 ## Version History
 
-### v2.1.0 (Current)
+### v0.2.1 (Current)
 - Enhanced Markdown rendering with perfect table and image support
 - Added Docker deployment support
 - Improved image interaction experience
 - Added code syntax highlighting
 
-### v2.0.0
+### v0.2.0
 - Added Markdown conversion functionality
 - Added Markdown preview capability
 - Added support for audio file conversion
@@ -205,7 +205,7 @@ Docker makes deploying X2Knowledge easier by avoiding environment configuration 
 - Improved error handling and user feedback
 - Enhanced documentation
 
-### v1.0.0
+### v0.1.0
 - Initial release with text conversion support
 - OCR functionality
 - UTF-8 encoding conversion
