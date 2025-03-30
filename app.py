@@ -13,6 +13,7 @@ from app.utils.converters import (
     convert_md,
     convert_to_markdown
 )
+from app.utils.converter_factory import converter_factory
 
 # 配置日志
 log_dir = 'logs'
@@ -439,6 +440,630 @@ def api_convert_md():
             'details': traceback.format_exc()
         }), 500
 
+# Docling转换为Markdown
+@app.route('/convert-to-md-docling', methods=['POST'])
+def convert_md_docling_route():
+    if 'file' not in request.files:
+        logger.warning("没有文件上传(Docling)")
+        return jsonify({'error': '没有文件上传'}), 400
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        logger.warning("未选择文件(Docling)")
+        return jsonify({'error': '未选择文件'}), 400
+    
+    # 获取文件扩展名
+    filename = file.filename
+    file_ext = os.path.splitext(filename)[1].lower()
+    
+    logger.info(f"接收到文件(Docling转MD): {filename}, 类型: {file_ext}")
+    
+    # 获取docling转换器
+    docling_converter = converter_factory.get_converter('docling')
+    if not hasattr(docling_converter, 'is_available') or not docling_converter.is_available:
+        logger.error("Docling转换器不可用")
+        return jsonify({'error': 'Docling转换器不可用，请确认已安装docling库'}), 500
+    
+    # 检查文件扩展名是否支持
+    if not docling_converter.is_format_supported(file_ext):
+        logger.warning(f"Docling不支持的文件格式: {file_ext}")
+        return jsonify({'error': f'Docling不支持的文件格式: {file_ext}'}), 400
+    
+    # 保存上传的文件
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    try:
+        file.save(file_path)
+        logger.info(f"文件保存成功(Docling转MD): {file_path}")
+        
+        # 检查文件大小
+        file_size = os.path.getsize(file_path)
+        logger.info(f"文件大小(Docling转MD): {file_size / 1024:.2f} KB")
+        
+        # 使用Docling转换为Markdown
+        logger.info(f"开始使用Docling将文件转换为Markdown: {filename}")
+        markdown_text = docling_converter.convert_to_markdown(file_path)
+        
+        # 记录转换结果
+        text_length = len(markdown_text)
+        logger.info(f"文件使用Docling转换为Markdown成功, 文本长度: {text_length} 字符")
+        
+        # 删除临时文件
+        try:
+            os.remove(file_path)
+            logger.info(f"临时文件已删除(Docling转MD): {file_path}")
+        except Exception as e:
+            logger.warning(f"无法删除临时文件(Docling转MD): {file_path}, 原因: {str(e)}")
+            try:
+                import gc
+                gc.collect()
+                os.remove(file_path)
+                logger.info(f"临时文件已删除(Docling转MD)(第二次尝试): {file_path}")
+            except Exception as e2:
+                logger.error(f"无法删除临时文件(Docling转MD)(第二次尝试): {file_path}, 原因: {str(e2)}")
+        
+        return jsonify({'text': markdown_text})
+
+    except Exception as e:
+        # 详细记录异常信息
+        error_msg = str(e)
+        logger.error(f"Docling转换为Markdown失败: {error_msg}")
+        logger.error(traceback.format_exc())
+        
+        # 出错时删除临时文件
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                logger.info(f"清理临时文件(Docling转MD): {file_path}")
+            except Exception as del_e:
+                logger.warning(f"无法删除临时文件(Docling转MD): {file_path}, 原因: {str(del_e)}")
+            
+        return jsonify({
+            'error': f'Docling转换为Markdown失败: {error_msg}', 
+            'details': traceback.format_exc()
+        }), 500
+
+# API：使用Docling转换为Markdown
+@app.route('/api/convert-to-md-docling', methods=['POST'])
+def api_convert_md_docling():
+    start_time = time.time()
+    
+    if 'file' not in request.files:
+        logger.warning("API调用(Docling)：没有文件上传")
+        return jsonify({'error': '没有文件上传'}), 400
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        logger.warning("API调用(Docling)：未选择文件")
+        return jsonify({'error': '未选择文件'}), 400
+    
+    # 获取文件扩展名
+    filename = file.filename
+    file_ext = os.path.splitext(filename)[1].lower()
+    
+    logger.info(f"API调用(Docling)：接收到文件: {filename}, 类型: {file_ext}")
+    
+    # 获取docling转换器
+    docling_converter = converter_factory.get_converter('docling')
+    if not hasattr(docling_converter, 'is_available') or not docling_converter.is_available:
+        logger.error("API调用(Docling)：Docling转换器不可用")
+        return jsonify({'error': 'Docling转换器不可用，请确认已安装docling库'}), 500
+    
+    # 检查文件扩展名是否支持
+    if not docling_converter.is_format_supported(file_ext):
+        error_msg = f"Docling不支持的文件类型: {file_ext}"
+        logger.warning(f"API调用(Docling)：{error_msg}")
+        return jsonify({'error': error_msg}), 400
+    
+    # 保存上传的文件
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    try:
+        file.save(file_path)
+        logger.info(f"API调用(Docling)：文件保存成功: {file_path}")
+        
+        # 检查文件大小
+        file_size = os.path.getsize(file_path)
+        logger.info(f"API调用(Docling)：文件大小: {file_size / 1024:.2f} KB")
+        
+        # 使用Docling转换为Markdown
+        logger.info(f"API调用(Docling)：开始转换文件: {filename}")
+        markdown_text = docling_converter.convert_to_markdown(file_path)
+        
+        processing_time = time.time() - start_time
+        logger.info(f"API调用(Docling)：文件转换完成，耗时: {processing_time:.2f}秒")
+        
+        # 删除临时文件
+        try:
+            os.remove(file_path)
+            logger.info(f"API调用(Docling)：临时文件已删除: {file_path}")
+        except Exception as e:
+            logger.warning(f"API调用(Docling)：无法删除临时文件: {file_path}, 原因: {str(e)}")
+            try:
+                import gc
+                gc.collect()
+                os.remove(file_path)
+                logger.info(f"API调用(Docling)：临时文件已删除(第二次尝试): {file_path}")
+            except Exception as e2:
+                logger.error(f"API调用(Docling)：无法删除临时文件(第二次尝试): {file_path}, 原因: {str(e2)}")
+        
+        # 返回API响应
+        return jsonify({
+            'text': markdown_text,
+            'filename': filename,
+            'file_size': file_size,
+            'processing_time': round(processing_time, 2),
+            'converter': 'docling'
+        })
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"API调用(Docling)：转换失败: {error_msg}")
+        logger.error(traceback.format_exc())
+        
+        # 出错时删除临时文件
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                logger.info(f"API调用(Docling)：清理临时文件: {file_path}")
+            except Exception as del_e:
+                logger.warning(f"API调用(Docling)：无法删除临时文件: {file_path}, 原因: {str(del_e)}")
+        
+        return jsonify({
+            'error': error_msg,
+            'details': traceback.format_exc()
+        }), 500
+
+# API：批量转换文件夹内所有文件为文本
+@app.route('/api/convert-folder', methods=['POST'])
+def api_convert_folder():
+    start_time = time.time()
+    
+    # 获取请求参数
+    data = request.json
+    if not data:
+        logger.warning("API调用（批量文本）：无效的请求数据")
+        return jsonify({'error': '无效的请求数据'}), 400
+    
+    source_folder = data.get('source_folder')
+    output_folder = data.get('output_folder')
+    
+    if not source_folder:
+        logger.warning("API调用（批量文本）：未提供源文件夹路径")
+        return jsonify({'error': '必须提供源文件夹路径'}), 400
+    
+    if not output_folder:
+        # 如果未提供输出文件夹，则在源文件夹创建一个output子文件夹
+        output_folder = os.path.join(source_folder, 'output_text')
+    
+    # 检查源文件夹是否存在
+    if not os.path.exists(source_folder) or not os.path.isdir(source_folder):
+        logger.warning(f"API调用（批量文本）：源文件夹不存在或不是一个目录: {source_folder}")
+        return jsonify({'error': f'源文件夹不存在或不是一个目录: {source_folder}'}), 400
+    
+    # 创建输出文件夹（如果不存在）
+    os.makedirs(output_folder, exist_ok=True)
+    
+    # 创建日志文件
+    log_file = os.path.join(output_folder, "conversion_log.txt")
+    with open(log_file, 'w', encoding='utf-8') as log:
+        log.write(f"批量文本转换开始：{time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+        log.write(f"源文件夹：{source_folder}\n")
+        log.write(f"输出文件夹：{output_folder}\n")
+        log.write("="*50 + "\n")
+        
+        # 获取转换器
+        markitdown_converter = converter_factory.get_converter('markitdown')
+        
+        # 支持的文件格式
+        supported_formats = [ext for ext in markitdown_converter.supported_input_formats]
+        
+        # 添加进度追踪
+        conversion_results = {
+            'total_files': 0,
+            'converted_files': 0,
+            'skipped_files': 0,
+            'failed_files': 0,
+            'conversion_details': []
+        }
+        
+        # 遍历源文件夹中的所有文件
+        for root, _, files in os.walk(source_folder):
+            for file in files:
+                file_path = os.path.join(root, file)
+                
+                # 获取相对路径，用于创建输出文件的路径
+                rel_path = os.path.relpath(root, source_folder)
+                output_subdir = os.path.join(output_folder, rel_path) if rel_path != '.' else output_folder
+                os.makedirs(output_subdir, exist_ok=True)
+                
+                # 获取文件扩展名
+                file_ext = os.path.splitext(file)[1].lower()
+                
+                # 更新总文件计数
+                conversion_results['total_files'] += 1
+                
+                # 检查文件是否支持
+                if file_ext not in supported_formats:
+                    log.write(f"跳过不支持的文件：{file_path} (格式: {file_ext})\n")
+                    conversion_results['skipped_files'] += 1
+                    conversion_results['conversion_details'].append({
+                        'file': file_path,
+                        'status': 'skipped',
+                        'reason': f'不支持的文件格式: {file_ext}'
+                    })
+                    continue
+                
+                # 转换文件
+                log.write(f"开始转换文件：{file_path}\n")
+                file_start_time = time.time()
+                
+                try:
+                    # 执行转换
+                    text_content = markitdown_converter.convert_to_text(file_path)
+                    
+                    # 创建输出文件名
+                    output_file = os.path.join(output_subdir, os.path.splitext(file)[0] + '.txt')
+                    
+                    # 写入转换结果
+                    with open(output_file, 'w', encoding='utf-8') as f:
+                        f.write(text_content)
+                    
+                    # 计算转换时间
+                    file_process_time = time.time() - file_start_time
+                    
+                    # 更新日志
+                    log.write(f"成功转换：{file_path} -> {output_file} (用时: {file_process_time:.2f}秒)\n")
+                    log.write("-"*50 + "\n")
+                    
+                    # 更新计数
+                    conversion_results['converted_files'] += 1
+                    conversion_results['conversion_details'].append({
+                        'file': file_path,
+                        'status': 'success',
+                        'output': output_file,
+                        'processing_time': round(file_process_time, 2)
+                    })
+                    
+                except Exception as e:
+                    # 处理转换错误
+                    log.write(f"转换失败：{file_path} - 错误: {str(e)}\n")
+                    log.write("-"*50 + "\n")
+                    
+                    # 更新计数
+                    conversion_results['failed_files'] += 1
+                    conversion_results['conversion_details'].append({
+                        'file': file_path,
+                        'status': 'failed',
+                        'error': str(e)
+                    })
+                    
+                    logger.error(f"批量转换：文件{file_path}转换失败: {str(e)}")
+                    logger.error(traceback.format_exc())
+        
+        # 写入总结
+        total_time = time.time() - start_time
+        log.write("\n" + "="*50 + "\n")
+        log.write(f"转换完成时间：{time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+        log.write(f"总用时：{total_time:.2f}秒\n")
+        log.write(f"总文件数：{conversion_results['total_files']}\n")
+        log.write(f"成功转换：{conversion_results['converted_files']}个文件\n")
+        log.write(f"跳过文件：{conversion_results['skipped_files']}个文件\n")
+        log.write(f"转换失败：{conversion_results['failed_files']}个文件\n")
+    
+    # 返回API响应
+    response = {
+        'source_folder': source_folder,
+        'output_folder': output_folder,
+        'log_file': log_file,
+        'total_time': round(total_time, 2),
+        'results': conversion_results
+    }
+    
+    logger.info(f"API调用（批量文本）：完成文件夹转换，总耗时: {total_time:.2f}秒")
+    return jsonify(response)
+
+# API：批量转换文件夹内所有文件为Markdown (MarkItDown)
+@app.route('/api/convert-to-md-folder', methods=['POST'])
+def api_convert_md_folder():
+    start_time = time.time()
+    
+    # 获取请求参数
+    data = request.json
+    if not data:
+        logger.warning("API调用（批量Markdown）：无效的请求数据")
+        return jsonify({'error': '无效的请求数据'}), 400
+    
+    source_folder = data.get('source_folder')
+    output_folder = data.get('output_folder')
+    
+    if not source_folder:
+        logger.warning("API调用（批量Markdown）：未提供源文件夹路径")
+        return jsonify({'error': '必须提供源文件夹路径'}), 400
+    
+    if not output_folder:
+        # 如果未提供输出文件夹，则在源文件夹创建一个output子文件夹
+        output_folder = os.path.join(source_folder, 'output_markdown')
+    
+    # 检查源文件夹是否存在
+    if not os.path.exists(source_folder) or not os.path.isdir(source_folder):
+        logger.warning(f"API调用（批量Markdown）：源文件夹不存在或不是一个目录: {source_folder}")
+        return jsonify({'error': f'源文件夹不存在或不是一个目录: {source_folder}'}), 400
+    
+    # 创建输出文件夹（如果不存在）
+    os.makedirs(output_folder, exist_ok=True)
+    
+    # 创建日志文件
+    log_file = os.path.join(output_folder, "conversion_log.txt")
+    with open(log_file, 'w', encoding='utf-8') as log:
+        log.write(f"批量Markdown转换开始：{time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+        log.write(f"源文件夹：{source_folder}\n")
+        log.write(f"输出文件夹：{output_folder}\n")
+        log.write("="*50 + "\n")
+        
+        # 获取转换器
+        markitdown_converter = converter_factory.get_converter('markitdown')
+        
+        # 支持的文件格式
+        supported_formats = [ext for ext in markitdown_converter.supported_input_formats]
+        
+        # 添加进度追踪
+        conversion_results = {
+            'total_files': 0,
+            'converted_files': 0,
+            'skipped_files': 0,
+            'failed_files': 0,
+            'conversion_details': []
+        }
+        
+        # 遍历源文件夹中的所有文件
+        for root, _, files in os.walk(source_folder):
+            for file in files:
+                file_path = os.path.join(root, file)
+                
+                # 获取相对路径，用于创建输出文件的路径
+                rel_path = os.path.relpath(root, source_folder)
+                output_subdir = os.path.join(output_folder, rel_path) if rel_path != '.' else output_folder
+                os.makedirs(output_subdir, exist_ok=True)
+                
+                # 获取文件扩展名
+                file_ext = os.path.splitext(file)[1].lower()
+                
+                # 更新总文件计数
+                conversion_results['total_files'] += 1
+                
+                # 检查文件是否支持
+                if file_ext not in supported_formats:
+                    log.write(f"跳过不支持的文件：{file_path} (格式: {file_ext})\n")
+                    conversion_results['skipped_files'] += 1
+                    conversion_results['conversion_details'].append({
+                        'file': file_path,
+                        'status': 'skipped',
+                        'reason': f'不支持的文件格式: {file_ext}'
+                    })
+                    continue
+                
+                # 转换文件
+                log.write(f"开始转换文件：{file_path}\n")
+                file_start_time = time.time()
+                
+                try:
+                    # 执行转换
+                    md_content = markitdown_converter.convert_to_markdown(file_path)
+                    
+                    # 创建输出文件名
+                    output_file = os.path.join(output_subdir, os.path.splitext(file)[0] + '.md')
+                    
+                    # 写入转换结果
+                    with open(output_file, 'w', encoding='utf-8') as f:
+                        f.write(md_content)
+                    
+                    # 计算转换时间
+                    file_process_time = time.time() - file_start_time
+                    
+                    # 更新日志
+                    log.write(f"成功转换：{file_path} -> {output_file} (用时: {file_process_time:.2f}秒)\n")
+                    log.write("-"*50 + "\n")
+                    
+                    # 更新计数
+                    conversion_results['converted_files'] += 1
+                    conversion_results['conversion_details'].append({
+                        'file': file_path,
+                        'status': 'success',
+                        'output': output_file,
+                        'processing_time': round(file_process_time, 2)
+                    })
+                    
+                except Exception as e:
+                    # 处理转换错误
+                    log.write(f"转换失败：{file_path} - 错误: {str(e)}\n")
+                    log.write("-"*50 + "\n")
+                    
+                    # 更新计数
+                    conversion_results['failed_files'] += 1
+                    conversion_results['conversion_details'].append({
+                        'file': file_path,
+                        'status': 'failed',
+                        'error': str(e)
+                    })
+                    
+                    logger.error(f"批量转换：文件{file_path}转换失败: {str(e)}")
+                    logger.error(traceback.format_exc())
+        
+        # 写入总结
+        total_time = time.time() - start_time
+        log.write("\n" + "="*50 + "\n")
+        log.write(f"转换完成时间：{time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+        log.write(f"总用时：{total_time:.2f}秒\n")
+        log.write(f"总文件数：{conversion_results['total_files']}\n")
+        log.write(f"成功转换：{conversion_results['converted_files']}个文件\n")
+        log.write(f"跳过文件：{conversion_results['skipped_files']}个文件\n")
+        log.write(f"转换失败：{conversion_results['failed_files']}个文件\n")
+    
+    # 返回API响应
+    response = {
+        'source_folder': source_folder,
+        'output_folder': output_folder,
+        'log_file': log_file,
+        'total_time': round(total_time, 2),
+        'results': conversion_results
+    }
+    
+    logger.info(f"API调用（批量Markdown）：完成文件夹转换，总耗时: {total_time:.2f}秒")
+    return jsonify(response)
+
+# API：批量转换文件夹内所有文件为Markdown (Docling)
+@app.route('/api/convert-to-md-docling-folder', methods=['POST'])
+def api_convert_md_docling_folder():
+    start_time = time.time()
+    
+    # 获取请求参数
+    data = request.json
+    if not data:
+        logger.warning("API调用（批量Docling）：无效的请求数据")
+        return jsonify({'error': '无效的请求数据'}), 400
+    
+    source_folder = data.get('source_folder')
+    output_folder = data.get('output_folder')
+    
+    if not source_folder:
+        logger.warning("API调用（批量Docling）：未提供源文件夹路径")
+        return jsonify({'error': '必须提供源文件夹路径'}), 400
+    
+    if not output_folder:
+        # 如果未提供输出文件夹，则在源文件夹创建一个output子文件夹
+        output_folder = os.path.join(source_folder, 'output_docling')
+    
+    # 检查源文件夹是否存在
+    if not os.path.exists(source_folder) or not os.path.isdir(source_folder):
+        logger.warning(f"API调用（批量Docling）：源文件夹不存在或不是一个目录: {source_folder}")
+        return jsonify({'error': f'源文件夹不存在或不是一个目录: {source_folder}'}), 400
+    
+    # 创建输出文件夹（如果不存在）
+    os.makedirs(output_folder, exist_ok=True)
+    
+    # 获取Docling转换器
+    docling_converter = converter_factory.get_converter('docling')
+    if not hasattr(docling_converter, 'is_available') or not docling_converter.is_available:
+        error_msg = "Docling转换器不可用，请确认已安装docling库"
+        logger.error(f"API调用（批量Docling）：{error_msg}")
+        return jsonify({'error': error_msg}), 500
+    
+    # 创建日志文件
+    log_file = os.path.join(output_folder, "conversion_log.txt")
+    with open(log_file, 'w', encoding='utf-8') as log:
+        log.write(f"批量Docling Markdown转换开始：{time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+        log.write(f"源文件夹：{source_folder}\n")
+        log.write(f"输出文件夹：{output_folder}\n")
+        log.write("="*50 + "\n")
+        
+        # 支持的文件格式
+        supported_formats = [ext for ext in docling_converter.supported_input_formats]
+        
+        # 添加进度追踪
+        conversion_results = {
+            'total_files': 0,
+            'converted_files': 0,
+            'skipped_files': 0,
+            'failed_files': 0,
+            'conversion_details': []
+        }
+        
+        # 遍历源文件夹中的所有文件
+        for root, _, files in os.walk(source_folder):
+            for file in files:
+                file_path = os.path.join(root, file)
+                
+                # 获取相对路径，用于创建输出文件的路径
+                rel_path = os.path.relpath(root, source_folder)
+                output_subdir = os.path.join(output_folder, rel_path) if rel_path != '.' else output_folder
+                os.makedirs(output_subdir, exist_ok=True)
+                
+                # 获取文件扩展名
+                file_ext = os.path.splitext(file)[1].lower()
+                
+                # 更新总文件计数
+                conversion_results['total_files'] += 1
+                
+                # 检查文件是否支持
+                if file_ext not in supported_formats:
+                    log.write(f"跳过不支持的文件：{file_path} (格式: {file_ext})\n")
+                    conversion_results['skipped_files'] += 1
+                    conversion_results['conversion_details'].append({
+                        'file': file_path,
+                        'status': 'skipped',
+                        'reason': f'不支持的文件格式: {file_ext}'
+                    })
+                    continue
+                
+                # 转换文件
+                log.write(f"开始转换文件：{file_path}\n")
+                file_start_time = time.time()
+                
+                try:
+                    # 执行转换
+                    md_content = docling_converter.convert_to_markdown(file_path)
+                    
+                    # 创建输出文件名
+                    output_file = os.path.join(output_subdir, os.path.splitext(file)[0] + '.md')
+                    
+                    # 写入转换结果
+                    with open(output_file, 'w', encoding='utf-8') as f:
+                        f.write(md_content)
+                    
+                    # 计算转换时间
+                    file_process_time = time.time() - file_start_time
+                    
+                    # 更新日志
+                    log.write(f"成功转换：{file_path} -> {output_file} (用时: {file_process_time:.2f}秒)\n")
+                    log.write("-"*50 + "\n")
+                    
+                    # 更新计数
+                    conversion_results['converted_files'] += 1
+                    conversion_results['conversion_details'].append({
+                        'file': file_path,
+                        'status': 'success',
+                        'output': output_file,
+                        'processing_time': round(file_process_time, 2)
+                    })
+                    
+                except Exception as e:
+                    # 处理转换错误
+                    log.write(f"转换失败：{file_path} - 错误: {str(e)}\n")
+                    log.write("-"*50 + "\n")
+                    
+                    # 更新计数
+                    conversion_results['failed_files'] += 1
+                    conversion_results['conversion_details'].append({
+                        'file': file_path,
+                        'status': 'failed',
+                        'error': str(e)
+                    })
+                    
+                    logger.error(f"批量转换：文件{file_path}转换失败: {str(e)}")
+                    logger.error(traceback.format_exc())
+        
+        # 写入总结
+        total_time = time.time() - start_time
+        log.write("\n" + "="*50 + "\n")
+        log.write(f"转换完成时间：{time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+        log.write(f"总用时：{total_time:.2f}秒\n")
+        log.write(f"总文件数：{conversion_results['total_files']}\n")
+        log.write(f"成功转换：{conversion_results['converted_files']}个文件\n")
+        log.write(f"跳过文件：{conversion_results['skipped_files']}个文件\n")
+        log.write(f"转换失败：{conversion_results['failed_files']}个文件\n")
+    
+    # 返回API响应
+    response = {
+        'source_folder': source_folder,
+        'output_folder': output_folder,
+        'log_file': log_file,
+        'total_time': round(total_time, 2),
+        'results': conversion_results
+    }
+    
+    logger.info(f"API调用（批量Docling）：完成文件夹转换，总耗时: {total_time:.2f}秒")
+    return jsonify(response)
+
 def convert_file_to_utf8(file_path, file_ext=None):
     """尝试将文件转换为UTF-8编码"""
     # 文本类文件直接处理
@@ -512,8 +1137,7 @@ def internal_server_error(error):
 
 @app.errorhandler(404)
 def page_not_found(error):
-    logger.warning(f"页面未找到: {request.path}")
-    return jsonify({'error': '页面未找到'}), 404
+    return jsonify({'error': '请求的资源不存在'}), 404
 
 if __name__ == '__main__':
     logger.info("应用启动")

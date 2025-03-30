@@ -138,6 +138,26 @@
             color: #3498db;
         }
         
+        .api-tab-controls {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .api-tab-button {
+            padding: 10px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .api-tab-button.active {
+            border-bottom: 3px solid #3498db;
+            color: #3498db;
+        }
+        
         .api-tab-content {
             display: none;
         }
@@ -167,12 +187,14 @@
                 <h2 data-i18n="api-docs-heading">API文档</h2>
                 <p data-i18n="api-docs-intro">本工具提供了REST API接口，可以通过程序调用实现文档转换功能。</p>
                 
-                <div class="tab-controls">
-                    <button class="tab-button" data-api-tab="text" data-i18n="api-tab-text">转为文本API</button>
-                    <button class="tab-button active" data-api-tab="markdown" data-i18n="api-tab-markdown">转为Markdown API</button>
+                <div class="tab-controls api-tab-controls">
+                    <button class="api-tab-button active" data-tab="api-tab-text" data-i18n="api-tab-text">转为文本API</button>
+                    <button class="api-tab-button" data-tab="api-tab-markdown" data-i18n="api-tab-markdown">转为Markdown API</button>
+                    <button class="api-tab-button" data-tab="api-tab-markdown-docling" data-i18n="api-tab-markdown-docling">Docling转MD API</button>
+                    <button class="api-tab-button" data-tab="api-tab-folder-conversion" data-i18n="api-tab-folder-conversion">批量转换API</button>
                 </div>
                 
-                <div class="api-tab-content" id="api-tab-text">
+                <div class="api-tab-content active" id="api-tab-text">
                     <h3 data-i18n="text-api-title">文档转文本API</h3>
                     <div class="endpoint">
                         <span class="method">POST</span> /api/convert
@@ -225,7 +247,7 @@
 }</code></pre>
                 </div>
                 
-                <div class="api-tab-content active" id="api-tab-markdown">
+                <div class="api-tab-content" id="api-tab-markdown">
                     <h3 data-i18n="md-api-title">文档转Markdown API</h3>
                     <div class="endpoint">
                         <span class="method">POST</span> /api/convert-to-md
@@ -289,6 +311,253 @@
                     </ul>
                 </div>
                 
+                <div class="api-tab-content" id="api-tab-markdown-docling">
+                    <h3 data-i18n="docling-md-api-title">Docling文档转Markdown API</h3>
+                    <div class="endpoint">
+                        <span class="method">POST</span> /api/convert-to-md-docling
+                    </div>
+                    <p data-i18n="content-type">内容类型: <code>multipart/form-data</code></p>
+                    
+                    <h4 data-i18n="request-params">请求参数</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th data-i18n="param-name">参数名</th>
+                                <th data-i18n="param-type">类型</th>
+                                <th data-i18n="param-required">必填</th>
+                                <th data-i18n="param-desc">描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>file</td>
+                                <td data-i18n="file-type">文件</td>
+                                <td data-i18n="yes">是</td>
+                                <td data-i18n="file-desc">要转换的文档文件</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4 data-i18n="supported-file-types">支持的文件类型</h4>
+                    <ul>
+                        <li data-i18n="word-files">Word文档 (.doc, .docx)</li>
+                        <li data-i18n="excel-files">Excel表格 (.xls, .xlsx)</li>
+                        <li data-i18n="ppt-files">PowerPoint演示文稿 (.ppt, .pptx)</li>
+                        <li data-i18n="pdf-files">PDF文档 (.pdf) - <span style="color: #4CAF50;">对PDF有优化的表格识别和VLM支持</span></li>
+                        <li data-i18n="text-files">文本文件 (.txt)</li>
+                        <li data-i18n="md-files">Markdown文件 (.md)</li>
+                        <li data-i18n="csv-files">CSV文件 (.csv)</li>
+                        <li data-i18n="html-files">HTML/XHTML文件 (.html, .xhtml)</li>
+                        <li data-i18n="image-files">图像文件 (.png, .jpg, .jpeg, .tiff, .bmp)</li>
+                        <li data-i18n="audio-files">音频文件 (.mp3, .wav)</li>
+                    </ul>
+                    
+                    <h4 data-i18n="response-format">响应格式</h4>
+                    <p data-i18n="success-response">成功响应 (HTTP 200):</p>
+                    <pre><code>{
+  "text": "转换后的Markdown内容",
+  "filename": "原始文件名",
+  "file_size": "文件大小(字节)",
+  "processing_time": "处理时间(秒)",
+  "converter": "docling"
+}</code></pre>
+                    
+                    <p data-i18n="error-response">错误响应 (HTTP 4xx/5xx):</p>
+                    <pre><code>{
+  "error": "错误信息",
+  "details": "详细错误信息(如有)"
+}</code></pre>
+                    
+                    <h4 data-i18n="docling-features">Docling特点</h4>
+                    <p data-i18n="docling-features-intro">Docling是一个强大的文档转换工具，针对PDF文档有特殊优化：</p>
+                    <ul>
+                        <li data-i18n="docling-feature-1">使用表格识别技术，更准确地提取PDF中的表格结构</li>
+                        <li data-i18n="docling-feature-2">利用视觉语言模型(VLM)处理复杂的PDF布局</li>
+                        <li data-i18n="docling-feature-3">支持从图片中提取结构化内容</li>
+                        <li data-i18n="docling-feature-4">保留文档的标题层级、列表和表格结构</li>
+                        <li data-i18n="docling-feature-5">支持更广泛的输入文件格式</li>
+                    </ul>
+                    
+                    <div class="converter-note" style="background-color: #f8f9fa; padding: 10px; border-left: 4px solid #4CAF50; margin: 15px 0;">
+                        <p><strong>注意:</strong> Docling转换器性能最佳需要CUDA环境，当前使用CPU加速模式。它对PDF文件格式有特殊优化，在处理复杂PDF时效果比MarkItDown更好。</p>
+                    </div>
+                </div>
+                
+                <!-- 批量文件夹转换API文档 -->
+                <div class="api-tab-content" id="api-tab-folder-conversion">
+                    <h3 data-i18n="folder-conversion-title">批量文件夹转换API</h3>
+                    
+                    <div class="alert-box">
+                        <p data-i18n="folder-conversion-note">注意: 此API用于批量转换文件夹中的所有支持格式文件，会生成日志文件记录转换过程。</p>
+                    </div>
+                    
+                    <h4 data-i18n="text-folder-api-title">批量转为文本API</h4>
+                    <div class="endpoint">
+                        <span class="method">POST</span> /api/convert-folder
+                    </div>
+                    <p data-i18n="content-type-json">内容类型: <code>application/json</code></p>
+                    
+                    <h4 data-i18n="request-params">请求参数</h4>
+                    <table class="api-params">
+                        <thead>
+                            <tr>
+                                <th data-i18n="param-name">参数名</th>
+                                <th data-i18n="param-type">类型</th>
+                                <th data-i18n="param-required">必填</th>
+                                <th data-i18n="param-desc">描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>source_folder</td>
+                                <td>String</td>
+                                <td data-i18n="yes">是</td>
+                                <td data-i18n="source-folder-desc">要转换的源文件夹路径(绝对路径)</td>
+                            </tr>
+                            <tr>
+                                <td>output_folder</td>
+                                <td>String</td>
+                                <td data-i18n="no">否</td>
+                                <td data-i18n="output-folder-desc">转换结果的输出文件夹路径，如不提供将在源文件夹创建output_text子文件夹</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4 data-i18n="request-example">请求示例</h4>
+                    <pre><code>{
+  "source_folder": "/path/to/documents",
+  "output_folder": "/path/to/output"
+}</code></pre>
+                    
+                    <h4 data-i18n="response-format">响应格式</h4>
+                    <p data-i18n="success-response">成功响应 (HTTP 200):</p>
+                    <pre><code>{
+  "source_folder": "/path/to/documents",
+  "output_folder": "/path/to/output",
+  "log_file": "/path/to/output/conversion_log.txt",
+  "total_time": 45.23,
+  "results": {
+    "total_files": 10,
+    "converted_files": 8,
+    "skipped_files": 1,
+    "failed_files": 1,
+    "conversion_details": [
+      {
+        "file": "/path/to/documents/example.docx",
+        "status": "success",
+        "output": "/path/to/output/example.txt",
+        "processing_time": 5.32
+      },
+      {
+        "file": "/path/to/documents/image.jpg",
+        "status": "skipped",
+        "reason": "不支持的文件格式: .jpg"
+      },
+      {
+        "file": "/path/to/documents/corrupted.pdf",
+        "status": "failed",
+        "error": "无法读取文件"
+      }
+    ]
+  }
+}</code></pre>
+                    
+                    <h4 data-i18n="md-folder-api-title">批量转为Markdown API (MarkItDown)</h4>
+                    <div class="endpoint">
+                        <span class="method">POST</span> /api/convert-to-md-folder
+                    </div>
+                    <p data-i18n="content-type-json">内容类型: <code>application/json</code></p>
+                    
+                    <h4 data-i18n="request-params">请求参数</h4>
+                    <table class="api-params">
+                        <thead>
+                            <tr>
+                                <th data-i18n="param-name">参数名</th>
+                                <th data-i18n="param-type">类型</th>
+                                <th data-i18n="param-required">必填</th>
+                                <th data-i18n="param-desc">描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>source_folder</td>
+                                <td>String</td>
+                                <td data-i18n="yes">是</td>
+                                <td data-i18n="source-folder-desc">要转换的源文件夹路径(绝对路径)</td>
+                            </tr>
+                            <tr>
+                                <td>output_folder</td>
+                                <td>String</td>
+                                <td data-i18n="no">否</td>
+                                <td data-i18n="output-folder-md-desc">转换结果的输出文件夹路径，如不提供将在源文件夹创建output_markdown子文件夹</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4 data-i18n="docling-folder-api-title">批量转为Markdown API (Docling)</h4>
+                    <div class="endpoint">
+                        <span class="method">POST</span> /api/convert-to-md-docling-folder
+                    </div>
+                    <p data-i18n="content-type-json">内容类型: <code>application/json</code></p>
+                    
+                    <h4 data-i18n="request-params">请求参数</h4>
+                    <table class="api-params">
+                        <thead>
+                            <tr>
+                                <th data-i18n="param-name">参数名</th>
+                                <th data-i18n="param-type">类型</th>
+                                <th data-i18n="param-required">必填</th>
+                                <th data-i18n="param-desc">描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>source_folder</td>
+                                <td>String</td>
+                                <td data-i18n="yes">是</td>
+                                <td data-i18n="source-folder-desc">要转换的源文件夹路径(绝对路径)</td>
+                            </tr>
+                            <tr>
+                                <td>output_folder</td>
+                                <td>String</td>
+                                <td data-i18n="no">否</td>
+                                <td data-i18n="output-folder-docling-desc">转换结果的输出文件夹路径，如不提供将在源文件夹创建output_docling子文件夹</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4 data-i18n="folder-conversion-features">批量转换特点</h4>
+                    <p data-i18n="folder-conversion-features-intro">批量转换API提供以下功能：</p>
+                    <ul>
+                        <li data-i18n="folder-feature-1">递归处理指定文件夹及其子文件夹中的所有文件</li>
+                        <li data-i18n="folder-feature-2">在输出文件夹中保持原始文件夹结构</li>
+                        <li data-i18n="folder-feature-3">自动跳过不支持的文件格式</li>
+                        <li data-i18n="folder-feature-4">生成详细的转换日志记录</li>
+                        <li data-i18n="folder-feature-5">提供转换统计和详细信息</li>
+                    </ul>
+                    
+                    <h4 data-i18n="python-folder-example">Python示例 - 批量转换文件夹</h4>
+                    <pre><code>import requests
+import json
+
+url = "http://127.0.0.1:5000/api/convert-folder"  # 或者 "/api/convert-to-md-folder" 或 "/api/convert-to-md-docling-folder"
+data = {
+    "source_folder": "D:/documents",
+    "output_folder": "D:/output"
+}
+
+headers = {
+    'Content-Type': 'application/json'
+}
+
+response = requests.post(url, data=json.dumps(data), headers=headers)
+result = response.json()
+
+print(f"转换完成，总文件数: {result['results']['total_files']}")
+print(f"成功转换: {result['results']['converted_files']} 文件")
+print(f"日志文件: {result['log_file']}")</code></pre>
+                </div>
+                
                 <h3 data-i18n="code-examples">示例代码</h3>
                 
                 <div class="code-example">
@@ -338,7 +607,7 @@ else:
         </main>
 
         <footer>
-            <p data-i18n="footer">© 2025 X2Knowledge v0.2.1 - 知识提取器工具 | 使用Flask和JavaScript构建</p>
+            <p data-i18n="footer">© 2025 X2Knowledge v0.3.0 - 知识提取器工具 | 使用Flask和JavaScript构建</p>
             <div class="github-links">
                 <a href="https://github.com/leonda123/X2Knowledge.git" class="github-link" target="_blank">
                     <svg class="github-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
@@ -357,11 +626,11 @@ else:
     </div>
     
     <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/api-test.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // API标签切换
-            const apiTabButtons = document.querySelectorAll('[data-api-tab]');
+            const apiTabButtons = document.querySelectorAll('.api-tab-button');
             const apiTabContents = document.querySelectorAll('.api-tab-content');
             
             apiTabButtons.forEach(button => {
@@ -372,7 +641,7 @@ else:
                     
                     // 添加active类到当前tab
                     this.classList.add('active');
-                    const tabId = `api-tab-${this.dataset.apiTab}`;
+                    const tabId = this.dataset.tab;
                     document.getElementById(tabId).classList.add('active');
                 });
             });

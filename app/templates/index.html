@@ -10,6 +10,29 @@
     <!-- 引入highlight.js用于代码高亮 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css">
     <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/highlight.min.js"></script>
+    <style>
+        .converter-options {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .converter-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .converter-option input {
+            margin-right: 8px;
+        }
+        .converter-description {
+            margin-left: 25px;
+            font-size: 0.9em;
+            color: #666;
+            margin-top: -3px;
+            margin-bottom: 8px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -20,7 +43,7 @@
         
         <header>
             <h1 data-i18n="title">X2Knowledge - 知识提取器工具</h1>
-            <p data-i18n="subtitle">支持Word、Excel、PowerPoint、PDF、TXT和Markdown文件转换</p>
+            <p data-i18n="subtitle">知识库原生支持：输出带元数据的Markdown，与RAG/LangChain/Agent等框架无缝对接</p>
             <div class="nav-links">
                 <a href="/api-docs" class="nav-link" data-i18n="api-docs-link">API文档</a>
             </div>
@@ -59,9 +82,27 @@
                             <line x1="12" y1="3" x2="12" y2="15"></line>
                         </svg>
                     </div>
+                    
+                    <div class="converter-options">
+                        <div class="converter-option">
+                            <input type="radio" id="markitdown-converter" name="converter" value="markitdown" checked>
+                            <label for="markitdown-converter" data-i18n="markitdown-converter-label">使用 MarkItDown 转换器 (默认)</label>
+                        </div>
+                        <p class="converter-description" data-i18n="markitdown-converter-desc">对原生Office格式文件（DOCX, XLSX, PPTX, CSV）支持非常好，速度快、准确率高，但对PDF格式文件效果较差</p>
+                        
+                        <div class="converter-option">
+                            <input type="radio" id="docling-converter" name="converter" value="docling">
+                            <label for="docling-converter" data-i18n="docling-converter-label">使用 Docling 转换器</label>
+                        </div>
+                        <p class="converter-description">
+                            <span data-i18n="docling-converter-desc">对PDF有优化的表格识别和VLM，准确率大大提升，支持更多输入格式，但需要CUDA环境最佳（当前使用CPU加速）</span>
+                            <span data-i18n="docling-warning" style="color: red; font-weight: bold;">且时间较长，不建议在本测试环境使用！</span>
+                        </p>
+                    </div>
+                    
                     <p><span data-i18n="drop-files">拖拽文件到此处或</span><label for="fileInputMarkdown" class="file-label" data-i18n="choose-file">选择文件</label></p>
-                    <input type="file" id="fileInputMarkdown" accept=".doc,.docx,.xls,.xlsx,.ppt,.pptx,.pdf,.txt,.md,.mp3,.wav" hidden>
-                    <p class="file-types" data-i18n="supported-types-md">支持的文件类型: .doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md, .mp3, .wav</p>
+                    <input type="file" id="fileInputMarkdown" accept=".doc,.docx,.xls,.xlsx,.ppt,.pptx,.pdf,.txt,.md,.mp3,.wav,.csv,.html,.xhtml,.png,.jpg,.jpeg,.tiff,.bmp" hidden>
+                    <p class="file-types" id="supportedFileTypes" data-i18n="supported-types-md">支持的文件类型: .doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md, .mp3, .wav</p>
                     <p class="file-note" data-i18n="markdown-note-structure">注意: 转换为Markdown格式可以更好地保留文档结构</p>
                     <p class="markdown-note" data-i18n="markdown-feature-structure">Markdown功能: 保留文档标题、列表、表格等结构</p>
                     <p class="markdown-note" data-i18n="markdown-feature-audio">新增功能: 支持音频文件(.mp3, .wav)转换为Markdown描述</p>
@@ -73,7 +114,7 @@
                     <h2 data-i18n="conversion-result">转换结果</h2>
                     <div class="result-actions">
                         <button id="copyBtn" class="btn" data-i18n="copy-text">复制文本</button>
-                        <button id="downloadBtn" class="btn" data-i18n="download-text">下载文本</button>
+                        <button id="downloadBtn" class="btn" data-i18n="download-text">下载文件</button>
                         <button id="newConvertBtn" class="btn" data-i18n="new-conversion">新的转换</button>
                         <button id="fullscreenBtn" class="btn fullscreen-btn" style="display: none;"><i class="fullscreen-icon"></i><span data-i18n="fullscreen">全屏预览</span></button>
                     </div>
@@ -92,7 +133,7 @@
         </main>
 
         <footer>
-            <p data-i18n="footer">© 2025 X2Knowledge v0.2.1 - 知识提取器工具 | 使用Flask和JavaScript构建</p>
+            <p data-i18n="footer">© 2025 X2Knowledge v0.3.0 - 知识提取器工具 | 使用Flask和JavaScript构建</p>
             <div class="github-links">
                 <a href="https://github.com/leonda123/X2Knowledge.git" class="github-link" target="_blank">
                     <svg class="github-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">

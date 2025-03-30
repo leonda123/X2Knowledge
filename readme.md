@@ -4,19 +4,28 @@
 
 X2Knowledge is an efficient open source knowledge extractor tool designed for enterprise knowledge base construction. It supports intelligent conversion of files in various formats such as PDF, Word, PPT, Excel, WAV, MP3, etc. into structured TXT or Markdown formats, helping users to quickly and standardizedly enter various types of documents into the enterprise knowledge base system. Through advanced format parsing and content extraction technology, the project significantly improves the efficiency and accuracy of knowledge conversion and is an ideal pre-processing tool for RAG (retrieval enhancement generation) applications and enterprise knowledge management.
 
-[Demo website](http://115.190.8.7/)：http://115.190.8.7/
+[Demo website](http://115.190.8.7/)：http://115.190.8.7/ The server performance is poor. Please use the docling interface for local testing. The server does not have a cuda environment!
 
-This is a Python Flask-based web application that can convert various document formats (Word, Excel, PowerPoint, PDF, TXT and Markdown) into plain text or structured Markdown.
+Due to the diversity of personal or corporate documents, in the process of building a knowledge base, how to process documents in RAG/Agent to achieve the expected results plays a vital role. However, with the development of AI technology, open source and commercial tools are emerging, and how to choose and use these tools has become a big problem.
 
-## Latest Updates (v0.2.1)
+This project adheres to the principles of: 1. Either free, 2. Either fast, 3. Either high accuracy, 4. Unified interface, 5. Continuous update.
+At the same time, everyone is welcome to discuss together. In the future, I plan to integrate excellent open source projects such as olmOCR, MinerU, Marker, etc. into the project within my limited time.
 
-- **Enhanced Markdown Preview**: Using marked.js library for better Markdown rendering with perfect support for tables and images
-- **Added Image Interaction**: Click on images to view them in fullscreen mode
-- **Code Syntax Highlighting**: Added highlight.js for syntax highlighting of code blocks
-- **Docker Deployment Support**: Added Dockerfile and docker-compose configuration
-- **Fixed API Documentation**: Improved Markdown tab switching in API documentation
+Everyone, please stay tuned!
+
+## Latest Updates (v0.3.0)
+
+- **Added Docling Support**: Integrated Docling for enhanced PDF and image conversion with improved table recognition
+- **Supported More Input Formats**: Added support for CSV, HTML, XHTML, and various image formats
+- **Optimized Framework**: Redesigned the converter architecture for better extensibility and maintainability
+- **Enhanced UI**: Added converter selection option in the UI for choosing between MarkItDown and Docling
+- **Improved API Documentation**: Added documentation for the new Docling conversion API endpoint, add batch conversion API for specified folders
 
 ## Features
+
+- **Multiple Conversion Engines**
+  - **MarkItDown**: Fast and efficient for Office documents (DOCX, XLSX, PPTX, CSV)
+  - **Docling**: Enhanced PDF conversion with better table recognition and VLM capabilities
 
 - **Convert multiple file formats to text or Markdown**
   - Support for Word (.doc, .docx), Excel (.xls, .xlsx), PowerPoint (.ppt, .pptx), PDF, text files, and more
@@ -32,7 +41,7 @@ This is a Python Flask-based web application that can convert various document f
   - Automatically extracts text from images embedded in documents
   - Works with images in Word, PowerPoint, and PDF files
 
-- **Audio Conversion** (New)
+- **Audio Conversion**
   - Convert audio files (.mp3, .wav) to text/Markdown description
   - Extracts metadata including duration, channels, and sample rate
 
@@ -48,18 +57,37 @@ This is a Python Flask-based web application that can convert various document f
 ## Usage
 
 1. Select the conversion mode (Text or Markdown)
-2. Upload your document (or drag and drop)
-3. View, copy or download the conversion result
-4. Use the Markdown preview feature to see formatted results (when using Markdown mode)
+2. If using Markdown mode, choose between MarkItDown (default) and Docling converters
+   - MarkItDown: Optimized for Office documents, faster processing
+   - Docling: Better for PDF files with complex tables and layouts
+3. Upload your document (or drag and drop)
+4. View, copy or download the conversion result
+5. Use the Markdown preview feature to see formatted results (when using Markdown mode)
 
 ## REST API
 
 The tool provides a REST API for programmatic access:
 
 - **Text Conversion**: `POST /api/convert`
-- **Markdown Conversion**: `POST /api/convert-to-md`
+- **Markdown Conversion (MarkItDown)**: `POST /api/convert-to-md`
+- **Markdown Conversion (Docling)**: `POST /api/convert-to-md-docling`
+- **Batch convert to text**: `POST /api/convert-folder`
+- **Batch convert to Markdown (MarkItDown)**: `POST /api/convert-to-md-folder`
+- **Batch convert to Markdown (Docling)**: `POST /api/convert-to-md-docling-folder`
 
 For detailed documentation and testing, visit the API Documentation page through the web interface.
+
+## Supported Formats
+
+### Input Formats
+- **Office Documents**: DOC, DOCX, XLS, XLSX, PPT, PPTX, CSV
+- **Text/Markup**: PDF, TXT, MD, HTML, XHTML
+- **Images**: PNG, JPEG, TIFF, BMP
+- **Audio**: MP3, WAV
+
+### Output Formats
+- **Plain Text**
+- **Markdown**
 
 ## System screenshot
 
@@ -84,6 +112,8 @@ For detailed documentation and testing, visit the API Documentation page through
 ![Execel effect](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/excel2.png?raw=true)
 #### PPT effect
 ![PPT effect](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/ppt1.png?raw=true)
+#### docling pdf to md
+![docling pdf to md](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/docling_pdf_md.png?raw=true)
 
 ## Installation and Deployment
 
@@ -95,6 +125,8 @@ For detailed documentation and testing, visit the API Documentation page through
 - Flask
 - pytesseract (for OCR functionality)
 - Tesseract OCR engine
+- MarkItDown library
+- Docling library (optional, for enhanced PDF conversion)
 
 #### Setup
 
@@ -160,6 +192,7 @@ Docker makes deploying X2Knowledge easier by avoiding environment configuration 
 
 ## Key Advantages
 
+- **Multiple Conversion Engines**: Choose the best engine for your document type - MarkItDown for Office documents, Docling for PDFs
 - **High-Performance Document Processing**: Optimized document parsing engine that efficiently handles various document formats
 - **Low Resource Consumption**: Runs smoothly even on servers with modest configurations
 - **Accurate Structure Preservation**: Especially in Markdown conversion, accurately preserves the original document structure
@@ -173,27 +206,26 @@ Docker makes deploying X2Knowledge easier by avoiding environment configuration 
 - Older Word documents (.doc format) may take longer to process; converting to .docx format before uploading is recommended
 - Some complex document layouts might not be perfectly preserved in Markdown conversion
 - OCR accuracy depends on image quality and text complexity
+- Docling works best with CUDA acceleration, but will fall back to CPU mode if unavailable
 
 ## Future Plans
 
-### Large Language Model Integration
-- **DeepSeek Integration**: Plans to support DeepSeek for text semantic understanding and structured extraction
-- **GPT Model Support**: Add integration with OpenAI GPT-3.5/4 for advanced document understanding and summary generation
-- **Open-Source Model Support**: Add support for major open-source LLMs for document processing and enhancement
+### Technology roadmap:
 
-### Inference Platform Support
-- **Ollama Local Deployment**: Support using Ollama for local deployment of open-source models for document processing
-- **vLLM High-Performance Inference**: Plan to integrate vLLM to provide more efficient model inference capabilities
-- **Model Quantization Support**: Add support for GPTQ, GGUF and other quantized models to reduce resource requirements
-
-### RAG Enhancement
-- **Automatic Document Chunking**: Intelligent segmentation algorithms to provide optimal retrieval granularity for RAG applications
-- **Vector Embedding Generation**: Directly generate document vector embeddings to accelerate knowledge base construction
-- **Knowledge Graph Export**: Extract entity relationships from documents to generate preliminary knowledge graphs
+- Short-term: Integrate mature solutions such as OcrmyPDF (document OCR), MinerU (unstructured data processing), and Marker (document parsing engine)
+- Medium-term: Develop intelligent routing modules to achieve self-adaptive processing of document types
+- Long-term: To build a large model in a vertical field and support the distillation of vertical field knowledge
 
 ## Version History
 
-### v0.2.1 (Current)
+### v0.3.0 (Current)
+- Added Docling integration for enhanced PDF and image conversion
+- Supported more input formats including CSV, HTML, and images
+- Redesigned converter architecture for better extensibility
+- Enhanced UI with converter selection options
+- Improved documentation
+
+### v0.2.1
 - Enhanced Markdown rendering with perfect table and image support
 - Added Docker deployment support
 - Improved image interaction experience
@@ -221,13 +253,16 @@ This project is licensed under the Apache-2.0 License - see the LICENSE file for
 
 - [pytesseract](https://github.com/madmaze/pytesseract) for OCR functionality
 - [Flask](https://flask.palletsprojects.com/) web framework
-- [Markidown](https://github.com/microsoft/markitdown.git)Markidown
+- [Markidown](https://github.com/microsoft/markitdown.git) for document to Markdown conversion
+- [Docling](https://github.com/docling-project/docling/) for enhanced PDF conversion
 - [marked.js](https://marked.js.org/) for Markdown rendering
 - [highlight.js](https://highlightjs.org/) for code syntax highlighting
 - Various document processing libraries
 
 ---
 
-Developed with ❤️ using Flask and JavaScript 
+##Contact information
+
+- Email: dadajiu45@gmail.com
 
 Project Links: [GitHub](https://github.com/leonda123/X2Knowledge.git) | [Gitee](https://gitee.com/leonda/X2Knowledge.git) 

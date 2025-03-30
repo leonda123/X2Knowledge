@@ -1,7 +1,7 @@
 FROM python:3.12
 
 LABEL maintainer="X2Knowledge Team <support@x2knowledge.com>"
-LABEL version="2.1.0"
+LABEL version="3.0.0"
 LABEL description="X2Knowledge - 知识提取器工具 Docker 映像"
 
 # 设置工作目录

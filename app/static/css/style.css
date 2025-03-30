@@ -865,4 +865,89 @@ pre .md-code-block {
     .markdown-preview {
         max-height: 400px;
     }
+}
+
+/* API 文档样式 */
+.api-docs {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 1200px;
+}
+
+.api-tab-controls {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.api-tab-button {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-right: 5px;
+    border-radius: 5px 5px 0 0;
+}
+
+.api-tab-button.active {
+    background-color: #ffffff;
+    border-bottom: 2px solid #333;
+}
+
+.api-tab-content {
+    display: none;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0 5px 5px 5px;
+}
+
+.api-tab-content.active {
+    display: block;
+}
+
+.endpoint {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+    font-family: monospace;
+    display: inline-block;
+}
+
+.endpoint .method {
+    background-color: #28a745;
+    color: white;
+    padding: 3px 6px;
+    border-radius: 3px;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.api-params {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+}
+
+.api-params th, .api-params td {
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+.api-params th {
+    background-color: #f8f9fa;
+}
+
+.alert-box {
+    background-color: #f8f9fa;
+    border-left: 4px solid #28a745;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.code-example {
+    margin: 20px 0;
 } 

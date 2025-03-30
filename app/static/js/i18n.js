@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // 结果区域
             'conversion-result': '转换结果',
             'copy-text': '复制文本',
+            'copy-success': '文本已复制到剪贴板',
             'download-text': '下载文件',
             'new-conversion': '新的转换',
             'fullscreen': '全屏预览',
@@ -72,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'encoding-benefit': '此功能可以有效解决中文乱码问题，无需用户手动设置编码。',
             
             // 页脚
-            'footer': '© 2025 X2Knowledge v0.2.1 - 知识提取器工具 | 使用Flask和JavaScript构建',
+            'footer': '© 2025 X2Knowledge v0.3.0 - 知识提取器工具 | 使用Flask和JavaScript构建',
             
             // API文档页面
             'api-doc-title': 'X2Knowledge - 知识提取器工具 - API文档',
@@ -83,8 +84,10 @@ document.addEventListener('DOMContentLoaded', function() {
             'api-docs-intro': '本工具提供了REST API接口，可以通过程序调用实现文档转换功能。',
             'api-tab-text': '转为文本API',
             'api-tab-markdown': '转为Markdown API',
+            'api-tab-markdown-docling': 'Docling转MD API',
             'text-api-title': '文档转文本API',
             'md-api-title': '文档转Markdown API',
+            'docling-md-api-title': 'Docling文档转Markdown API',
             'content-type': '内容类型: multipart/form-data',
             'request-params': '请求参数',
             'param-name': '参数名',
@@ -126,7 +129,41 @@ document.addEventListener('DOMContentLoaded', function() {
             'copied': '已复制!',
             'copy-failed': '复制失败',
             'copy-failed-manual': '复制失败，请手动选择文本并复制',
-            'downloaded': '已下载!'
+            'downloaded': '已下载!',
+            
+            // 转换器选项
+            'markitdown-converter-label': '使用 MarkItDown 转换器 (默认)',
+            'markitdown-converter-desc': '对原生Office格式文件（DOCX, XLSX, PPTX, CSV）支持非常好，速度快、准确率高，但对PDF格式文件效果较差',
+            'docling-converter-label': '使用 Docling 转换器',
+            'docling-converter-desc': '对PDF有优化的表格识别和VLM，准确率大大提升，支持更多输入格式，但需要CUDA环境最佳（当前使用CPU加速）',
+            'docling-warning': '且时间较长，不建议在本测试环境使用！',
+            
+            // 文件格式支持
+            'markitdown-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md, .mp3, .wav',
+            'docling-supported-formats': '.pdf, .docx, .xlsx, .pptx, .csv, .html, .xhtml, .png, .jpg, .jpeg, .tiff, .bmp, .md',
+            
+            // 批量转换API
+            'api-tab-folder-conversion': '批量转换API',
+            'folder-conversion-title': '批量文件夹转换API',
+            'folder-conversion-note': '注意: 此API用于批量转换文件夹中的所有支持格式文件，会生成日志文件记录转换过程。',
+            'text-folder-api-title': '批量转为文本API',
+            'md-folder-api-title': '批量转为Markdown API (MarkItDown)',
+            'docling-folder-api-title': '批量转为Markdown API (Docling)',
+            'content-type-json': '内容类型: application/json',
+            'request-example': '请求示例',
+            'source-folder-desc': '要转换的源文件夹路径(绝对路径)',
+            'output-folder-desc': '转换结果的输出文件夹路径，如不提供将在源文件夹创建output_text子文件夹',
+            'output-folder-md-desc': '转换结果的输出文件夹路径，如不提供将在源文件夹创建output_markdown子文件夹',
+            'output-folder-docling-desc': '转换结果的输出文件夹路径，如不提供将在源文件夹创建output_docling子文件夹',
+            'no': '否',
+            'folder-conversion-features': '批量转换特点',
+            'folder-conversion-features-intro': '批量转换API提供以下功能：',
+            'folder-feature-1': '递归处理指定文件夹及其子文件夹中的所有文件',
+            'folder-feature-2': '在输出文件夹中保持原始文件夹结构',
+            'folder-feature-3': '自动跳过不支持的文件格式',
+            'folder-feature-4': '生成详细的转换日志记录',
+            'folder-feature-5': '提供转换统计和详细信息',
+            'python-folder-example': 'Python示例 - 批量转换文件夹',
         },
         'en': {
             // Title and Navigation
@@ -160,6 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Results Area
             'conversion-result': 'Conversion Result',
             'copy-text': 'Copy Text',
+            'copy-success': 'Text copied to clipboard',
             'download-text': 'Download File',
             'new-conversion': 'New Conversion',
             'fullscreen': 'Fullscreen Preview',
@@ -198,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'encoding-benefit': 'This feature effectively solves Chinese character encoding issues without manual encoding settings.',
             
             // Footer
-            'footer': '© 2025 X2Knowledge v0.2.1 - Document Conversion Tool | Built with Flask and JavaScript',
+            'footer': '© 2025 X2Knowledge v0.3.0 - Document Conversion Tool | Built with Flask and JavaScript',
             
             // API Documentation Page
             'api-doc-title': 'X2Knowledge - Document Conversion Tool - API Documentation',
@@ -209,8 +247,10 @@ document.addEventListener('DOMContentLoaded', function() {
             'api-docs-intro': 'This tool provides REST API interfaces for programmatic document conversion.',
             'api-tab-text': 'Convert to Text API',
             'api-tab-markdown': 'Convert to Markdown API',
+            'api-tab-markdown-docling': 'Docling to Markdown API',
             'text-api-title': 'Document to Text API',
             'md-api-title': 'Document to Markdown API',
+            'docling-md-api-title': 'Docling Document to Markdown API',
             'content-type': 'Content Type: multipart/form-data',
             'request-params': 'Request Parameters',
             'param-name': 'Parameter',
@@ -252,7 +292,41 @@ document.addEventListener('DOMContentLoaded', function() {
             'copied': 'Copied!',
             'copy-failed': 'Copy failed',
             'copy-failed-manual': 'Copy failed, please select and copy text manually',
-            'downloaded': 'Downloaded!'
+            'downloaded': 'Downloaded!',
+            
+            // Converter options
+            'markitdown-converter-label': 'Use MarkItDown Converter (Default)',
+            'markitdown-converter-desc': 'Great support for native Office formats (DOCX, XLSX, PPTX, CSV), fast and accurate, but less effective for PDF files',
+            'docling-converter-label': 'Use Docling Converter',
+            'docling-converter-desc': 'Enhanced table recognition and VLM for PDF, greatly improved accuracy, supports more input formats, but performs best with CUDA (currently using CPU acceleration)',
+            'docling-warning': 'and takes longer, not recommended in this testing environment!',
+            
+            // File format support
+            'markitdown-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md, .mp3, .wav',
+            'docling-supported-formats': '.pdf, .docx, .xlsx, .pptx, .csv, .html, .xhtml, .png, .jpg, .jpeg, .tiff, .bmp, .md',
+            
+            // 批量转换API
+            'api-tab-folder-conversion': 'Batch Conversion API',
+            'folder-conversion-title': 'Batch Folder Conversion API',
+            'folder-conversion-note': 'Note: This API is used to batch convert all supported format files in a folder and generates a log file to record the conversion process.',
+            'text-folder-api-title': 'Batch Convert to Text API',
+            'md-folder-api-title': 'Batch Convert to Markdown API (MarkItDown)',
+            'docling-folder-api-title': 'Batch Convert to Markdown API (Docling)',
+            'content-type-json': 'Content Type: application/json',
+            'request-example': 'Request Example',
+            'source-folder-desc': 'Source folder path to convert (absolute path)',
+            'output-folder-desc': 'Output folder path for conversion results, if not provided, an output_text subfolder will be created in the source folder',
+            'output-folder-md-desc': 'Output folder path for conversion results, if not provided, an output_markdown subfolder will be created in the source folder',
+            'output-folder-docling-desc': 'Output folder path for conversion results, if not provided, an output_docling subfolder will be created in the source folder',
+            'no': 'No',
+            'folder-conversion-features': 'Batch Conversion Features',
+            'folder-conversion-features-intro': 'The batch conversion API provides the following functions:',
+            'folder-feature-1': 'Recursively process all files in the specified folder and its subfolders',
+            'folder-feature-2': 'Maintain the original folder structure in the output folder',
+            'folder-feature-3': 'Automatically skip unsupported file formats',
+            'folder-feature-4': 'Generate detailed conversion log records',
+            'folder-feature-5': 'Provide conversion statistics and detailed information',
+            'python-folder-example': 'Python Example - Batch Conversion of Folder',
         }
     };
     

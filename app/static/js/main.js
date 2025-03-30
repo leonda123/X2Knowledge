@@ -43,6 +43,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // API文档页面的Tab切换
+    const apiTabButtons = document.querySelectorAll('.api-tab-button');
+    const apiTabContents = document.querySelectorAll('.api-tab-content');
+    
+    if (apiTabButtons.length > 0 && apiTabContents.length > 0) {
+        apiTabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // 移除所有active类
+                apiTabButtons.forEach(btn => btn.classList.remove('active'));
+                apiTabContents.forEach(content => content.classList.remove('active'));
+                
+                // 添加active类到当前tab
+                this.classList.add('active');
+                const tabId = this.dataset.tab;
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    }
+    
     let currentFileName = '';
     let conversionStartTime = 0;
     let activeTab = 'markdown'; // 默认为Markdown转换
@@ -336,6 +355,41 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    // 添加转换器选择变化的事件处理
+    const markitdownConverter = document.getElementById('markitdown-converter');
+    const doclingConverter = document.getElementById('docling-converter');
+    const supportedFileTypes = document.getElementById('supportedFileTypes');
+    
+    if (markitdownConverter && doclingConverter) {
+        // 初始更新文件类型信息
+        updateSupportedFormats();
+        
+        // 添加转换器切换事件
+        markitdownConverter.addEventListener('change', updateSupportedFormats);
+        doclingConverter.addEventListener('change', updateSupportedFormats);
+    }
+    
+    // 更新支持的文件格式显示
+    function updateSupportedFormats() {
+        if (!supportedFileTypes) return;
+        
+        // 根据当前选择的转换器更新显示的支持格式
+        const isDocling = doclingConverter && doclingConverter.checked;
+        const formatKey = isDocling ? 'docling-supported-formats' : 'markitdown-supported-formats';
+        const formatText = getTranslatedText('supported-types-md') || '支持的文件类型:';
+        
+        // 获取对应的格式列表
+        const formats = getTranslatedText(formatKey);
+        supportedFileTypes.textContent = `${formatText.split(':')[0]}: ${formats}`;
+        
+        // 同时更新文件输入的accept属性
+        if (fileInputMarkdown) {
+            // 提取格式列表，转换为accept属性所需的格式
+            const acceptFormats = formats.split(',').map(fmt => fmt.trim()).join(',');
+            fileInputMarkdown.setAttribute('accept', acceptFormats);
+        }
+    }
+    
     // 处理文件上传和转换
     function handleFiles(file, type) {
         // 重置错误状态
@@ -350,7 +404,21 @@ document.addEventListener('DOMContentLoaded', function() {
         if (type === 'text') {
             supportedTypes = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt', 'md'];
         } else { // markdown
-            supportedTypes = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt', 'md', 'mp3', 'wav'];
+            // 检查选择的转换器
+            const useDocling = document.getElementById('docling-converter') && 
+                              document.getElementById('docling-converter').checked;
+            
+            if (useDocling) {
+                // Docling支持的格式
+                supportedTypes = [
+                    'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 
+                    'txt', 'md', 'mp3', 'wav', 'csv', 'html', 'xhtml', 
+                    'png', 'jpg', 'jpeg', 'tiff', 'bmp'
+                ];
+            } else {
+                // MarkItDown支持的格式
+                supportedTypes = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt', 'md', 'mp3', 'wav'];
+            }
         }
         
         if (!supportedTypes.includes(fileExt)) {
@@ -395,7 +463,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
         
         // 确定API端点
-        const endpoint = type === 'text' ? '/convert' : '/convert-to-md';
+        let endpoint;
+        if (type === 'text') {
+            endpoint = '/convert';
+        } else {
+            // 检查选择的转换器
+            const useDocling = document.getElementById('docling-converter') && 
+                              document.getElementById('docling-converter').checked;
+            
+            endpoint = useDocling ? '/convert-to-md-docling' : '/convert-to-md';
+        }
         
         // 发送文件到服务器
         fetch(endpoint, {
@@ -424,6 +501,14 @@ document.addEventListener('DOMContentLoaded', function() {
             // 添加转换信息
             const resultHeader = document.querySelector('.result-header h2');
             let resultType = type === 'text' ? '文本' : 'Markdown';
+            
+            // 添加使用的转换器信息（如果是Markdown）
+            if (type === 'markdown') {
+                const useDocling = document.getElementById('docling-converter') && 
+                                document.getElementById('docling-converter').checked;
+                resultType += useDocling ? ' (使用Docling)' : ' (使用MarkItDown)';
+            }
+            
             resultHeader.textContent = `转换结果 (${resultType}, 用时: ${conversionTime}秒, 字符数: ${data.text.length})`;
             
             // 如果文本为空，显示提示
