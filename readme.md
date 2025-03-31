@@ -4,6 +4,8 @@
 
 X2Knowledge is an efficient open source knowledge extractor tool designed for enterprise knowledge base construction. It supports intelligent conversion of files in various formats such as PDF, Word, PPT, Excel, WAV, MP3, etc. into structured TXT or Markdown formats, helping users to quickly and standardizedly enter various types of documents into the enterprise knowledge base system. Through advanced format parsing and content extraction technology, the project significantly improves the efficiency and accuracy of knowledge conversion and is an ideal pre-processing tool for RAG (retrieval enhancement generation) applications and enterprise knowledge management.
 
+![Design schematic](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/x2knowledge_en.png?raw=true)
+
 [Demo website](http://115.190.8.7/)：http://115.190.8.7/ The server performance is poor. Please use the docling interface for local testing. The server does not have a cuda environment!
 
 Due to the diversity of personal or corporate documents, in the process of building a knowledge base, how to process documents in RAG/Agent to achieve the expected results plays a vital role. However, with the development of AI technology, open source and commercial tools are emerging, and how to choose and use these tools has become a big problem.

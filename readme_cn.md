@@ -4,6 +4,8 @@
 
 X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识库建设而设计。它支持将PDF、Word、PPT、Excel、WAV、MP3等多种格式的文件智能转换为结构化的TXT或Markdown格式，帮助用户快速将各类文档资料标准化地录入企业知识库系统。通过先进的格式解析和内容提取技术，该项目显著提升知识转换的效率和准确性，是RAG（检索增强生成）应用和企业知识管理的理想预处理工具。
 
+![设计示意图](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/x2knowledge_cn.png)
+
 [演示网站](http://115.190.8.7/)：http://115.190.8.7/ 服务器性能不佳，请在本地测试使用docling接口，服务器没有cuda环境！
 
 由于个人或企业文档的多样性，在构建知识库的过程中，文档的处理如何在RAG/Agent的应用中能达到预期的效果，起到至关重要的作用。但是随着AI技术的发展，不断开源和商用的工具涌现，如何在选择和使用这些工具成为了一大难题。
@@ -94,13 +96,13 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 ###界面
 
 #### 主页
-![主页](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/home.png)
+![主页](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/home_cn.png)
 #### API调用
-![API调用](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/API.png)
+![API调用](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/API_cn.png)
 #### 原始格式
-![原始格式](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/original%20format.png)
+![原始格式](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/original%20format_cn.png)
 #### MD格式
-![MD格式](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/MD%20format.png)
+![MD格式](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/MD%20format_cn.png)
 ### 效果
 #### WORD文件
 ![WORD文件](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/word1.png)
