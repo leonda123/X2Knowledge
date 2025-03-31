@@ -46,7 +46,7 @@ except ImportError:
     logger.warning("无法导入win32com库，将无法使用COM方式处理.doc文件")
 
 try:
-    import textract
+    import textract # type: ignore
     HAS_TEXTRACT = True
     logger.info("成功导入textract库")
 except ImportError:

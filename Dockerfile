@@ -1,7 +1,7 @@
-FROM python:3.12
+FROM python:3.11-slim
 
-LABEL maintainer="X2Knowledge Team <support@x2knowledge.com>"
-LABEL version="3.0.0"
+LABEL maintainer="X2Knowledge Team <dadajiu45@gmail.com>"
+LABEL version="0.3.0"
 LABEL description="X2Knowledge - 知识提取器工具 Docker 映像"
 
 # 设置工作目录
@@ -33,9 +33,9 @@ RUN mkdir -p /app/uploads /app/logs \
 EXPOSE 5000
 
 # 设置环境变量
-ENV FLASK_APP=app.py
+ENV FLASK_APP=wsgi.py
 ENV FLASK_ENV=production
 ENV PYTHONUNBUFFERED=1
 
 # 启动应用
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--timeout", "120", "app:app"] 
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--timeout", "120", "wsgi:app"] 
