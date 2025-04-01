@@ -191,6 +191,8 @@
                     <button class="api-tab-button active" data-tab="api-tab-text" data-i18n="api-tab-text">转为文本API</button>
                     <button class="api-tab-button" data-tab="api-tab-markdown" data-i18n="api-tab-markdown">转为Markdown API</button>
                     <button class="api-tab-button" data-tab="api-tab-markdown-docling" data-i18n="api-tab-markdown-docling">Docling转MD API</button>
+                    <button class="api-tab-button" data-tab="api-tab-docling-html" data-i18n="api-tab-docling-html">Docling转HTML API</button>
+                    <button class="api-tab-button" data-tab="api-tab-docling-json" data-i18n="api-tab-docling-json">Docling转JSON API</button>
                     <button class="api-tab-button" data-tab="api-tab-folder-conversion" data-i18n="api-tab-folder-conversion">批量转换API</button>
                 </div>
                 
@@ -349,7 +351,6 @@
                         <li data-i18n="csv-files">CSV文件 (.csv)</li>
                         <li data-i18n="html-files">HTML/XHTML文件 (.html, .xhtml)</li>
                         <li data-i18n="image-files">图像文件 (.png, .jpg, .jpeg, .tiff, .bmp)</li>
-                        <li data-i18n="audio-files">音频文件 (.mp3, .wav)</li>
                     </ul>
                     
                     <h4 data-i18n="response-format">响应格式</h4>
@@ -381,6 +382,122 @@
                     <div class="converter-note" style="background-color: #f8f9fa; padding: 10px; border-left: 4px solid #4CAF50; margin: 15px 0;">
                         <p><strong>注意:</strong> Docling转换器性能最佳需要CUDA环境，当前使用CPU加速模式。它对PDF文件格式有特殊优化，在处理复杂PDF时效果比MarkItDown更好。</p>
                     </div>
+                </div>
+                
+                <div class="api-tab-content" id="api-tab-docling-html">
+                    <h3 data-i18n="docling-html-api-title">Docling文档转HTML API</h3>
+                    <div class="endpoint">
+                        <span class="method">POST</span> /api/convert-to-html-docling
+                    </div>
+                    <p data-i18n="content-type">内容类型: <code>multipart/form-data</code></p>
+                    
+                    <h4 data-i18n="request-params">请求参数</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th data-i18n="param-name">参数名</th>
+                                <th data-i18n="param-type">类型</th>
+                                <th data-i18n="param-required">必填</th>
+                                <th data-i18n="param-desc">描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>file</td>
+                                <td data-i18n="file-type">文件</td>
+                                <td data-i18n="yes">是</td>
+                                <td data-i18n="file-desc">要转换的文档文件</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4 data-i18n="supported-file-types">支持的文件类型</h4>
+                    <ul>
+                        <li data-i18n="word-files">Word文档 (.doc, .docx)</li>
+                        <li data-i18n="excel-files">Excel表格 (.xls, .xlsx)</li>
+                        <li data-i18n="ppt-files">PowerPoint演示文稿 (.ppt, .pptx)</li>
+                        <li data-i18n="pdf-files">PDF文档 (.pdf) - <span style="color: #4CAF50;">对PDF有优化的表格识别和VLM支持</span></li>
+                        <li data-i18n="text-files">文本文件 (.txt)</li>
+                        <li data-i18n="md-files">Markdown文件 (.md)</li>
+                        <li data-i18n="csv-files">CSV文件 (.csv)</li>
+                        <li data-i18n="html-files">HTML/XHTML文件 (.html, .xhtml)</li>
+                        <li data-i18n="image-files">图像文件 (.png, .jpg, .jpeg, .tiff, .bmp)</li>
+                        <li data-i18n="xml-files">XML文件 (.xml)</li>
+                    </ul>
+                    
+                    <h4 data-i18n="response-format">响应格式</h4>
+                    <p data-i18n="success-response">成功响应 (HTTP 200):</p>
+                    <pre><code>{
+  "html": "转换后的HTML内容",
+  "filename": "原始文件名",
+  "file_size": "文件大小(字节)",
+  "processing_time": "处理时间(秒)",
+  "converter": "docling"
+}</code></pre>
+                    
+                    <p data-i18n="error-response">错误响应 (HTTP 4xx/5xx):</p>
+                    <pre><code>{
+  "error": "错误信息",
+  "details": "详细错误信息(如有)"
+}</code></pre>
+                </div>
+                
+                <div class="api-tab-content" id="api-tab-docling-json">
+                    <h3 data-i18n="docling-json-api-title">Docling文档转JSON API</h3>
+                    <div class="endpoint">
+                        <span class="method">POST</span> /api/convert-to-json-docling
+                    </div>
+                    <p data-i18n="content-type">内容类型: <code>multipart/form-data</code></p>
+                    
+                    <h4 data-i18n="request-params">请求参数</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th data-i18n="param-name">参数名</th>
+                                <th data-i18n="param-type">类型</th>
+                                <th data-i18n="param-required">必填</th>
+                                <th data-i18n="param-desc">描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>file</td>
+                                <td data-i18n="file-type">文件</td>
+                                <td data-i18n="yes">是</td>
+                                <td data-i18n="file-desc">要转换的文档文件</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4 data-i18n="supported-file-types">支持的文件类型</h4>
+                    <ul>
+                        <li data-i18n="word-files">Word文档 (.doc, .docx)</li>
+                        <li data-i18n="excel-files">Excel表格 (.xls, .xlsx)</li>
+                        <li data-i18n="ppt-files">PowerPoint演示文稿 (.ppt, .pptx)</li>
+                        <li data-i18n="pdf-files">PDF文档 (.pdf) - <span style="color: #4CAF50;">对PDF有优化的表格识别和VLM支持</span></li>
+                        <li data-i18n="text-files">文本文件 (.txt)</li>
+                        <li data-i18n="md-files">Markdown文件 (.md)</li>
+                        <li data-i18n="csv-files">CSV文件 (.csv)</li>
+                        <li data-i18n="html-files">HTML/XHTML文件 (.html, .xhtml)</li>
+                        <li data-i18n="image-files">图像文件 (.png, .jpg, .jpeg, .tiff, .bmp)</li>
+                        <li data-i18n="xml-files">XML文件 (.xml)</li>
+                    </ul>
+                    
+                    <h4 data-i18n="response-format">响应格式</h4>
+                    <p data-i18n="success-response">成功响应 (HTTP 200):</p>
+                    <pre><code>{
+  "json_content": "转换后的JSON数据",
+  "filename": "原始文件名",
+  "file_size": "文件大小(字节)",
+  "processing_time": "处理时间(秒)",
+  "converter": "docling"
+}</code></pre>
+                    
+                    <p data-i18n="error-response">错误响应 (HTTP 4xx/5xx):</p>
+                    <pre><code>{
+  "error": "错误信息",
+  "details": "详细错误信息(如有)"
+}</code></pre>
                 </div>
                 
                 <!-- 批量文件夹转换API文档 -->

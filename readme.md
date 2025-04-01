@@ -73,9 +73,11 @@ The tool provides a REST API for programmatic access:
 - **Text Conversion**: `POST /api/convert`
 - **Markdown Conversion (MarkItDown)**: `POST /api/convert-to-md`
 - **Markdown Conversion (Docling)**: `POST /api/convert-to-md-docling`
-- **Batch convert to text**: `POST /api/convert-folder`
-- **Batch convert to Markdown (MarkItDown)**: `POST /api/convert-to-md-folder`
-- **Batch convert to Markdown (Docling)**: `POST /api/convert-to-md-docling-folder`
+- **Batch Text Conversion**: `POST /api/convert-folder`
+- **Batch Markdown Conversion (MarkItDown)**: `POST /api/convert-to-md-folder`
+- **Batch Markdown Conversion (Docling)**: `POST /api/convert-to-md-docling-folder`
+- **HTML Conversion (Docling)**: `POST /api/convert-to-html-docling`
+- **JSON Conversion (Docling)**: `POST /api/convert-to-json-docling`
 
 For detailed documentation and testing, visit the API Documentation page through the web interface.
 
@@ -268,3 +270,16 @@ This project is licensed under the Apache-2.0 License - see the LICENSE file for
 - Email: dadajiu45@gmail.com
 
 Project Links: [GitHub](https://github.com/leonda123/X2Knowledge.git) | [Gitee](https://gitee.com/leonda/X2Knowledge.git) 
+
+## API Endpoints
+
+This tool provides the following API endpoints:
+
+- **Text conversion**: `POST /api/convert`
+- **Markdown conversion**: `POST /api/convert-to-md`
+- **Markdown conversion (Docling)**: `POST /api/convert-to-md-docling`
+- **HTML conversion (Docling)**: `POST /api/convert-to-html-docling`
+- **JSON conversion (Docling)**: `POST /api/convert-to-json-docling`
+- **Batch conversion to text**: `POST /api/convert-folder`
+- **Batch conversion to Markdown (MarkItDown)**: `POST /api/convert-to-md-folder`
+- **Batch conversion to Markdown (Docling)**: `POST /api/convert-to-md-docling-folder`

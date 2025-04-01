@@ -402,7 +402,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let supportedTypes;
         
         if (type === 'text') {
-            supportedTypes = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt', 'md'];
+            supportedTypes = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt', 'md', 'xml'];
         } else { // markdown
             // 检查选择的转换器
             const useDocling = document.getElementById('docling-converter') && 
@@ -413,11 +413,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 supportedTypes = [
                     'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 
                     'txt', 'md', 'mp3', 'wav', 'csv', 'html', 'xhtml', 
-                    'png', 'jpg', 'jpeg', 'tiff', 'bmp'
+                    'png', 'jpg', 'jpeg', 'tiff', 'bmp', 'xml'
                 ];
             } else {
                 // MarkItDown支持的格式
-                supportedTypes = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt', 'md', 'mp3', 'wav'];
+                supportedTypes = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt', 'md', 'mp3', 'wav', 'xml'];
             }
         }
         

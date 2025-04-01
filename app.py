@@ -613,6 +613,186 @@ def api_convert_md_docling():
             'details': traceback.format_exc()
         }), 500
 
+# API：使用Docling转换为HTML
+@app.route('/api/convert-to-html-docling', methods=['POST'])
+def api_convert_html_docling():
+    start_time = time.time()
+    
+    if 'file' not in request.files:
+        logger.warning("API调用(Docling HTML)：没有文件上传")
+        return jsonify({'error': '没有文件上传'}), 400
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        logger.warning("API调用(Docling HTML)：未选择文件")
+        return jsonify({'error': '未选择文件'}), 400
+    
+    # 获取文件扩展名
+    filename = file.filename
+    file_ext = os.path.splitext(filename)[1].lower()
+    
+    logger.info(f"API调用(Docling HTML)：接收到文件: {filename}, 类型: {file_ext}")
+    
+    # 获取docling转换器
+    docling_converter = converter_factory.get_converter('docling')
+    if not hasattr(docling_converter, 'is_available') or not docling_converter.is_available:
+        logger.error("API调用(Docling HTML)：Docling转换器不可用")
+        return jsonify({'error': 'Docling转换器不可用，请确认已安装docling库'}), 500
+    
+    # 检查文件扩展名是否支持
+    if not docling_converter.is_format_supported(file_ext):
+        error_msg = f"Docling不支持的文件类型: {file_ext}"
+        logger.warning(f"API调用(Docling HTML)：{error_msg}")
+        return jsonify({'error': error_msg}), 400
+    
+    # 保存上传的文件
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    try:
+        file.save(file_path)
+        logger.info(f"API调用(Docling HTML)：文件保存成功: {file_path}")
+        
+        # 检查文件大小
+        file_size = os.path.getsize(file_path)
+        logger.info(f"API调用(Docling HTML)：文件大小: {file_size / 1024:.2f} KB")
+        
+        # 使用Docling转换为HTML
+        logger.info(f"API调用(Docling HTML)：开始转换文件: {filename}")
+        html_content = docling_converter.convert_to_html(file_path)
+        
+        processing_time = time.time() - start_time
+        logger.info(f"API调用(Docling HTML)：文件转换完成，耗时: {processing_time:.2f}秒")
+        
+        # 删除临时文件
+        try:
+            os.remove(file_path)
+            logger.info(f"API调用(Docling HTML)：临时文件已删除: {file_path}")
+        except Exception as e:
+            logger.warning(f"API调用(Docling HTML)：无法删除临时文件: {file_path}, 原因: {str(e)}")
+            try:
+                import gc
+                gc.collect()
+                os.remove(file_path)
+                logger.info(f"API调用(Docling HTML)：临时文件已删除(第二次尝试): {file_path}")
+            except Exception as e2:
+                logger.error(f"API调用(Docling HTML)：无法删除临时文件(第二次尝试): {file_path}, 原因: {str(e2)}")
+        
+        # 返回API响应
+        return jsonify({
+            'html': html_content,
+            'filename': filename,
+            'file_size': file_size,
+            'processing_time': round(processing_time, 2),
+            'converter': 'docling'
+        })
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"API调用(Docling HTML)：转换失败: {error_msg}")
+        logger.error(traceback.format_exc())
+        
+        # 出错时删除临时文件
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                logger.info(f"API调用(Docling HTML)：清理临时文件: {file_path}")
+            except Exception as del_e:
+                logger.warning(f"API调用(Docling HTML)：无法删除临时文件: {file_path}, 原因: {str(del_e)}")
+        
+        return jsonify({
+            'error': error_msg,
+            'details': traceback.format_exc()
+        }), 500
+
+# API：使用Docling转换为JSON
+@app.route('/api/convert-to-json-docling', methods=['POST'])
+def api_convert_json_docling():
+    start_time = time.time()
+    
+    if 'file' not in request.files:
+        logger.warning("API调用(Docling JSON)：没有文件上传")
+        return jsonify({'error': '没有文件上传'}), 400
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        logger.warning("API调用(Docling JSON)：未选择文件")
+        return jsonify({'error': '未选择文件'}), 400
+    
+    # 获取文件扩展名
+    filename = file.filename
+    file_ext = os.path.splitext(filename)[1].lower()
+    
+    logger.info(f"API调用(Docling JSON)：接收到文件: {filename}, 类型: {file_ext}")
+    
+    # 获取docling转换器
+    docling_converter = converter_factory.get_converter('docling')
+    if not hasattr(docling_converter, 'is_available') or not docling_converter.is_available:
+        logger.error("API调用(Docling JSON)：Docling转换器不可用")
+        return jsonify({'error': 'Docling转换器不可用，请确认已安装docling库'}), 500
+    
+    # 检查文件扩展名是否支持
+    if not docling_converter.is_format_supported(file_ext):
+        error_msg = f"Docling不支持的文件类型: {file_ext}"
+        logger.warning(f"API调用(Docling JSON)：{error_msg}")
+        return jsonify({'error': error_msg}), 400
+    
+    # 保存上传的文件
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    try:
+        file.save(file_path)
+        logger.info(f"API调用(Docling JSON)：文件保存成功: {file_path}")
+        
+        # 检查文件大小
+        file_size = os.path.getsize(file_path)
+        logger.info(f"API调用(Docling JSON)：文件大小: {file_size / 1024:.2f} KB")
+        
+        # 使用Docling转换为JSON
+        logger.info(f"API调用(Docling JSON)：开始转换文件: {filename}")
+        json_content = docling_converter.convert_to_json(file_path)
+        
+        processing_time = time.time() - start_time
+        logger.info(f"API调用(Docling JSON)：文件转换完成，耗时: {processing_time:.2f}秒")
+        
+        # 删除临时文件
+        try:
+            os.remove(file_path)
+            logger.info(f"API调用(Docling JSON)：临时文件已删除: {file_path}")
+        except Exception as e:
+            logger.warning(f"API调用(Docling JSON)：无法删除临时文件: {file_path}, 原因: {str(e)}")
+            try:
+                import gc
+                gc.collect()
+                os.remove(file_path)
+                logger.info(f"API调用(Docling JSON)：临时文件已删除(第二次尝试): {file_path}")
+            except Exception as e2:
+                logger.error(f"API调用(Docling JSON)：无法删除临时文件(第二次尝试): {file_path}, 原因: {str(e2)}")
+        
+        # 返回API响应
+        return jsonify({
+            'json_content': json_content,
+            'filename': filename,
+            'file_size': file_size,
+            'processing_time': round(processing_time, 2),
+            'converter': 'docling'
+        })
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"API调用(Docling JSON)：转换失败: {error_msg}")
+        logger.error(traceback.format_exc())
+        
+        # 出错时删除临时文件
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                logger.info(f"API调用(Docling JSON)：清理临时文件: {file_path}")
+            except Exception as del_e:
+                logger.warning(f"API调用(Docling JSON)：无法删除临时文件: {file_path}, 原因: {str(del_e)}")
+        
+        return jsonify({
+            'error': error_msg,
+            'details': traceback.format_exc()
+        }), 500
+
 # API：批量转换文件夹内所有文件为文本
 @app.route('/api/convert-folder', methods=['POST'])
 def api_convert_folder():

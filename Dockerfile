@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.12
 
 LABEL maintainer="X2Knowledge Team <dadajiu45@gmail.com>"
 LABEL version="0.3.0"
@@ -23,7 +23,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY . .
 
 # 安装Python依赖
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt  
+#网络问题可以使用其他源下载 RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple 
 
 # 创建上传和日志目录并设置权限
 RUN mkdir -p /app/uploads /app/logs \

@@ -70,14 +70,14 @@ class MarkItDownConverter(BaseConverter):
         return [
             '.doc', '.docx', '.xls', '.xlsx', 
             '.ppt', '.pptx', '.pdf', '.txt', 
-            '.md', '.mp3', '.wav'
+            '.md', '.mp3', '.wav', '.xml'
         ]
     
     def convert_to_text(self, file_path):
         """使用现有的转换函数进行文本转换"""
         from app.utils.converters import (
             convert_docx, convert_xlsx, convert_pptx,
-            convert_pdf, convert_txt, convert_md
+            convert_pdf, convert_txt, convert_md, convert_xml
         )
         
         file_ext = os.path.splitext(file_path)[1].lower()
@@ -95,6 +95,8 @@ class MarkItDownConverter(BaseConverter):
             return convert_txt(file_path)
         elif file_ext == '.md':
             return convert_md(file_path)
+        elif file_ext == '.xml':
+            return convert_xml(file_path)
         elif file_ext in ['.mp3', '.wav']:
             return "音频文件支持Markdown格式导出，请使用转MD功能"
         else:
@@ -182,7 +184,7 @@ class DoclingConverter(BaseConverter):
         return [
             '.pdf', '.docx', '.xlsx', '.pptx', '.csv',
             '.html', '.xhtml', '.png', '.jpg', '.jpeg',
-            '.tiff', '.bmp', '.md'
+            '.tiff', '.bmp', '.md', '.xml'
         ]
     
     def convert_to_text(self, file_path):
@@ -262,6 +264,90 @@ class DoclingConverter(BaseConverter):
             
         except Exception as e:
             error_msg = f"Docling转换失败: {str(e)}"
+            logger.error(error_msg)
+            logger.error(traceback.format_exc())
+            raise Exception(error_msg)
+            
+    def convert_to_html(self, file_path):
+        """使用Docling将文件转换为HTML格式"""
+        try:
+            if not self._has_docling:
+                raise ImportError("Docling库不可用")
+            
+            logger.info(f"使用Docling开始将文件转换为HTML: {file_path}")
+            
+            # 检查文件是否存在
+            if not os.path.exists(file_path):
+                error_msg = f"文件不存在: {file_path}"
+                logger.error(error_msg)
+                raise FileNotFoundError(error_msg)
+            
+            # 获取文件扩展名
+            file_ext = os.path.splitext(file_path)[1].lower()
+            if file_ext not in self.supported_input_formats:
+                error_msg = f"Docling不支持此文件格式: {file_ext}"
+                logger.error(error_msg)
+                raise ValueError(error_msg)
+            
+            # 使用Docling处理文件
+            file_name = os.path.basename(file_path)
+            
+            # 将文件转换为HTML
+            device = "cuda" if self._has_cuda else "cpu"
+            
+            # 使用Docling API调用
+            from docling.document_converter import DocumentConverter
+            converter = DocumentConverter()
+            result = converter.convert(file_path)
+            html_content = result.document.export_to_html()
+            
+            logger.info(f"Docling转换成功，生成了HTML内容")
+            return html_content
+            
+        except Exception as e:
+            error_msg = f"Docling HTML转换失败: {str(e)}"
+            logger.error(error_msg)
+            logger.error(traceback.format_exc())
+            raise Exception(error_msg)
+            
+    def convert_to_json(self, file_path):
+        """使用Docling将文件转换为JSON格式"""
+        try:
+            if not self._has_docling:
+                raise ImportError("Docling库不可用")
+            
+            logger.info(f"使用Docling开始将文件转换为JSON: {file_path}")
+            
+            # 检查文件是否存在
+            if not os.path.exists(file_path):
+                error_msg = f"文件不存在: {file_path}"
+                logger.error(error_msg)
+                raise FileNotFoundError(error_msg)
+            
+            # 获取文件扩展名
+            file_ext = os.path.splitext(file_path)[1].lower()
+            if file_ext not in self.supported_input_formats:
+                error_msg = f"Docling不支持此文件格式: {file_ext}"
+                logger.error(error_msg)
+                raise ValueError(error_msg)
+            
+            # 使用Docling处理文件
+            file_name = os.path.basename(file_path)
+            
+            # 将文件转换为JSON
+            device = "cuda" if self._has_cuda else "cpu"
+            
+            # 使用Docling API调用
+            from docling.document_converter import DocumentConverter
+            converter = DocumentConverter()
+            result = converter.convert(file_path)
+            json_content = result.document.to_dict()
+            
+            logger.info(f"Docling转换成功，生成了JSON内容")
+            return json_content
+            
+        except Exception as e:
+            error_msg = f"Docling JSON转换失败: {str(e)}"
             logger.error(error_msg)
             logger.error(traceback.format_exc())
             raise Exception(error_msg)

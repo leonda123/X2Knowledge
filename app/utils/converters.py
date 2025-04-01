@@ -832,4 +832,67 @@ def convert_audio_to_markdown(file_path):
         error_msg = f"音频文件转换失败: {str(e)}"
         logger.error(error_msg)
         logger.error(traceback.format_exc())
-        return f"# 音频文件转换错误\n\n处理时出现错误: {str(e)}" 
+        return f"# 音频文件转换错误\n\n处理时出现错误: {str(e)}"
+
+def convert_xml(file_path):
+    """将XML文件转换为文本"""
+    try:
+        logger.info(f"开始处理XML文件: {file_path}")
+        
+        # 检查文件是否存在
+        if not os.path.exists(file_path):
+            error_msg = f"文件不存在: {file_path}"
+            logger.error(error_msg)
+            raise FileNotFoundError(error_msg)
+        
+        # 读取XML文件
+        with open(file_path, 'r', encoding='utf-8') as file:
+            try:
+                xml_content = file.read()
+                logger.info(f"成功读取XML文件，共 {len(xml_content)} 个字符")
+                
+                # 尝试使用内置库格式化XML以提高可读性
+                try:
+                    import xml.dom.minidom as minidom
+                    dom = minidom.parseString(xml_content)
+                    pretty_xml = dom.toprettyxml(indent="  ")
+                    logger.info("XML格式化成功")
+                    return pretty_xml
+                except Exception as pretty_error:
+                    logger.warning(f"XML格式化失败: {str(pretty_error)}，返回原始内容")
+                    return xml_content
+            except UnicodeDecodeError:
+                # 如果UTF-8编码失败，尝试其他编码
+                logger.warning("UTF-8编码读取XML文件失败，尝试其他编码")
+                
+                # 尝试多种常见编码
+                encodings = ['gbk', 'gb2312', 'gb18030', 'big5', 'cp936', 'latin-1']
+                for encoding in encodings:
+                    try:
+                        with open(file_path, 'r', encoding=encoding) as f:
+                            xml_content = f.read()
+                            logger.info(f"使用 {encoding} 编码成功读取XML文件")
+                            
+                            # 尝试格式化
+                            try:
+                                import xml.dom.minidom as minidom
+                                dom = minidom.parseString(xml_content)
+                                pretty_xml = dom.toprettyxml(indent="  ")
+                                logger.info("XML格式化成功")
+                                return pretty_xml
+                            except Exception as pretty_error:
+                                logger.warning(f"XML格式化失败: {str(pretty_error)}，返回原始内容")
+                                return xml_content
+                    except Exception:
+                        continue
+                
+                # 如果所有编码尝试失败，使用二进制模式读取然后使用latin-1编码（它不会抛出解码错误）
+                with open(file_path, 'rb') as f:
+                    xml_content = f.read().decode('latin-1')
+                    logger.warning("使用latin-1编码读取XML文件，可能存在字符显示问题")
+                    return xml_content
+    except Exception as e:
+        error_msg = f"XML文件转换失败: {str(e)}"
+        logger.error(error_msg)
+        logger.error(traceback.format_exc())
+        raise Exception(error_msg) 

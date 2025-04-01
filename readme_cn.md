@@ -66,13 +66,15 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 4. 查看、复制或下载转换结果
 5. 使用Markdown预览功能查看格式化结果（使用Markdown模式时）
 
-## REST API
+## API 接口
 
-该工具提供了REST API以供程序访问：
+本工具提供以下API接口：
 
 - **文本转换**：`POST /api/convert`
-- **Markdown转换（MarkItDown）**：`POST /api/convert-to-md`
-- **Markdown转换（Docling）**：`POST /api/convert-to-md-docling`
+- **Markdown转换**：`POST /api/convert-to-md`
+- **Markdown转换(Docling)**：`POST /api/convert-to-md-docling`
+- **HTML转换(Docling)**：`POST /api/convert-to-html-docling`
+- **JSON转换(Docling)**：`POST /api/convert-to-json-docling`
 - **批量转换为文本**：`POST /api/convert-folder`
 - **批量转换为Markdown（MarkItDown）**：`POST /api/convert-to-md-folder`
 - **批量转换为Markdown（Docling）**：`POST /api/convert-to-md-docling-folder`
@@ -123,7 +125,7 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 
 #### 要求
 
-- Python 3.6+
+- Python 3.11
 - Flask
 - pytesseract（用于OCR功能）
 - Tesseract OCR引擎
