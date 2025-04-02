@@ -15,29 +15,34 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 
 大家敬请期待！
 
-## 最新更新 (v0.3.0)
+## 注意！默认docling和marker不启用（离线模型文件过大），需要手动在requirements.txt中开启。
 
+## 最新更新 (v0.4.0)
+
+- **集成Marker支持**：集成Marker提供高精度文档转换，优秀的表格和公式处理能力
 - **增加Docling支持**：集成Docling提供增强的PDF和图片转换功能，改进表格识别能力
-- **支持更多输入格式**：新增对CSV、HTML、XHTML以及各种图片格式的支持
+- **支持更多输入格式**：新增对CSV、HTML、XHTML、EPUB以及各种图片格式的支持
 - **优化框架结构**：重新设计转换器架构，提高可扩展性和可维护性
-- **增强用户界面**：在UI中添加转换器选择选项，可选择MarkItDown或Docling
-- **改进API文档**：为新的Docling转换API端点添加文档，增加指定文件夹批量转换API
+- **增强用户界面**：在UI中添加转换器选择选项，可选择MarkItDown、Docling或Marker转换器
+- **改进API文档**：为新的转换API端点添加文档，增加指定文件夹批量转换API
 
 ## 功能特点
 
 - **多种转换引擎**
   - **MarkItDown**：针对Office文档（DOCX、XLSX、PPTX、CSV）优化，速度快、效率高
   - **Docling**：增强的PDF转换功能，提供更好的表格识别和VLM能力
+  - **Marker**：高精度文档转换，优秀的表格、公式和图片提取能力
 
 - **将多种文件格式转换为文本或Markdown**
   - 支持Word (.doc, .docx)、Excel (.xls, .xlsx)、PowerPoint (.ppt, .pptx)、PDF、文本文件等
   - 在Markdown转换模式下保持文档结构
   - 通过OCR从图像中提取文本
 
-- **Markdown转换**
-  - 保留文档结构，包括标题、列表和表格
-  - 保持链接和格式
-  - 提供转换后的Markdown预览功能
+- **多种输出格式**
+  - **文本**：简单的纯文本提取
+  - **Markdown**：保留文档结构，包括标题、列表和表格
+  - **HTML**：带有图片和公式支持的完整HTML输出
+  - **JSON**：带有元数据的结构化文档表示
 
 - **OCR支持**
   - 自动从文档中嵌入的图像提取文本
@@ -59,9 +64,10 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 ## 使用方法
 
 1. 选择转换模式（文本或Markdown）
-2. 在使用Markdown模式时，选择MarkItDown（默认）或Docling转换器
+2. 在使用Markdown模式时，选择MarkItDown（默认）、Docling或Marker转换器
    - MarkItDown：针对Office文档优化，处理速度更快
    - Docling：针对PDF文件和复杂表格布局效果更好
+   - Marker：对于包含复杂元素（如表格、公式和图片）的文档具有最高精度
 3. 上传您的文档（或拖放）
 4. 查看、复制或下载转换结果
 5. 使用Markdown预览功能查看格式化结果（使用Markdown模式时）
@@ -71,13 +77,16 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 本工具提供以下API接口：
 
 - **文本转换**：`POST /api/convert`
-- **Markdown转换**：`POST /api/convert-to-md`
+- **Markdown转换(MarkItDown)**：`POST /api/convert-to-md`
 - **Markdown转换(Docling)**：`POST /api/convert-to-md-docling`
 - **HTML转换(Docling)**：`POST /api/convert-to-html-docling`
 - **JSON转换(Docling)**：`POST /api/convert-to-json-docling`
+- **Markdown转换(Marker)**：`POST /api/convert-to-md-marker`
+- **HTML转换(Marker)**：`POST /api/convert-to-html-marker`
+- **JSON转换(Marker)**：`POST /api/convert-to-json-marker`
 - **批量转换为文本**：`POST /api/convert-folder`
-- **批量转换为Markdown（MarkItDown）**：`POST /api/convert-to-md-folder`
-- **批量转换为Markdown（Docling）**：`POST /api/convert-to-md-docling-folder`
+- **批量转换为Markdown(MarkItDown)**：`POST /api/convert-to-md-folder`
+- **批量转换为Markdown(Docling)**：`POST /api/convert-to-md-docling-folder`
 
 有关详细文档和测试，请通过Web界面访问API文档页面。
 
@@ -85,13 +94,15 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 
 ### 输入格式
 - **Office文档**：DOC、DOCX、XLS、XLSX、PPT、PPTX、CSV
-- **文本/标记语言**：PDF、TXT、MD、HTML、XHTML
+- **文本/标记语言**：PDF、TXT、MD、HTML、XHTML、EPUB
 - **图像**：PNG、JPEG、TIFF、BMP
 - **音频**：MP3、WAV
 
 ### 输出格式
 - **纯文本**
 - **Markdown**
+- **HTML**
+- **JSON**
 
 ## 系统截图
 
@@ -131,6 +142,7 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 - Tesseract OCR引擎
 - MarkItDown库
 - Docling库（可选，用于增强PDF转换）
+- Marker库（可选，用于高精度文档转换）
 
 #### 设置
 
@@ -147,17 +159,28 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
    pip install -r requirements.txt
    ```
 
-3. 安装Tesseract OCR引擎（用于OCR功能）：
+3. 安装可选的转换引擎：
+   ```
+   # 安装Docling支持
+   pip install docling
+   
+   # 安装Marker支持
+   pip install marker-pdf
+   # 为支持更多格式安装额外组件
+   pip install marker-pdf[full]
+   ```
+
+4. 安装Tesseract OCR引擎（用于OCR功能）：
    - Windows：从[GitHub Tesseract releases](https://github.com/UB-Mannheim/tesseract/wiki)下载并安装
    - macOS：`brew install tesseract`
    - Linux：`sudo apt-get install tesseract-ocr`
 
-4. 运行应用程序：
+5. 运行应用程序：
    ```
    python app.py
    ```
 
-5. 打开Web浏览器并导航至`http://127.0.0.1:5000/`
+6. 打开Web浏览器并导航至`http://127.0.0.1:5000/`
 
 ### Docker部署
 
@@ -197,7 +220,7 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 
 ## 项目优势
 
-- **多种转换引擎**：针对不同类型的文档选择最适合的引擎 - MarkItDown适合Office文档，Docling适合PDF
+- **多种转换引擎**：针对不同类型的文档选择最适合的引擎 - MarkItDown适合Office文档，Docling适合PDF，Marker适合高精度需求
 - **高性能文档处理**：优化的文档解析引擎，能够高效处理各种格式的文档
 - **低资源消耗**：即使在配置较低的服务器上也能流畅运行
 - **准确的结构保留**：特别是在Markdown转换中，能够准确保留文档的原始结构
@@ -212,20 +235,23 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 - 一些复杂的文档布局在Markdown转换中可能无法完美保留
 - OCR准确性取决于图像质量和文本复杂性
 - Docling在CUDA加速环境下性能最佳，但如果不可用会回退到CPU模式
+- Marker需要PyTorch，并且可能需要特定的PyTorch安装以支持GPU加速
 
 ## 未来计划
 
 ### 技术路线规划：
 
-- 短期：集成OcrmyPDF（文档OCR）、MinerU（非结构化数据处理）、Marker（文档解析引擎）等成熟方案
+- 短期：集成OcrmyPDF（文档OCR）、MinerU（非结构化数据处理）、改进Marker集成
 - 中期：开发智能路由模块，实现文档类型自适配处理
 - 长期：为构建垂直领域大模型，支持垂直领域知识的蒸馏
 
 ## 版本历史
 
 ### v0.3.0 (当前版本)
+- 集成Marker提供高精度文档转换
 - 增加Docling集成，增强PDF和图片转换功能
-- 支持更多输入格式，包括CSV、HTML和图片
+- 支持更多输入格式，包括CSV、HTML、EPUB和图片
+- 添加对HTML和JSON输出格式的支持
 - 重新设计转换器架构，提高可扩展性
 - 增强UI，添加转换器选择选项
 - 改进文档
@@ -248,7 +274,6 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 - 首次发布，支持文本转换
 - OCR功能
 - UTF-8编码转换
-- 基本Web界面
 
 ## 许可证
 

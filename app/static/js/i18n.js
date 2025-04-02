@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'encoding-benefit': '此功能可以有效解决中文乱码问题，无需用户手动设置编码。',
             
             // 页脚
-            'footer': '© 2025 X2Knowledge v0.3.0 - 知识提取器工具 | 使用Flask和JavaScript构建',
+            'footer': '© 2025 X2Knowledge v0.4.0 - 知识提取器工具 | 使用Flask和JavaScript构建',
             
             // API文档页面
             'api-doc-title': 'X2Knowledge - 知识提取器工具 - API文档',
@@ -137,14 +137,18 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // 转换器选项
             'markitdown-converter-label': '使用 MarkItDown 转换器 (默认)',
-            'markitdown-converter-desc': '对原生Office格式文件（DOCX, XLSX, PPTX, CSV）支持非常好，速度快、准确率高，但对PDF格式文件效果较差',
+            'markitdown-converter-desc': '对原生Office格式文件（DOCX, XLSX, PPTX）支持非常好，速度快、准确率高，但对PDF格式文件效果较差',
             'docling-converter-label': '使用 Docling 转换器',
             'docling-converter-desc': '对PDF有优化的表格识别和VLM，准确率大大提升，支持更多输入格式，但需要CUDA环境最佳（当前使用CPU加速）',
             'docling-warning': '且时间较长，不建议在本测试环境使用！',
+            'marker-converter-label': '使用 Marker 转换器',
+            'marker-converter-desc': '高精度文档转换器，优秀的表格和公式处理能力，支持多种文档格式和图片',
+            'marker-warning': '需要安装PyTorch，性能取决于系统配置',
             
             // 文件格式支持
-            'markitdown-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md, .mp3, .wav, .xml',
-            'docling-supported-formats': '.pdf, .docx, .xlsx, .pptx, .csv, .html, .xhtml, .png, .jpg, .jpeg, .tiff, .bmp, .md, .xml',
+            'markitdown-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md',
+            'docling-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md, .mp3, .wav, .html, .xhtml, .png, .jpg, .jpeg, .tiff, .bmp',
+            'marker-supported-formats': '.pdf, .png, .jpg, .jpeg, .pptx, .docx, .xlsx, .html',
             
             // 批量转换API
             'api-tab-folder-conversion': '批量转换API',
@@ -168,6 +172,14 @@ document.addEventListener('DOMContentLoaded', function() {
             'folder-feature-4': '生成详细的转换日志记录',
             'folder-feature-5': '提供转换统计和详细信息',
             'python-folder-example': 'Python示例 - 批量转换文件夹',
+            // API文档
+            'api-docs-title': 'X2Knowledge API 文档',
+            'api-extract-text': '文档文本提取 API',
+            'api-markitdown-md': 'MarkItDown转MD API',
+            'api-docling-md': 'Docling转MD API',
+            'api-marker-md': 'Marker转MD API',
+            'api-marker-html': 'Marker转HTML API',
+            'api-marker-json': 'Marker转JSON API',
         },
         'en': {
             // Title and Navigation
@@ -240,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'encoding-benefit': 'This feature effectively solves Chinese character encoding issues without manual encoding settings.',
             
             // Footer
-            'footer': '© 2025 X2Knowledge v0.3.0 - Document Conversion Tool | Built with Flask and JavaScript',
+            'footer': '© 2025 X2Knowledge v0.4.0 - Document Conversion Tool | Built with Flask and JavaScript',
             
             // API Documentation Page
             'api-doc-title': 'X2Knowledge - Document Conversion Tool - API Documentation',
@@ -304,14 +316,18 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Converter Options
             'markitdown-converter-label': 'Use MarkItDown Converter (Default)',
-            'markitdown-converter-desc': 'Excellent support for native Office formats (DOCX, XLSX, PPTX, CSV), fast and accurate, but less effective for PDF files',
+            'markitdown-converter-desc': 'Excellent support for native Office formats (DOCX, XLSX, PPTX), fast and accurate, but less effective for PDF files',
             'docling-converter-label': 'Use Docling Converter',
             'docling-converter-desc': 'Optimized table recognition and VLM for PDFs, greatly improved accuracy, supports more input formats, but works best with CUDA environment (currently using CPU acceleration)',
             'docling-warning': 'and takes longer, not recommended for this test environment!',
+            'marker-converter-label': 'Use Marker Converter',
+            'marker-converter-desc': 'High-precision document converter, excellent table and formula processing capabilities, supports multiple document formats and images',
+            'marker-warning': 'Requires PyTorch, performance depends on system configuration',
             
             // File Format Support
-            'markitdown-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md, .mp3, .wav, .xml',
-            'docling-supported-formats': '.pdf, .docx, .xlsx, .pptx, .csv, .html, .xhtml, .png, .jpg, .jpeg, .tiff, .bmp, .md, .xml',
+            'markitdown-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md',
+            'docling-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md, .mp3, .wav, .csv, .html, .xhtml, .png, .jpg, .jpeg, .tiff, .bmp',
+            'marker-supported-formats': '.pdf, .png, .jpg, .jpeg, .pptx, .docx, .xlsx, .html',
             
             // Batch Conversion API
             'api-tab-folder-conversion': 'Batch Conversion API',
@@ -335,6 +351,14 @@ document.addEventListener('DOMContentLoaded', function() {
             'folder-feature-4': 'Generates detailed conversion log records',
             'folder-feature-5': 'Provides conversion statistics and details',
             'python-folder-example': 'Python Example - Batch Convert Folder',
+            // API文档
+            'api-docs-title': 'X2Knowledge API 文档',
+            'api-extract-text': '文档文本提取 API',
+            'api-markitdown-md': 'MarkItDown转MD API',
+            'api-docling-md': 'Docling转MD API',
+            'api-marker-md': 'Marker转MD API',
+            'api-marker-html': 'Marker转HTML API',
+            'api-marker-json': 'Marker转JSON API',
         }
     };
     

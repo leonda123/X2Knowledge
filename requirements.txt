@@ -11,7 +11,8 @@ pytesseract==0.3.10
 Pillow>=8.0.0
 pdf2image==1.16.3
 markitdown[all]>=0.1.0
-docling #如果不使用docling，则注释掉 -if you don't use docling, comment it out
+#docling #如果不使用docling，则注释掉 -if you don't use docling, comment it out
+#marker-pdf[full]>=0.2.0 #高精度文档转换器 - High-precision document converter
 python-magic-bin==0.4.14; sys_platform == 'win32'
 requests
 pydub

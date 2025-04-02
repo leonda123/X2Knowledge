@@ -358,15 +358,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // 添加转换器选择变化的事件处理
     const markitdownConverter = document.getElementById('markitdown-converter');
     const doclingConverter = document.getElementById('docling-converter');
+    const markerConverter = document.getElementById('marker-converter');
     const supportedFileTypes = document.getElementById('supportedFileTypes');
     
-    if (markitdownConverter && doclingConverter) {
+    if (markitdownConverter && doclingConverter && markerConverter) {
         // 初始更新文件类型信息
         updateSupportedFormats();
         
         // 添加转换器切换事件
         markitdownConverter.addEventListener('change', updateSupportedFormats);
         doclingConverter.addEventListener('change', updateSupportedFormats);
+        markerConverter.addEventListener('change', updateSupportedFormats);
     }
     
     // 更新支持的文件格式显示
@@ -375,7 +377,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 根据当前选择的转换器更新显示的支持格式
         const isDocling = doclingConverter && doclingConverter.checked;
-        const formatKey = isDocling ? 'docling-supported-formats' : 'markitdown-supported-formats';
+        const isMarker = markerConverter && markerConverter.checked;
+        
+        let formatKey = 'markitdown-supported-formats';
+        if (isDocling) {
+            formatKey = 'docling-supported-formats';
+        } else if (isMarker) {
+            formatKey = 'marker-supported-formats';
+        }
+        
         const formatText = getTranslatedText('supported-types-md') || '支持的文件类型:';
         
         // 获取对应的格式列表
@@ -397,91 +407,53 @@ document.addEventListener('DOMContentLoaded', function() {
         
         currentFileName = file.name.split('.')[0]; // 保存文件名（不含扩展名）
         
-        // 检查文件类型
-        const fileExt = file.name.split('.').pop().toLowerCase();
-        let supportedTypes;
-        
-        if (type === 'text') {
-            supportedTypes = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt', 'md', 'xml'];
-        } else { // markdown
-            // 检查选择的转换器
-            const useDocling = document.getElementById('docling-converter') && 
-                              document.getElementById('docling-converter').checked;
-            
-            if (useDocling) {
-                // Docling支持的格式
-                supportedTypes = [
-                    'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 
-                    'txt', 'md', 'mp3', 'wav', 'csv', 'html', 'xhtml', 
-                    'png', 'jpg', 'jpeg', 'tiff', 'bmp', 'xml'
-                ];
-            } else {
-                // MarkItDown支持的格式
-                supportedTypes = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt', 'md', 'mp3', 'wav', 'xml'];
-            }
-        }
-        
-        if (!supportedTypes.includes(fileExt)) {
-            showError(`不支持的文件类型: ${fileExt}！请上传支持的文件格式。`);
-            return;
-        }
-        
-        // 检查文件大小
-        const maxSize = 50 * 1024 * 1024; // 50MB
-        if (file.size > maxSize) {
-            showError(`文件过大！最大支持50MB，当前文件大小: ${(file.size / (1024 * 1024)).toFixed(2)}MB`);
-            return;
-        }
-        
         // 显示加载指示器
-        dropAreaText.style.display = 'none';
-        dropAreaMarkdown.style.display = 'none';
         loadingIndicator.style.display = 'block';
         
-        // 隐藏Markdown视图控件和预览
-        markdownViewControls.style.display = 'none';
-        markdownPreview.style.display = 'none';
-        resultContent.style.display = 'block';
+        // 隐藏上传区域
+        dropAreaText.style.display = 'none';
+        dropAreaMarkdown.style.display = 'none';
         
-        // 记录开始时间
-        conversionStartTime = Date.now();
+        // 清空预览区域
+        if (type === 'text') {
+            resultText.textContent = '';
+        } else {
+            markdownPreview.innerHTML = '';
+            markdownPreview.style.display = 'none';
+        }
         
         // 创建FormData对象
         const formData = new FormData();
         formData.append('file', file);
         
-        // 添加状态更新
-        const loadingText = document.querySelector('#loadingIndicator p');
-        const originalText = loadingText.textContent;
-        let dots = 0;
-        
-        // 更新加载文本
-        const loadingInterval = setInterval(() => {
-            dots = (dots + 1) % 4;
-            const dotString = '.'.repeat(dots);
-            loadingText.textContent = `正在转换文件${dotString}`;
-        }, 500);
-        
         // 确定API端点
-        let endpoint;
+        let apiEndpoint = '';
+        
         if (type === 'text') {
-            endpoint = '/convert';
+            apiEndpoint = '/convert';  // 使用现有文本转换路径
         } else {
-            // 检查选择的转换器
-            const useDocling = document.getElementById('docling-converter') && 
-                              document.getElementById('docling-converter').checked;
+            // 根据选择的转换器确定API端点
+            const isDoclingSelected = doclingConverter && doclingConverter.checked;
+            const isMarkerSelected = markerConverter && markerConverter.checked;
             
-            endpoint = useDocling ? '/convert-to-md-docling' : '/convert-to-md';
+            if (isDoclingSelected) {
+                apiEndpoint = '/convert-to-md-docling';  // 使用现有docling路径
+            } else if (isMarkerSelected) {
+                apiEndpoint = '/convert-to-md-marker';   // 使用现有marker路径
+            } else {
+                apiEndpoint = '/convert-to-md';          // 使用现有markitdown路径
+            }
         }
         
+        // 记录开始时间
+        conversionStartTime = Date.now();
+        
         // 发送文件到服务器
-        fetch(endpoint, {
+        fetch(apiEndpoint, {
             method: 'POST',
             body: formData
         })
         .then(response => {
-            clearInterval(loadingInterval);
-            
             if (!response.ok) {
                 return response.json().then(data => {
                     throw new Error(data.error || '转换失败');
@@ -493,8 +465,18 @@ document.addEventListener('DOMContentLoaded', function() {
             // 计算转换时间
             const conversionTime = ((Date.now() - conversionStartTime) / 1000).toFixed(2);
             
+            // 取得文本内容 - 兼容旧接口和新接口
+            let textContent = '';
+            if (data.text) {
+                textContent = data.text;
+            } else if (data.markdown) {
+                textContent = data.markdown;
+            } else if (typeof data === 'string') {
+                textContent = data;
+            }
+            
             // 显示转换结果
-            resultText.textContent = data.text;
+            resultText.textContent = textContent;
             loadingIndicator.style.display = 'none';
             resultContainer.style.display = 'block';
             
@@ -504,28 +486,34 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // 添加使用的转换器信息（如果是Markdown）
             if (type === 'markdown') {
-                const useDocling = document.getElementById('docling-converter') && 
-                                document.getElementById('docling-converter').checked;
-                resultType += useDocling ? ' (使用Docling)' : ' (使用MarkItDown)';
+                const useDocling = doclingConverter && doclingConverter.checked;
+                const useMarker = markerConverter && markerConverter.checked;
+                
+                if (useDocling) {
+                    resultType += ' (使用Docling)';
+                } else if (useMarker) {
+                    resultType += ' (使用Marker)';
+                } else {
+                    resultType += ' (使用MarkItDown)';
+                }
             }
             
-            resultHeader.textContent = `转换结果 (${resultType}, 用时: ${conversionTime}秒, 字符数: ${data.text.length})`;
+            resultHeader.textContent = `转换结果 (${resultType}, 用时: ${conversionTime}秒, 字符数: ${textContent.length})`;
             
             // 如果文本为空，显示提示
-            if (!data.text || data.text.trim() === '') {
+            if (!textContent || textContent.trim() === '') {
                 resultText.textContent = '[文件中未找到内容]';
             }
             
             // 如果是Markdown类型，显示Markdown视图控件并保存原始Markdown
             if (type === 'markdown') {
-                originalMarkdown = data.text;
+                originalMarkdown = textContent;
                 markdownViewControls.style.display = 'flex';
                 // 默认显示源码视图
                 viewButtons[0].click();
             }
         })
         .catch(error => {
-            clearInterval(loadingInterval);
             loadingIndicator.style.display = 'none';
             
             console.error('转换错误:', error);

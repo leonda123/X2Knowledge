@@ -1319,6 +1319,276 @@ def internal_server_error(error):
 def page_not_found(error):
     return jsonify({'error': '请求的资源不存在'}), 404
 
+# API：使用Marker转换为Markdown
+@app.route('/api/convert-to-md-marker', methods=['POST'])
+def api_convert_md_marker():
+    start_time = time.time()
+    
+    if 'file' not in request.files:
+        logger.warning("API调用(Marker)：没有文件上传")
+        return jsonify({'error': '没有文件上传'}), 400
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        logger.warning("API调用(Marker)：未选择文件")
+        return jsonify({'error': '未选择文件'}), 400
+    
+    # 获取文件扩展名
+    filename = file.filename
+    file_ext = os.path.splitext(filename)[1].lower()
+    
+    logger.info(f"API调用(Marker)：接收到文件: {filename}, 类型: {file_ext}")
+    
+    # 获取marker转换器
+    marker_converter = converter_factory.get_converter('marker')
+    if not hasattr(marker_converter, 'is_available') or not marker_converter.is_available:
+        logger.error("API调用(Marker)：Marker转换器不可用")
+        return jsonify({'error': 'Marker转换器不可用，请确认已安装marker-pdf库'}), 500
+    
+    # 检查文件扩展名是否支持
+    if not marker_converter.is_format_supported(file_ext):
+        error_msg = f"Marker不支持的文件类型: {file_ext}"
+        logger.warning(f"API调用(Marker)：{error_msg}")
+        return jsonify({'error': error_msg}), 400
+    
+    # 保存上传的文件
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    try:
+        file.save(file_path)
+        logger.info(f"API调用(Marker)：文件保存成功: {file_path}")
+        
+        # 检查文件大小
+        file_size = os.path.getsize(file_path)
+        logger.info(f"API调用(Marker)：文件大小: {file_size / 1024:.2f} KB")
+        
+        # 使用Marker转换为Markdown
+        logger.info(f"API调用(Marker)：开始转换文件: {filename}")
+        markdown_text = marker_converter.convert_to_markdown(file_path)
+        
+        processing_time = time.time() - start_time
+        logger.info(f"API调用(Marker)：文件转换完成，耗时: {processing_time:.2f}秒")
+        
+        # 删除临时文件
+        try:
+            os.remove(file_path)
+            logger.info(f"API调用(Marker)：临时文件已删除: {file_path}")
+        except Exception as e:
+            logger.warning(f"API调用(Marker)：无法删除临时文件: {file_path}, 原因: {str(e)}")
+            try:
+                import gc
+                gc.collect()
+                os.remove(file_path)
+                logger.info(f"API调用(Marker)：临时文件已删除(第二次尝试): {file_path}")
+            except Exception as e2:
+                logger.error(f"API调用(Marker)：无法删除临时文件(第二次尝试): {file_path}, 原因: {str(e2)}")
+        
+        # 返回API响应
+        return jsonify({
+            'text': markdown_text,
+            'filename': filename,
+            'file_size': file_size,
+            'processing_time': round(processing_time, 2),
+            'converter': 'marker'
+        })
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"API调用(Marker)：转换失败: {error_msg}")
+        logger.error(traceback.format_exc())
+        
+        # 出错时删除临时文件
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                logger.info(f"API调用(Marker)：清理临时文件: {file_path}")
+            except Exception as del_e:
+                logger.warning(f"API调用(Marker)：无法删除临时文件: {file_path}, 原因: {str(del_e)}")
+        
+        return jsonify({
+            'error': error_msg,
+            'details': traceback.format_exc()
+        }), 500
+
+# API：使用Marker转换为HTML
+@app.route('/api/convert-to-html-marker', methods=['POST'])
+def api_convert_html_marker():
+    start_time = time.time()
+    
+    if 'file' not in request.files:
+        logger.warning("API调用(Marker HTML)：没有文件上传")
+        return jsonify({'error': '没有文件上传'}), 400
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        logger.warning("API调用(Marker HTML)：未选择文件")
+        return jsonify({'error': '未选择文件'}), 400
+    
+    # 获取文件扩展名
+    filename = file.filename
+    file_ext = os.path.splitext(filename)[1].lower()
+    
+    logger.info(f"API调用(Marker HTML)：接收到文件: {filename}, 类型: {file_ext}")
+    
+    # 获取marker转换器
+    marker_converter = converter_factory.get_converter('marker')
+    if not hasattr(marker_converter, 'is_available') or not marker_converter.is_available:
+        logger.error("API调用(Marker HTML)：Marker转换器不可用")
+        return jsonify({'error': 'Marker转换器不可用，请确认已安装marker-pdf库'}), 500
+    
+    # 检查文件扩展名是否支持
+    if not marker_converter.is_format_supported(file_ext):
+        error_msg = f"Marker不支持的文件类型: {file_ext}"
+        logger.warning(f"API调用(Marker HTML)：{error_msg}")
+        return jsonify({'error': error_msg}), 400
+    
+    # 保存上传的文件
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    try:
+        file.save(file_path)
+        logger.info(f"API调用(Marker HTML)：文件保存成功: {file_path}")
+        
+        # 检查文件大小
+        file_size = os.path.getsize(file_path)
+        logger.info(f"API调用(Marker HTML)：文件大小: {file_size / 1024:.2f} KB")
+        
+        # 使用Marker转换为HTML
+        logger.info(f"API调用(Marker HTML)：开始转换文件: {filename}")
+        html_content = marker_converter.convert_to_html(file_path)
+        
+        processing_time = time.time() - start_time
+        logger.info(f"API调用(Marker HTML)：文件转换完成，耗时: {processing_time:.2f}秒")
+        
+        # 删除临时文件
+        try:
+            os.remove(file_path)
+            logger.info(f"API调用(Marker HTML)：临时文件已删除: {file_path}")
+        except Exception as e:
+            logger.warning(f"API调用(Marker HTML)：无法删除临时文件: {file_path}, 原因: {str(e)}")
+            try:
+                import gc
+                gc.collect()
+                os.remove(file_path)
+                logger.info(f"API调用(Marker HTML)：临时文件已删除(第二次尝试): {file_path}")
+            except Exception as e2:
+                logger.error(f"API调用(Marker HTML)：无法删除临时文件(第二次尝试): {file_path}, 原因: {str(e2)}")
+        
+        # 返回API响应
+        return jsonify({
+            'html': html_content,
+            'filename': filename,
+            'file_size': file_size,
+            'processing_time': round(processing_time, 2),
+            'converter': 'marker'
+        })
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"API调用(Marker HTML)：转换失败: {error_msg}")
+        logger.error(traceback.format_exc())
+        
+        # 出错时删除临时文件
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                logger.info(f"API调用(Marker HTML)：清理临时文件: {file_path}")
+            except Exception as del_e:
+                logger.warning(f"API调用(Marker HTML)：无法删除临时文件: {file_path}, 原因: {str(del_e)}")
+        
+        return jsonify({
+            'error': error_msg,
+            'details': traceback.format_exc()
+        }), 500
+
+# API：使用Marker转换为JSON
+@app.route('/api/convert-to-json-marker', methods=['POST'])
+def api_convert_json_marker():
+    start_time = time.time()
+    
+    if 'file' not in request.files:
+        logger.warning("API调用(Marker JSON)：没有文件上传")
+        return jsonify({'error': '没有文件上传'}), 400
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        logger.warning("API调用(Marker JSON)：未选择文件")
+        return jsonify({'error': '未选择文件'}), 400
+    
+    # 获取文件扩展名
+    filename = file.filename
+    file_ext = os.path.splitext(filename)[1].lower()
+    
+    logger.info(f"API调用(Marker JSON)：接收到文件: {filename}, 类型: {file_ext}")
+    
+    # 获取marker转换器
+    marker_converter = converter_factory.get_converter('marker')
+    if not hasattr(marker_converter, 'is_available') or not marker_converter.is_available:
+        logger.error("API调用(Marker JSON)：Marker转换器不可用")
+        return jsonify({'error': 'Marker转换器不可用，请确认已安装marker-pdf库'}), 500
+    
+    # 检查文件扩展名是否支持
+    if not marker_converter.is_format_supported(file_ext):
+        error_msg = f"Marker不支持的文件类型: {file_ext}"
+        logger.warning(f"API调用(Marker JSON)：{error_msg}")
+        return jsonify({'error': error_msg}), 400
+    
+    # 保存上传的文件
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    try:
+        file.save(file_path)
+        logger.info(f"API调用(Marker JSON)：文件保存成功: {file_path}")
+        
+        # 检查文件大小
+        file_size = os.path.getsize(file_path)
+        logger.info(f"API调用(Marker JSON)：文件大小: {file_size / 1024:.2f} KB")
+        
+        # 使用Marker转换为JSON
+        logger.info(f"API调用(Marker JSON)：开始转换文件: {filename}")
+        json_content = marker_converter.convert_to_json(file_path)
+        
+        processing_time = time.time() - start_time
+        logger.info(f"API调用(Marker JSON)：文件转换完成，耗时: {processing_time:.2f}秒")
+        
+        # 删除临时文件
+        try:
+            os.remove(file_path)
+            logger.info(f"API调用(Marker JSON)：临时文件已删除: {file_path}")
+        except Exception as e:
+            logger.warning(f"API调用(Marker JSON)：无法删除临时文件: {file_path}, 原因: {str(e)}")
+            try:
+                import gc
+                gc.collect()
+                os.remove(file_path)
+                logger.info(f"API调用(Marker JSON)：临时文件已删除(第二次尝试): {file_path}")
+            except Exception as e2:
+                logger.error(f"API调用(Marker JSON)：无法删除临时文件(第二次尝试): {file_path}, 原因: {str(e2)}")
+        
+        # 返回API响应
+        return jsonify({
+            'json': json_content,
+            'filename': filename,
+            'file_size': file_size,
+            'processing_time': round(processing_time, 2),
+            'converter': 'marker'
+        })
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"API调用(Marker JSON)：转换失败: {error_msg}")
+        logger.error(traceback.format_exc())
+        
+        # 出错时删除临时文件
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                logger.info(f"API调用(Marker JSON)：清理临时文件: {file_path}")
+            except Exception as del_e:
+                logger.warning(f"API调用(Marker JSON)：无法删除临时文件: {file_path}, 原因: {str(del_e)}")
+        
+        return jsonify({
+            'error': error_msg,
+            'details': traceback.format_exc()
+        }), 500
+
 if __name__ == '__main__':
     logger.info("应用启动")
     app.run(host='0.0.0.0', port=5000,debug=True)

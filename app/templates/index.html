@@ -88,7 +88,7 @@
                             <input type="radio" id="markitdown-converter" name="converter" value="markitdown" checked>
                             <label for="markitdown-converter" data-i18n="markitdown-converter-label">使用 MarkItDown 转换器 (默认)</label>
                         </div>
-                        <p class="converter-description" data-i18n="markitdown-converter-desc">对原生Office格式文件（DOCX, XLSX, PPTX, CSV）支持非常好，速度快、准确率高，但对PDF格式文件效果较差</p>
+                        <p class="converter-description" data-i18n="markitdown-converter-desc">对原生Office格式文件（DOCX, XLSX, PPTX）支持非常好，速度快、准确率高，但对PDF格式文件效果较差</p>
                         
                         <div class="converter-option">
                             <input type="radio" id="docling-converter" name="converter" value="docling">
@@ -97,6 +97,15 @@
                         <p class="converter-description">
                             <span data-i18n="docling-converter-desc">对PDF有优化的表格识别和VLM，准确率大大提升，支持更多输入格式，但需要CUDA环境最佳（当前使用CPU加速）</span>
                             <span data-i18n="docling-warning" style="color: red; font-weight: bold;">且时间较长，不建议在本测试环境使用！</span>
+                        </p>
+                        
+                        <div class="converter-option">
+                            <input type="radio" disabled id="marker-converter" name="converter" value="marker">
+                            <label for="marker-converter" data-i18n="marker-converter-label">使用 Marker 转换器</label>
+                        </div>
+                        <p class="converter-description">
+                            <span data-i18n="marker-converter-desc">高精度文档转换器，优秀的表格和公式处理能力，支持多种文档格式和图片</span>
+                            <span data-i18n="marker-warning" style="color: orange; font-weight: bold;">需要安装PyTorch，性能取决于系统配置</span>
                         </p>
                     </div>
                     
@@ -133,7 +142,7 @@
         </main>
 
         <footer>
-            <p data-i18n="footer">© 2025 X2Knowledge v0.3.0 - 知识提取器工具 | 使用Flask和JavaScript构建</p>
+            <p data-i18n="footer">© 2025 X2Knowledge v0.4.0 - 知识提取器工具 | 使用Flask和JavaScript构建</p>
             <div class="github-links">
                 <a href="https://github.com/leonda123/X2Knowledge.git" class="github-link" target="_blank">
                     <svg class="github-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">

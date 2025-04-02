@@ -299,7 +299,21 @@ class DoclingConverter(BaseConverter):
             from docling.document_converter import DocumentConverter
             converter = DocumentConverter()
             result = converter.convert(file_path)
-            html_content = result.document.export_to_html()
+            
+            # 使用编码处理，确保HTML内容是有效的UTF-8格式
+            try:
+                html_content = result.document.export_to_html()
+                
+                # 检查编码，尝试解决UTF-8编码问题
+                if isinstance(html_content, bytes):
+                    html_content = html_content.decode('utf-8', errors='replace')
+                elif isinstance(html_content, str):
+                    # 确保是有效的UTF-8字符串
+                    html_content = html_content.encode('utf-8', errors='replace').decode('utf-8')
+            except UnicodeDecodeError as ude:
+                logger.error(f"HTML内容编码错误: {str(ude)}")
+                # 使用replace模式处理编码错误
+                html_content = result.document.export_to_html().decode('utf-8', errors='replace')
             
             logger.info(f"Docling转换成功，生成了HTML内容")
             return html_content
@@ -341,13 +355,244 @@ class DoclingConverter(BaseConverter):
             from docling.document_converter import DocumentConverter
             converter = DocumentConverter()
             result = converter.convert(file_path)
-            json_content = result.document.to_dict()
+            
+            # 处理可能出现的编码问题
+            try:
+                import json
+                
+                # 先转为字典
+                json_dict = result.document.to_dict()
+                
+                # 通过json序列化和反序列化来检查和修复编码问题
+                json_str = json.dumps(json_dict, ensure_ascii=False)
+                json_content = json.loads(json_str)
+                
+                # 如果仍存在问题，进行更彻底的编码处理
+                if not json_content:
+                    logger.warning("JSON内容为空，尝试使用替代方法")
+                    # 使用markdown导出作为备选
+                    markdown_content = result.document.export_to_markdown()
+                    json_content = {
+                        "content": markdown_content,
+                        "warning": "由于编码问题，内容已转换为Markdown格式"
+                    }
+                
+            except Exception as json_error:
+                logger.error(f"JSON编码处理错误: {str(json_error)}")
+                # 创建一个基本的JSON结构作为备选
+                json_content = {
+                    "error": "无法正确解析JSON结构",
+                    "error_message": str(json_error),
+                    "fallback_content": str(result.document)[:1000] + "..."  # 截取部分内容
+                }
             
             logger.info(f"Docling转换成功，生成了JSON内容")
             return json_content
             
         except Exception as e:
             error_msg = f"Docling JSON转换失败: {str(e)}"
+            logger.error(error_msg)
+            logger.error(traceback.format_exc())
+            raise Exception(error_msg)
+
+class MarkerConverter(BaseConverter):
+    """使用Marker库的转换器"""
+    
+    def __init__(self):
+        self._has_marker = False
+        try:
+            import marker as marker_pdf
+            from marker.converters.pdf import PdfConverter
+            from marker.models import create_model_dict
+            from marker.output import text_from_rendered
+            
+            self._marker = marker_pdf
+            self._PdfConverter = PdfConverter
+            self._create_model_dict = create_model_dict
+            self._text_from_rendered = text_from_rendered
+            self._has_marker = True
+            logger.info("成功初始化Marker转换器")
+        except ImportError:
+            logger.warning("无法导入Marker库，此转换器将不可用")
+    
+    @property
+    def name(self):
+        return "Marker"
+    
+    @property
+    def description(self):
+        return "高准确度的文档转换器，支持PDF、Office格式文档、图片等多种格式，能精确提取表格和公式"
+    
+    @property
+    def is_available(self):
+        """检查Marker是否可用"""
+        return self._has_marker
+    
+    @property
+    def supported_input_formats(self):
+        """Marker支持的输入文件格式"""
+        return [
+            '.pdf', '.docx', '.xlsx', '.pptx', 
+            '.png', '.jpg', '.jpeg', '.html', 
+            '.epub', '.md'
+        ]
+    
+    def is_format_supported(self, file_ext):
+        """检查文件扩展名是否支持"""
+        return file_ext.lower() in self.supported_input_formats
+    
+    def convert_to_text(self, file_path):
+        """使用Marker将文件转换为纯文本格式"""
+        try:
+            if not self._has_marker:
+                raise ImportError("Marker库不可用")
+            
+            logger.info(f"使用Marker开始将文件转换为文本: {file_path}")
+            
+            # 检查文件是否存在
+            if not os.path.exists(file_path):
+                error_msg = f"文件不存在: {file_path}"
+                logger.error(error_msg)
+                raise FileNotFoundError(error_msg)
+            
+            # 使用Marker处理文件
+            converter = self._PdfConverter(
+                artifact_dict=self._create_model_dict(),
+            )
+            rendered = converter(file_path)
+            text, _, _ = self._text_from_rendered(rendered)
+            
+            logger.info(f"Marker转换成功，生成了文本内容")
+            return text
+        
+        except Exception as e:
+            error_msg = f"Marker转换失败: {str(e)}"
+            logger.error(error_msg)
+            logger.error(traceback.format_exc())
+            raise Exception(error_msg)
+    
+    def convert_to_markdown(self, file_path):
+        """使用Marker将文件转换为Markdown格式"""
+        try:
+            if not self._has_marker:
+                raise ImportError("Marker库不可用")
+            
+            logger.info(f"使用Marker开始将文件转换为Markdown: {file_path}")
+            
+            # 检查文件是否存在
+            if not os.path.exists(file_path):
+                error_msg = f"文件不存在: {file_path}"
+                logger.error(error_msg)
+                raise FileNotFoundError(error_msg)
+            
+            # 获取文件扩展名
+            file_ext = os.path.splitext(file_path)[1].lower()
+            if file_ext not in self.supported_input_formats:
+                error_msg = f"Marker不支持此文件格式: {file_ext}"
+                logger.error(error_msg)
+                raise ValueError(error_msg)
+            
+            # 使用Marker处理文件，默认输出为markdown格式
+            converter = self._PdfConverter(
+                artifact_dict=self._create_model_dict(),
+                config={
+                    "output_format": "markdown"
+                }
+            )
+            rendered = converter(file_path)
+            
+            # 获取Markdown内容
+            markdown_content = rendered.markdown
+            
+            logger.info(f"Marker转换成功，生成了Markdown内容")
+            return markdown_content
+            
+        except Exception as e:
+            error_msg = f"Marker转换失败: {str(e)}"
+            logger.error(error_msg)
+            logger.error(traceback.format_exc())
+            raise Exception(error_msg)
+    
+    def convert_to_html(self, file_path):
+        """使用Marker将文件转换为HTML格式"""
+        try:
+            if not self._has_marker:
+                raise ImportError("Marker库不可用")
+            
+            logger.info(f"使用Marker开始将文件转换为HTML: {file_path}")
+            
+            # 检查文件是否存在
+            if not os.path.exists(file_path):
+                error_msg = f"文件不存在: {file_path}"
+                logger.error(error_msg)
+                raise FileNotFoundError(error_msg)
+            
+            # 获取文件扩展名
+            file_ext = os.path.splitext(file_path)[1].lower()
+            if file_ext not in self.supported_input_formats:
+                error_msg = f"Marker不支持此文件格式: {file_ext}"
+                logger.error(error_msg)
+                raise ValueError(error_msg)
+            
+            # 使用Marker处理文件，设置输出为HTML格式
+            converter = self._PdfConverter(
+                artifact_dict=self._create_model_dict(),
+                config={
+                    "output_format": "html"
+                }
+            )
+            rendered = converter(file_path)
+            
+            # 获取HTML内容
+            html_content = rendered.html
+            
+            logger.info(f"Marker转换成功，生成了HTML内容")
+            return html_content
+            
+        except Exception as e:
+            error_msg = f"Marker HTML转换失败: {str(e)}"
+            logger.error(error_msg)
+            logger.error(traceback.format_exc())
+            raise Exception(error_msg)
+    
+    def convert_to_json(self, file_path):
+        """使用Marker将文件转换为JSON格式"""
+        try:
+            if not self._has_marker:
+                raise ImportError("Marker库不可用")
+            
+            logger.info(f"使用Marker开始将文件转换为JSON: {file_path}")
+            
+            # 检查文件是否存在
+            if not os.path.exists(file_path):
+                error_msg = f"文件不存在: {file_path}"
+                logger.error(error_msg)
+                raise FileNotFoundError(error_msg)
+            
+            # 获取文件扩展名
+            file_ext = os.path.splitext(file_path)[1].lower()
+            if file_ext not in self.supported_input_formats:
+                error_msg = f"Marker不支持此文件格式: {file_ext}"
+                logger.error(error_msg)
+                raise ValueError(error_msg)
+            
+            # 使用Marker处理文件，设置输出为JSON格式
+            converter = self._PdfConverter(
+                artifact_dict=self._create_model_dict(),
+                config={
+                    "output_format": "json"
+                }
+            )
+            rendered = converter(file_path)
+            
+            # 获取JSON内容
+            json_content = rendered.children
+            
+            logger.info(f"Marker转换成功，生成了JSON内容")
+            return json_content
+            
+        except Exception as e:
+            error_msg = f"Marker JSON转换失败: {str(e)}"
             logger.error(error_msg)
             logger.error(traceback.format_exc())
             raise Exception(error_msg)
@@ -369,6 +614,11 @@ class ConverterFactory:
         docling_converter = DoclingConverter()
         if docling_converter.is_available:
             self._converters['docling'] = docling_converter
+            
+        # 注册Marker转换器
+        marker_converter = MarkerConverter()
+        if marker_converter.is_available:
+            self._converters['marker'] = marker_converter
     
     def get_converter(self, converter_name=None, file_ext=None):
         """获取转换器实例

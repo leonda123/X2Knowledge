@@ -15,29 +15,35 @@ At the same time, everyone is welcome to discuss together. In the future, I plan
 
 Everyone, please stay tuned!
 
-## Latest Updates (v0.3.0)
+## Note! Docling and marker are not enabled by default (offline model files are too large), and need to be enabled manually in requirements.txt.
 
-- **Added Docling Support**: Integrated Docling for enhanced PDF and image conversion with improved table recognition
-- **Supported More Input Formats**: Added support for CSV, HTML, XHTML, and various image formats
-- **Optimized Framework**: Redesigned the converter architecture for better extensibility and maintainability
-- **Enhanced UI**: Added converter selection option in the UI for choosing between MarkItDown and Docling
-- **Improved API Documentation**: Added documentation for the new Docling conversion API endpoint, add batch conversion API for specified folders
+## Latest Updates (v0.4.0)
+
+- **Updated API Interface Structure**: Restructured API endpoints for better consistency and usability
+- **Added Marker Integration**: Integrated the Marker high-precision document converter with support for PDF, images, Office documents
+- **Enhanced Output Formats**: Added support for HTML and JSON output in addition to Markdown
+- **Improved UI Experience**: Enhanced frontend with converter selection options and better format display
+- **Added Comprehensive API Documentation**: Complete documentation for all API endpoints including Marker methods
+- **Updated Internationalization**: Added multilanguage support for all new features and converters
+- **Upgraded Core Dependencies**: Updated libraries for better stability and performance
 
 ## Features
 
 - **Multiple Conversion Engines**
-  - **MarkItDown**: Fast and efficient for Office documents (DOCX, XLSX, PPTX, CSV)
+  - **MarkItDown**: Fast and efficient for Office documents (DOCX, XLSX, PPTX)
   - **Docling**: Enhanced PDF conversion with better table recognition and VLM capabilities
+  - **Marker**: High-precision document conversion with excellent table, formula and image extraction
 
 - **Convert multiple file formats to text or Markdown**
   - Support for Word (.doc, .docx), Excel (.xls, .xlsx), PowerPoint (.ppt, .pptx), PDF, text files, and more
   - Maintains document structure in Markdown conversion mode
   - Extracts text from images via OCR
 
-- **Markdown Conversion**
-  - Preserves document structure including headings, lists, and tables
-  - Maintains links and formatting
-  - Preview capability for converted Markdown
+- **Multiple Output Formats**
+  - **Text**: Simple plain text extraction
+  - **Markdown**: Preserves document structure including headings, lists, and tables
+  - **HTML**: Full HTML output with image and formula support
+  - **JSON**: Structured document representation with metadata
 
 - **OCR Support**
   - Automatically extracts text from images embedded in documents
@@ -59,9 +65,10 @@ Everyone, please stay tuned!
 ## Usage
 
 1. Select the conversion mode (Text or Markdown)
-2. If using Markdown mode, choose between MarkItDown (default) and Docling converters
+2. If using Markdown mode, choose between MarkItDown (default), Docling, or Marker converters
    - MarkItDown: Optimized for Office documents, faster processing
    - Docling: Better for PDF files with complex tables and layouts
+   - Marker: Highest precision for documents with complex elements like tables, formulas, and images
 3. Upload your document (or drag and drop)
 4. View, copy or download the conversion result
 5. Use the Markdown preview feature to see formatted results (when using Markdown mode)
@@ -73,11 +80,14 @@ The tool provides a REST API for programmatic access:
 - **Text Conversion**: `POST /api/convert`
 - **Markdown Conversion (MarkItDown)**: `POST /api/convert-to-md`
 - **Markdown Conversion (Docling)**: `POST /api/convert-to-md-docling`
+- **HTML Conversion (Docling)**: `POST /api/convert-to-html-docling`
+- **JSON Conversion (Docling)**: `POST /api/convert-to-json-docling`
+- **Markdown Conversion (Marker)**: `POST /api/convert-to-md-marker`
+- **HTML Conversion (Marker)**: `POST /api/convert-to-html-marker`
+- **JSON Conversion (Marker)**: `POST /api/convert-to-json-marker`
 - **Batch Text Conversion**: `POST /api/convert-folder`
 - **Batch Markdown Conversion (MarkItDown)**: `POST /api/convert-to-md-folder`
 - **Batch Markdown Conversion (Docling)**: `POST /api/convert-to-md-docling-folder`
-- **HTML Conversion (Docling)**: `POST /api/convert-to-html-docling`
-- **JSON Conversion (Docling)**: `POST /api/convert-to-json-docling`
 
 For detailed documentation and testing, visit the API Documentation page through the web interface.
 
@@ -85,13 +95,15 @@ For detailed documentation and testing, visit the API Documentation page through
 
 ### Input Formats
 - **Office Documents**: DOC, DOCX, XLS, XLSX, PPT, PPTX, CSV
-- **Text/Markup**: PDF, TXT, MD, HTML, XHTML
+- **Text/Markup**: PDF, TXT, MD, HTML, XHTML, EPUB
 - **Images**: PNG, JPEG, TIFF, BMP
 - **Audio**: MP3, WAV
 
 ### Output Formats
 - **Plain Text**
 - **Markdown**
+- **HTML**
+- **JSON**
 
 ## System screenshot
 
@@ -131,6 +143,7 @@ For detailed documentation and testing, visit the API Documentation page through
 - Tesseract OCR engine
 - MarkItDown library
 - Docling library (optional, for enhanced PDF conversion)
+- Marker library (optional, for high-precision document conversion)
 
 #### Setup
 
@@ -147,17 +160,28 @@ For detailed documentation and testing, visit the API Documentation page through
    pip install -r requirements.txt
    ```
 
-3. Install Tesseract OCR engine (for OCR functionality):
+3. Install optional conversion engines:
+   ```
+   # For Docling support
+   pip install docling
+   
+   # For Marker support
+   pip install marker-pdf
+   # For additional format support
+   pip install marker-pdf[full]
+   ```
+
+4. Install Tesseract OCR engine (for OCR functionality):
    - Windows: Download and install from [GitHub Tesseract releases](https://github.com/UB-Mannheim/tesseract/wiki)
    - macOS: `brew install tesseract`
    - Linux: `sudo apt-get install tesseract-ocr`
 
-4. Run the application:
+5. Run the application:
    ```
    python app.py
    ```
 
-5. Open a web browser and navigate to `http://127.0.0.1:5000/`
+6. Open a web browser and navigate to `http://127.0.0.1:5000/`
 
 ### Docker Deployment
 
@@ -196,7 +220,7 @@ Docker makes deploying X2Knowledge easier by avoiding environment configuration 
 
 ## Key Advantages
 
-- **Multiple Conversion Engines**: Choose the best engine for your document type - MarkItDown for Office documents, Docling for PDFs
+- **Multiple Conversion Engines**: Choose the best engine for your document type - MarkItDown for Office documents, Docling for PDFs, Marker for high-precision needs
 - **High-Performance Document Processing**: Optimized document parsing engine that efficiently handles various document formats
 - **Low Resource Consumption**: Runs smoothly even on servers with modest configurations
 - **Accurate Structure Preservation**: Especially in Markdown conversion, accurately preserves the original document structure
@@ -211,20 +235,23 @@ Docker makes deploying X2Knowledge easier by avoiding environment configuration 
 - Some complex document layouts might not be perfectly preserved in Markdown conversion
 - OCR accuracy depends on image quality and text complexity
 - Docling works best with CUDA acceleration, but will fall back to CPU mode if unavailable
+- Marker requires PyTorch and may need specific PyTorch installation for GPU acceleration
 
 ## Future Plans
 
 ### Technology roadmap:
 
-- Short-term: Integrate mature solutions such as OcrmyPDF (document OCR), MinerU (unstructured data processing), and Marker (document parsing engine)
+- Short-term: Integrate mature solutions such as OcrmyPDF (document OCR), MinerU (unstructured data processing), and improve Marker integration
 - Medium-term: Develop intelligent routing modules to achieve self-adaptive processing of document types
 - Long-term: To build a large model in a vertical field and support the distillation of vertical field knowledge
 
 ## Version History
 
 ### v0.3.0 (Current)
+- Added Marker integration for high-precision document conversion
 - Added Docling integration for enhanced PDF and image conversion
-- Supported more input formats including CSV, HTML, and images
+- Supported more input formats including CSV, HTML, EPUB, and images
+- Added support for HTML and JSON output formats
 - Redesigned converter architecture for better extensibility
 - Enhanced UI with converter selection options
 - Improved documentation
@@ -280,6 +307,9 @@ This tool provides the following API endpoints:
 - **Markdown conversion (Docling)**: `POST /api/convert-to-md-docling`
 - **HTML conversion (Docling)**: `POST /api/convert-to-html-docling`
 - **JSON conversion (Docling)**: `POST /api/convert-to-json-docling`
+- **Markdown conversion (Marker)**: `POST /api/convert-to-md-marker`
+- **HTML conversion (Marker)**: `POST /api/convert-to-html-marker`
+- **JSON conversion (Marker)**: `POST /api/convert-to-json-marker`
 - **Batch conversion to text**: `POST /api/convert-folder`
 - **Batch conversion to Markdown (MarkItDown)**: `POST /api/convert-to-md-folder`
 - **Batch conversion to Markdown (Docling)**: `POST /api/convert-to-md-docling-folder`
