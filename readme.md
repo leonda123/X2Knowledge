@@ -6,7 +6,7 @@ X2Knowledge is an efficient open source knowledge extractor tool designed for en
 
 ![Design schematic](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/x2knowledge_en.png?raw=true)
 
-[Demo website](http://115.190.8.7/)：http://115.190.8.7/ The server performance is poor. Please use the docling interface for local testing. The server does not have a cuda environment!
+[Demo website](http://115.190.8.7:8080/)：http://115.190.8.7:8080/ The server performance is poor. Please use the docling interface for local testing. The server does not have a cuda environment!
 
 Due to the diversity of personal or corporate documents, in the process of building a knowledge base, how to process documents in RAG/Agent to achieve the expected results plays a vital role. However, with the development of AI technology, open source and commercial tools are emerging, and how to choose and use these tools has become a big problem.
 
