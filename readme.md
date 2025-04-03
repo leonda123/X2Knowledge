@@ -296,7 +296,7 @@ This project is licensed under the Apache-2.0 License - see the LICENSE file for
 
 - Email: dadajiu45@gmail.com
 
-Project Links: [GitHub](https://github.com/leonda123/X2Knowledge.git) | [Gitee](https://gitee.com/leonda/X2Knowledge.git) 
+Project Links: [GitHub](https://github.com/leonda123/X2Knowledge.git) | [Gitee](https://gitee.com/leonda/X2Knowledge.git) | [GitCode](https://gitcode.com/leonda/X2Knowledge.git) 
 
 ## API Endpoints
 

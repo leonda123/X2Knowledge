@@ -299,4 +299,4 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 ![打赏码](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/dashang.png)
 
 
-项目链接：[GitHub](https://github.com/leonda123/X2Knowledge.git) | [Gitee](https://gitee.com/leonda/X2Knowledge.git)
+项目链接：[GitHub](https://github.com/leonda123/X2Knowledge.git) | [Gitee](https://gitee.com/leonda/X2Knowledge.git) | [GitCode](https://gitcode.com/leonda/X2Knowledge.git) 
