@@ -1423,8 +1423,8 @@ def api_convert_html_marker():
     if file.filename == '':
         logger.warning("API调用(Marker HTML)：未选择文件")
         return jsonify({'error': '未选择文件'}), 400
-    
-    # 获取文件扩展名
+                
+                # 获取文件扩展名
     filename = file.filename
     file_ext = os.path.splitext(filename)[1].lower()
     
@@ -1588,6 +1588,172 @@ def api_convert_json_marker():
             'error': error_msg,
             'details': traceback.format_exc()
         }), 500
+
+# API：批量转换文件夹内所有文件为Markdown (Marker)
+@app.route('/api/convert-to-md-marker-folder', methods=['POST'])
+def api_convert_md_marker_folder():
+    """
+    批量将文件夹中的文件转换为Markdown格式(使用Marker引擎)
+    
+    请求参数:
+    - source_folder: 源文件夹路径
+    - output_folder: 输出文件夹路径(可选，默认为源文件夹下的output_marker_markdown子文件夹)
+    
+    返回:
+    - 包含转换结果的JSON对象
+    """
+    start_time = time.time()
+    
+    # 获取请求参数
+    data = request.json
+    if not data:
+        logger.warning("API调用（批量Marker Markdown）：无效的请求数据")
+        return jsonify({'error': '无效的请求数据'}), 400
+    
+    source_folder = data.get('source_folder')
+    output_folder = data.get('output_folder')
+    
+    if not source_folder:
+        logger.warning("API调用（批量Marker Markdown）：未提供源文件夹路径")
+        return jsonify({'error': '必须提供源文件夹路径'}), 400
+    
+    if not output_folder:
+        # 如果未提供输出文件夹，则在源文件夹创建一个output子文件夹
+        output_folder = os.path.join(source_folder, 'output_marker_markdown')
+    
+    # 检查源文件夹是否存在
+    if not os.path.exists(source_folder) or not os.path.isdir(source_folder):
+        logger.warning(f"API调用（批量Marker Markdown）：源文件夹不存在或不是一个目录: {source_folder}")
+        return jsonify({'error': f'源文件夹不存在或不是一个目录: {source_folder}'}), 400
+    
+    # 创建输出文件夹（如果不存在）
+    os.makedirs(output_folder, exist_ok=True)
+    
+    # 初始化Marker转换器
+    marker_converter = converter_factory.get_converter('marker')
+    if not marker_converter.is_available:
+        return jsonify({'error': 'Marker模块未安装或不可用'}), 500
+    
+    # 创建日志文件
+    log_file = os.path.join(output_folder, "conversion_log.txt")
+    with open(log_file, 'w', encoding='utf-8') as log:
+        log.write(f"批量Marker Markdown转换开始：{time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+        log.write(f"源文件夹：{source_folder}\n")
+        log.write(f"输出文件夹：{output_folder}\n")
+        log.write("="*50 + "\n")
+        
+        # 支持的文件格式
+        supported_formats = [ext for ext in marker_converter.supported_input_formats]
+        
+        # 添加进度追踪
+        conversion_results = {
+            'total_files': 0,
+            'converted_files': 0,
+            'skipped_files': 0,
+            'failed_files': 0,
+            'conversion_details': []
+        }
+        
+        # 遍历源文件夹中的所有文件
+        for root, _, files in os.walk(source_folder):
+            for file in files:
+                file_path = os.path.join(root, file)
+                
+                # 获取相对路径，用于创建输出文件的路径
+                rel_path = os.path.relpath(root, source_folder)
+                output_subdir = os.path.join(output_folder, rel_path) if rel_path != '.' else output_folder
+                os.makedirs(output_subdir, exist_ok=True)
+                
+                # 获取文件扩展名
+                file_ext = os.path.splitext(file)[1].lower()
+                
+                # 更新总文件计数
+                conversion_results['total_files'] += 1
+                
+                # 检查文件是否支持
+                if file_ext not in supported_formats:
+                    log.write(f"跳过不支持的文件：{file_path} (格式: {file_ext})\n")
+                    conversion_results['skipped_files'] += 1
+                    conversion_results['conversion_details'].append({
+                        'file': file_path,
+                        'status': 'skipped',
+                        'reason': f'不支持的文件格式: {file_ext}'
+                    })
+                    continue
+                
+                # 转换文件
+                log.write(f"开始转换文件：{file_path}\n")
+                file_start_time = time.time()
+                
+                try:
+                    # 执行转换
+                    md_content = marker_converter.convert_to_markdown(file_path)
+                    
+                    # 创建输出文件名
+                    output_file = os.path.join(output_subdir, os.path.splitext(file)[0] + '.md')
+                    
+                    # 写入转换结果
+                    with open(output_file, 'w', encoding='utf-8') as f:
+                        f.write(md_content)
+                    
+                    # 计算转换时间
+                    file_process_time = time.time() - file_start_time
+                    
+                    # 更新日志
+                    log.write(f"成功转换：{file_path} -> {output_file} (用时: {file_process_time:.2f}秒)\n")
+                    log.write("-"*50 + "\n")
+                    
+                    # 更新计数
+                    conversion_results['converted_files'] += 1
+                    conversion_results['conversion_details'].append({
+                        'file': file_path,
+                        'status': 'success',
+                        'output': output_file,
+                        'processing_time': round(file_process_time, 2)
+                    })
+                    
+                except Exception as e:
+                    # 处理转换错误
+                    log.write(f"转换失败：{file_path} - 错误: {str(e)}\n")
+                    log.write("-"*50 + "\n")
+                    
+                    # 更新计数
+                    conversion_results['failed_files'] += 1
+                    conversion_results['conversion_details'].append({
+                        'file': file_path,
+                        'status': 'failed',
+                        'error': str(e)
+                    })
+                    
+                    logger.error(f"批量转换：文件{file_path}转换失败: {str(e)}")
+                    logger.error(traceback.format_exc())
+        
+        # 写入总结
+        total_time = time.time() - start_time
+        log.write("\n" + "="*50 + "\n")
+        log.write(f"转换完成时间：{time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+        log.write(f"总用时：{total_time:.2f}秒\n")
+        log.write(f"总文件数：{conversion_results['total_files']}\n")
+        log.write(f"成功转换：{conversion_results['converted_files']}个文件\n")
+        log.write(f"跳过文件：{conversion_results['skipped_files']}个文件\n")
+        log.write(f"转换失败：{conversion_results['failed_files']}个文件\n")
+    
+    # 返回API响应
+    response = {
+        'source_folder': source_folder,
+        'output_folder': output_folder,
+        'log_file': log_file,
+        'total_time': round(total_time, 2),
+        'results': conversion_results
+    }
+    
+    logger.info(f"API调用（批量Marker Markdown）：完成文件夹转换，总耗时: {total_time:.2f}秒")
+    return jsonify(response)
+
+@app.route('/about')
+def about_page():
+    logger.info("访问关于页面")
+    return render_template('about.html')
 
 if __name__ == '__main__':
     logger.info("应用启动")

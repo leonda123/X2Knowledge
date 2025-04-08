@@ -62,6 +62,28 @@ Everyone, please stay tuned!
   - Supports files up to 50MB
   - Efficient processing of large documents
 
+## Converter Comparison
+
+Below is a comparison of the three document conversion engines available in X2Knowledge:
+
+| Feature | MarkItDown | Docling | Marker |
+|---------|------------|---------|--------|
+| **Speed** | ★★★★★ (Fastest) | ★★★☆☆ (Moderate) | ★★☆☆☆ (Slower) |
+| **Accuracy** | ★★★☆☆ (Good) | ★★★★☆ (Very Good) | ★★★★★ (Excellent) |
+| **Table Handling** | ★★★☆☆ (Basic) | ★★★★☆ (Advanced) | ★★★★★ (Superior) |
+| **Formula Support** | ★☆☆☆☆ (Limited) | ★★★☆☆ (Decent) | ★★★★★ (Excellent) |
+| **Image Extraction** | ★☆☆☆☆ (Basic OCR) | ★★★★☆ (VLM Support) | ★★★★★ (Detailed) |
+| **Resource Usage** | ★★★★★ (Minimal) | ★★☆☆☆ (Heavy) | ★★☆☆☆ (Heavy) |
+| **Best For** | Office documents | PDF documents | Complex documents with tables & formulas |
+| **GPU Acceleration** | No | Yes | Yes |
+| **Supported Formats** | DOC, DOCX, XLS, XLSX, PPT, PPTX, PDF, TXT, MD | PDF, DOCX, XLSX, PPTX, Images, HTML | PDF, DOCX, XLSX, PPTX, Images, HTML |
+| **Output Formats** | Text, Markdown | Text, Markdown, HTML, JSON | Text, Markdown, HTML, JSON |
+
+Choose the converter that best fits your needs:
+- **MarkItDown**: When you need quick conversion of Office documents with good fidelity
+- **Docling**: When you need better handling of PDF documents with tables and images
+- **Marker**: When you need the highest possible accuracy for complex documents, especially with formulas and tables
+
 ## Usage
 
 1. Select the conversion mode (Text or Markdown)
@@ -88,6 +110,7 @@ The tool provides a REST API for programmatic access:
 - **Batch Text Conversion**: `POST /api/convert-folder`
 - **Batch Markdown Conversion (MarkItDown)**: `POST /api/convert-to-md-folder`
 - **Batch Markdown Conversion (Docling)**: `POST /api/convert-to-md-docling-folder`
+- **Batch Markdown Conversion (Marker)**: `POST /api/convert-to-md-marker-folder`
 
 For detailed documentation and testing, visit the API Documentation page through the web interface.
 
@@ -245,37 +268,6 @@ Docker makes deploying X2Knowledge easier by avoiding environment configuration 
 - Medium-term: Develop intelligent routing modules to achieve self-adaptive processing of document types
 - Long-term: To build a large model in a vertical field and support the distillation of vertical field knowledge
 
-## Version History
-
-### v0.3.0 (Current)
-- Added Marker integration for high-precision document conversion
-- Added Docling integration for enhanced PDF and image conversion
-- Supported more input formats including CSV, HTML, EPUB, and images
-- Added support for HTML and JSON output formats
-- Redesigned converter architecture for better extensibility
-- Enhanced UI with converter selection options
-- Improved documentation
-
-### v0.2.1
-- Enhanced Markdown rendering with perfect table and image support
-- Added Docker deployment support
-- Improved image interaction experience
-- Added code syntax highlighting
-
-### v0.2.0
-- Added Markdown conversion functionality
-- Added Markdown preview capability
-- Added support for audio file conversion
-- Increased file size limit to 50MB
-- Improved error handling and user feedback
-- Enhanced documentation
-
-### v0.1.0
-- Initial release with text conversion support
-- OCR functionality
-- UTF-8 encoding conversion
-- Basic web interface
-
 ## License
 
 This project is licensed under the Apache-2.0 License - see the LICENSE file for details.
@@ -297,19 +289,3 @@ This project is licensed under the Apache-2.0 License - see the LICENSE file for
 - Email: dadajiu45@gmail.com
 
 Project Links: [GitHub](https://github.com/leonda123/X2Knowledge.git) | [Gitee](https://gitee.com/leonda/X2Knowledge.git) | [GitCode](https://gitcode.com/leonda/X2Knowledge.git) 
-
-## API Endpoints
-
-This tool provides the following API endpoints:
-
-- **Text conversion**: `POST /api/convert`
-- **Markdown conversion**: `POST /api/convert-to-md`
-- **Markdown conversion (Docling)**: `POST /api/convert-to-md-docling`
-- **HTML conversion (Docling)**: `POST /api/convert-to-html-docling`
-- **JSON conversion (Docling)**: `POST /api/convert-to-json-docling`
-- **Markdown conversion (Marker)**: `POST /api/convert-to-md-marker`
-- **HTML conversion (Marker)**: `POST /api/convert-to-html-marker`
-- **JSON conversion (Marker)**: `POST /api/convert-to-json-marker`
-- **Batch conversion to text**: `POST /api/convert-folder`
-- **Batch conversion to Markdown (MarkItDown)**: `POST /api/convert-to-md-folder`
-- **Batch conversion to Markdown (Docling)**: `POST /api/convert-to-md-docling-folder`

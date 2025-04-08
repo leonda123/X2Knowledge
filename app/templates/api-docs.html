@@ -843,6 +843,37 @@ else:
     print(f"批量转换失败: {response.json().get('error', '未知错误')}")
             </code></pre>
             
+            <h3>使用Python调用Marker批量转换API</h3>
+            <pre><code>
+import requests
+import json
+
+# 使用Marker批量转换整个文件夹
+url = "http://localhost:5000/api/convert-to-md-marker-folder"
+data = {
+    "source_folder": "D:/documents",  # 替换为需要处理的文件夹
+    "output_folder": "D:/output_marker"  # 替换为输出文件夹路径
+}
+
+headers = {
+    'Content-Type': 'application/json'
+}
+
+response = requests.post(url, data=json.dumps(data), headers=headers)
+
+if response.status_code == 200:
+    result = response.json()
+    print(f"Marker批量转换完成！")
+    print(f"总文件数: {result['results']['total_files']}")
+    print(f"成功转换: {result['results']['converted_files']} 文件")
+    print(f"跳过的文件: {result['results']['skipped_files']} 文件")
+    print(f"失败的文件: {result['results']['failed_files']} 文件")
+    print(f"详细日志文件: {result['log_file']}")
+    print(f"总耗时: {result['total_time']} 秒")
+else:
+    print(f"Marker批量转换失败: {response.json().get('error', '未知错误')}")
+            </code></pre>
+            
             <h3>使用Python调用Docling HTML转换API</h3>
             <pre><code>
 import requests
