@@ -10,10 +10,35 @@ pywin32>=307; sys_platform == 'win32'
 pytesseract==0.3.10
 Pillow>=8.0.0
 pdf2image==1.16.3
-markitdown[all]>=0.1.0
-#docling #如果不使用docling，则注释掉 -if you don't use docling, comment it out
-#marker-pdf[full]>=0.2.0 #高精度文档转换器 - High-precision document converter
+markitdown>=0.1.0
+#-if you don't use docling, comment it out
+docling
+docling_core
+docling-parse
+docling-ibm-models
+beautifulsoup4
+filetype>=1.2.0
+lxml>=4.9.3
+marko
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+pypdfium2
+pylatexenc
+rtree
+scipy
+tqdm>=4.65.0
+typer
+pluggy>=1.2.0
+transformers<5.0.0
+jsonlines>=3.1.0
+numpy>=1.24.4
+safetensors[torch]>=0.4.3
+easyocr>=1.7
+#- High-precision document converter
+#marker-pdf[full]>=0.2.0 
 python-magic-bin==0.4.14; sys_platform == 'win32'
 requests
 pydub
-gunicorn==23.0.0 
+gunicorn>=20.1.0
+markupsafe>=2.1.1 
+typing_extensions>=4.5.0

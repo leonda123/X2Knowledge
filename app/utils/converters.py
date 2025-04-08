@@ -760,7 +760,7 @@ def convert_to_markdown(file_path):
                 return convert_md(file_path)
             elif file_ext in ['.mp3', '.wav']:
                 if HAS_PYDUB:
-                    return convert_audio_to_markdown(file_path)
+                    return convert_audio(file_path)
                 else:
                     return f"# {os.path.basename(file_path)}\n\n[音频文件，无法转换：需要安装pydub库]"
             else:
@@ -771,68 +771,41 @@ def convert_to_markdown(file_path):
         logger.error(traceback.format_exc())
         raise Exception(error_msg)
 
-def convert_audio_to_markdown(file_path):
-    """将音频文件转换为Markdown格式描述"""
+def convert_audio(file_path):
+    """将音频文件转换为文本"""
+    logger.info(f"开始处理音频文件: {file_path}")
     try:
-        logger.info(f"开始处理音频文件: {file_path}")
+        from pydub import AudioSegment
+        # 尝试处理音频文件
+        audio = AudioSegment.from_file(file_path)
+        duration_s = len(audio) / 1000.0  # 毫秒转秒
         
-        # 获取文件基本信息
-        file_name = os.path.basename(file_path)
-        file_size = os.path.getsize(file_path)
-        file_size_mb = file_size / (1024 * 1024)
+        # 生成音频信息摘要
+        result = f"# 音频文件信息\n\n"
+        result += f"- 文件名: {os.path.basename(file_path)}\n"
+        result += f"- 时长: {duration_s:.2f} 秒\n"
+        result += f"- 声道数: {audio.channels}\n"
+        result += f"- 采样率: {audio.frame_rate} Hz\n"
+        result += f"- 比特率: {audio.frame_width * 8 * audio.frame_rate} bps\n\n"
         
-        # 使用pydub获取音频详细信息
-        if HAS_PYDUB:
-            try:
-                from pydub import AudioSegment
-                audio = AudioSegment.from_file(file_path)
-                
-                # 获取音频时长（毫秒转换为分:秒格式）
-                duration_ms = len(audio)
-                duration_sec = duration_ms / 1000
-                minutes = int(duration_sec // 60)
-                seconds = int(duration_sec % 60)
-                
-                # 获取声道数和采样率
-                channels = audio.channels
-                frame_rate = audio.frame_rate
-                
-                # 构建Markdown内容
-                md_content = f"# 音频文件: {file_name}\n\n"
-                md_content += f"## 音频信息\n\n"
-                md_content += f"- **文件名**: {file_name}\n"
-                md_content += f"- **文件大小**: {file_size_mb:.2f} MB\n"
-                md_content += f"- **时长**: {minutes}分{seconds}秒\n"
-                md_content += f"- **声道数**: {channels}\n"
-                md_content += f"- **采样率**: {frame_rate} Hz\n"
-                
-                logger.info(f"音频文件处理完成: {file_name}, 时长: {minutes}分{seconds}秒")
-                return md_content
-            except Exception as e:
-                logger.error(f"处理音频详细信息时出错: {str(e)}")
-                
-                # 如果pydub处理失败，返回基本信息
-                md_content = f"# 音频文件: {file_name}\n\n"
-                md_content += f"## 音频信息\n\n"
-                md_content += f"- **文件名**: {file_name}\n"
-                md_content += f"- **文件大小**: {file_size_mb:.2f} MB\n"
-                md_content += f"- **注意**: 无法获取详细音频信息\n"
-                
-                return md_content
-        else:
-            # 如果没有pydub，返回基本信息
-            md_content = f"# 音频文件: {file_name}\n\n"
-            md_content += f"## 音频信息\n\n"
-            md_content += f"- **文件名**: {file_name}\n"
-            md_content += f"- **文件大小**: {file_size_mb:.2f} MB\n"
-            md_content += f"- **注意**: 需安装pydub库获取详细音频信息\n"
-            
-            return md_content
+        result += "## 音频内容\n\n"
+        result += "*此处需要使用语音识别工具提取音频内容*\n"
+        
+        logger.info(f"音频文件信息处理完成")
+        return result
+    except ImportError:
+        logger.warning("无法导入pydub库，将无法处理音频文件")
+        # 提供基本的降级方案
+        result = f"# 音频文件\n\n"
+        result += f"- 文件名: {os.path.basename(file_path)}\n"
+        result += f"- 文件大小: {os.path.getsize(file_path)/1024:.2f} KB\n\n"
+        result += "> 注意：由于系统缺少pydub库，无法提取详细的音频信息。请安装pydub及ffmpeg以启用完整功能。\n"
+        return result
     except Exception as e:
-        error_msg = f"音频文件转换失败: {str(e)}"
+        error_msg = f"音频处理失败: {str(e)}"
         logger.error(error_msg)
         logger.error(traceback.format_exc())
-        return f"# 音频文件转换错误\n\n处理时出现错误: {str(e)}"
+        return f"# 音频处理错误\n\n处理文件 {os.path.basename(file_path)} 时发生错误: {str(e)}"
 
 def convert_xml(file_path):
     """将XML文件转换为文本"""

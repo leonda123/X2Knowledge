@@ -1,4 +1,6 @@
-# X2Knowledge - Document Conversion Tool
+![LOGO](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/x2knowledge-logo.png)
+
+# X2Knowledge V0.4.1- Document Conversion Tool
 
 [<a href="/readme_cn.md">中文(简体)</a>] | [<a href="/readme.md">English</a>] 
 
@@ -15,7 +17,7 @@ At the same time, everyone is welcome to discuss together. In the future, I plan
 
 Everyone, please stay tuned!
 
-## Note! Docling and marker are not enabled by default (offline model files are too large), and need to be enabled manually in requirements.txt.
+## Note! Marker is not enabled by default (offline model files are too large), and need to be enabled manually in requirements.txt.
 
 ## Features
 

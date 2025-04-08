@@ -3,6 +3,7 @@
 提供不同文档格式转换的抽象工厂
 """
 import os
+import time
 import logging
 import traceback
 from abc import ABC, abstractmethod
@@ -227,47 +228,41 @@ class DoclingConverter(BaseConverter):
             raise Exception(error_msg)
     
     def convert_to_markdown(self, file_path):
-        """使用Docling将文件转换为Markdown格式"""
-        try:
-            if not self._has_docling:
-                raise ImportError("Docling库不可用")
+        """
+        将指定文件转换为Markdown格式
+        
+        Args:
+            file_path: 文件路径
             
+        Returns:
+            str: Markdown格式的文本内容
+        """
+        try:
+            start_time = time.time()
             logger.info(f"使用Docling开始将文件转换为Markdown: {file_path}")
             
-            # 检查文件是否存在
-            if not os.path.exists(file_path):
-                error_msg = f"文件不存在: {file_path}"
-                logger.error(error_msg)
-                raise FileNotFoundError(error_msg)
-            
-            # 获取文件扩展名
-            file_ext = os.path.splitext(file_path)[1].lower()
-            if file_ext not in self.supported_input_formats:
-                error_msg = f"Docling不支持此文件格式: {file_ext}"
-                logger.error(error_msg)
-                raise ValueError(error_msg)
-            
-            # 使用Docling处理文件
-            file_name = os.path.basename(file_path)
-            
-            # 将文件转换为Markdown
-            device = "cuda" if self._has_cuda else "cpu"
-            
-            # 使用正确的Docling API调用
-            from docling.document_converter import DocumentConverter
-            converter = DocumentConverter()
-            result = converter.convert(file_path)
-            markdown_content = result.document.export_to_markdown()
-            
-            logger.info(f"Docling转换成功，生成了Markdown内容")
-            return markdown_content
-            
+            try:
+                from docling.document_converter import DocumentConverter
+                converter = DocumentConverter()
+                # 修正API调用方法，Docling没有convert_file_to_md方法
+                result = converter.convert(file_path)
+                # 使用正确的方法获取Markdown文本
+                markdown_text = result.document.export_to_markdown()
+            except ImportError as e:
+                logger.warning(f"Docling模块导入失败: {str(e)}，尝试使用备用转换方法")
+                # 使用MarkItDown作为备用转换器
+                backup_converter = MarkItDownConverter()
+                markdown_text = backup_converter.convert_to_markdown(file_path)
+                
+            end_time = time.time()
+            logger.info(f"Docling完成将文件转换为Markdown，耗时: {end_time - start_time:.2f}秒")
+            return markdown_text
         except Exception as e:
             error_msg = f"Docling转换失败: {str(e)}"
             logger.error(error_msg)
             logger.error(traceback.format_exc())
             raise Exception(error_msg)
-            
+    
     def convert_to_html(self, file_path):
         """使用Docling将文件转换为HTML格式"""
         try:
