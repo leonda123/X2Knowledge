@@ -17,16 +17,6 @@ Everyone, please stay tuned!
 
 ## Note! Docling and marker are not enabled by default (offline model files are too large), and need to be enabled manually in requirements.txt.
 
-## Latest Updates (v0.4.0)
-
-- **Updated API Interface Structure**: Restructured API endpoints for better consistency and usability
-- **Added Marker Integration**: Integrated the Marker high-precision document converter with support for PDF, images, Office documents
-- **Enhanced Output Formats**: Added support for HTML and JSON output in addition to Markdown
-- **Improved UI Experience**: Enhanced frontend with converter selection options and better format display
-- **Added Comprehensive API Documentation**: Complete documentation for all API endpoints including Marker methods
-- **Updated Internationalization**: Added multilanguage support for all new features and converters
-- **Upgraded Core Dependencies**: Updated libraries for better stability and performance
-
 ## Features
 
 - **Multiple Conversion Engines**

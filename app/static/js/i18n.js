@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // 文件格式支持
             'markitdown-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md',
-            'docling-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md, .mp3, .wav, .html, .xhtml, .png, .jpg, .jpeg, .tiff, .bmp',
+            'docling-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .md, .mp3, .wav, .html, .xhtml, .png, .jpg, .jpeg, .tiff, .bmp',
             'marker-supported-formats': '.pdf, .png, .jpg, .jpeg, .pptx, .docx, .xlsx, .html',
             
             // 批量转换API
@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // File Format Support
             'markitdown-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md',
-            'docling-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md, .mp3, .wav, .csv, .html, .xhtml, .png, .jpg, .jpeg, .tiff, .bmp',
+            'docling-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .md, .mp3, .wav, .html, .xhtml, .png, .jpg, .jpeg, .tiff, .bmp',
             'marker-supported-formats': '.pdf, .png, .jpg, .jpeg, .pptx, .docx, .xlsx, .html',
             
             // Batch Conversion API
