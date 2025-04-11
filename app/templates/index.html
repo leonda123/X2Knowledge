@@ -32,6 +32,61 @@
             margin-top: -3px;
             margin-bottom: 8px;
         }
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            border-radius: 5px;
+            width: 90%;
+            height: 90%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .modal-header h3 {
+            margin: 0;
+            color: #333;
+        }
+        .close-modal-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        .close-modal-btn:hover {
+            color: #000;
+        }
+        .modal-body {
+            flex-grow: 1;
+            padding: 0;
+            overflow: hidden;
+            height: calc(100% - 60px);
+        }
+        #swagger-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -45,9 +100,22 @@
             <h1 data-i18n="title">X2Knowledge - 知识提取器工具</h1>
             <p data-i18n="subtitle">知识库原生支持：输出带元数据的Markdown，与RAG/LangChain/Agent等框架无缝对接</p>
             <div class="nav-links">
-                <a href="/api-docs" class="nav-link" data-i18n="api-docs-link">API文档</a>
+                <a href="#" class="nav-link" id="swagger-btn" data-i18n="swagger-link">API Swagger</a>
             </div>
         </header>
+
+        <!-- Swagger API 模态框 -->
+        <div id="swagger-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 data-i18n="swagger-title">API Test</h3>
+                    <button id="close-swagger-modal" class="close-modal-btn">×</button>
+                </div>
+                <div class="modal-body">
+                    <iframe id="swagger-frame" src="/swagger/" frameborder="0" width="100%" height="100%"></iframe>
+                </div>
+            </div>
+        </div>
 
         <main>
             <div class="tab-controls">
@@ -262,6 +330,35 @@
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && fullscreenOverlay.style.display === 'flex') {
                     fullscreenOverlay.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+
+        // 模态框相关
+        document.addEventListener('DOMContentLoaded', function() {
+            // Swagger模态框
+            const swaggerBtn = document.getElementById('swagger-btn');
+            const swaggerModal = document.getElementById('swagger-modal');
+            const closeSwaggerBtn = document.getElementById('close-swagger-modal');
+            
+            // 打开Swagger模态框
+            swaggerBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                swaggerModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden'; // 防止背景滚动
+            });
+            
+            // 关闭Swagger模态框
+            closeSwaggerBtn.addEventListener('click', function() {
+                swaggerModal.style.display = 'none';
+                document.body.style.overflow = 'auto'; // 恢复背景滚动
+            });
+            
+            // 点击模态框背景关闭模态框
+            swaggerModal.addEventListener('click', function(e) {
+                if (e.target === swaggerModal) {
+                    swaggerModal.style.display = 'none';
                     document.body.style.overflow = 'auto';
                 }
             });

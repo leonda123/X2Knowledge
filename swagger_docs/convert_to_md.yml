@@ -1,0 +1,56 @@
+tags:
+  - name: Markitdown转换
+
+parameters:
+  - name: file
+    in: formData
+    type: file
+    required: true
+    description: 要转换为Markdown的文件，支持doc、docx、xls、xlsx、ppt、pptx、pdf、txt、md等格式
+
+responses:
+  200:
+    description: 转换成功
+    schema:
+      type: object
+      properties:
+        text:
+          type: string
+          description: 转换后的Markdown文本
+        filename:
+          type: string
+          description: 原始文件名
+        file_size:
+          type: integer
+          description: 文件大小（字节）
+        processing_time:
+          type: number
+          format: float
+          description: 处理耗时（秒）
+  400:
+    description: 请求错误
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          description: 错误信息
+  500:
+    description: 服务器错误
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          description: 错误信息
+        details:
+          type: string
+          description: 详细错误信息
+
+consumes:
+  - multipart/form-data
+produces:
+  - application/json
+
+summary: 将文件转换为Markdown格式
+description: 使用MarkItDown引擎将各种格式的文件转换为Markdown格式 

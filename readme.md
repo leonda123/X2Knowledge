@@ -92,19 +92,18 @@ Choose the converter that best fits your needs:
 The tool provides a REST API for programmatic access:
 
 - **Text Conversion**: `POST /api/convert`
+- **Text Conversion with File Save**: `POST /api/convert-file`
 - **Markdown Conversion (MarkItDown)**: `POST /api/convert-to-md`
+- **Markdown Conversion with File Save (MarkItDown)**: `POST /api/convert-to-md-file`
 - **Markdown Conversion (Docling)**: `POST /api/convert-to-md-docling`
+- **Markdown Conversion with File Save (Docling)**: `POST /api/convert-to-md-file-docling`
 - **HTML Conversion (Docling)**: `POST /api/convert-to-html-docling`
-- **JSON Conversion (Docling)**: `POST /api/convert-to-json-docling`
 - **Markdown Conversion (Marker)**: `POST /api/convert-to-md-marker`
+- **Markdown Conversion with File Save (Marker)**: `POST /api/convert-to-md-file-marker`
 - **HTML Conversion (Marker)**: `POST /api/convert-to-html-marker`
 - **JSON Conversion (Marker)**: `POST /api/convert-to-json-marker`
-- **Batch Text Conversion**: `POST /api/convert-folder`
-- **Batch Markdown Conversion (MarkItDown)**: `POST /api/convert-to-md-folder`
-- **Batch Markdown Conversion (Docling)**: `POST /api/convert-to-md-docling-folder`
-- **Batch Markdown Conversion (Marker)**: `POST /api/convert-to-md-marker-folder`
 
-For detailed documentation and testing, visit the API Documentation page through the web interface.
+For API testing and documentation, use the "API Test" button in the web interface to access Swagger UI.
 
 ## Supported Formats
 

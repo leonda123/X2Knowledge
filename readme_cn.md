@@ -87,24 +87,23 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 4. 查看、复制或下载转换结果
 5. 使用Markdown预览功能查看格式化结果（使用Markdown模式时）
 
-## API 接口
+## REST API
 
-本工具提供以下API接口：
+本工具提供了REST API，以便程序化访问：
 
 - **文本转换**：`POST /api/convert`
-- **Markdown转换(MarkItDown)**：`POST /api/convert-to-md`
-- **Markdown转换(Docling)**：`POST /api/convert-to-md-docling`
-- **HTML转换(Docling)**：`POST /api/convert-to-html-docling`
-- **JSON转换(Docling)**：`POST /api/convert-to-json-docling`
-- **Markdown转换(Marker)**：`POST /api/convert-to-md-marker`
-- **HTML转换(Marker)**：`POST /api/convert-to-html-marker`
-- **JSON转换(Marker)**：`POST /api/convert-to-json-marker`
-- **批量转换为文本**：`POST /api/convert-folder`
-- **批量转换为Markdown(MarkItDown)**：`POST /api/convert-to-md-folder`
-- **批量转换为Markdown(Docling)**：`POST /api/convert-to-md-docling-folder`
-- **批量转换为Markdown(Marker)**：`POST /api/convert-to-md-marker-folder`
+- **文本转换并保存文件**：`POST /api/convert-file`
+- **Markdown转换（MarkItDown）**：`POST /api/convert-to-md`
+- **Markdown转换并保存文件（MarkItDown）**：`POST /api/convert-to-md-file`
+- **Markdown转换（Docling）**：`POST /api/convert-to-md-docling`
+- **Markdown转换并保存文件（Docling）**：`POST /api/convert-to-md-file-docling`
+- **HTML转换（Docling）**：`POST /api/convert-to-html-docling`
+- **Markdown转换（Marker）**：`POST /api/convert-to-md-marker`
+- **Markdown转换并保存文件（Marker）**：`POST /api/convert-to-md-file-marker`
+- **HTML转换（Marker）**：`POST /api/convert-to-html-marker`
+- **JSON转换（Marker）**：`POST /api/convert-to-json-marker`
 
-有关详细文档和测试，请通过Web界面访问API文档页面。
+要测试和查看API文档，请使用网页界面中的"API测试"按钮访问Swagger UI。
 
 ## 支持的格式
 
