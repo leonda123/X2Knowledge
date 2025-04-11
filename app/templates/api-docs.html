@@ -251,6 +251,7 @@
                     <li><a href="#api-docling-md">Docling转MD API</a></li>
                     <li><a href="#api-docling-html">Docling转HTML API</a></li>
                     <li><a href="#api-docling-json">Docling转JSON API</a></li>
+                    <li><a href="#api-docling-md-images">Docling转MD并导出图片 API</a></li>
                     <li><a href="#api-marker-md">Marker转MD API</a></li>
                     <li><a href="#api-marker-html">Marker转HTML API</a></li>
                     <li><a href="#api-marker-json">Marker转JSON API</a></li>
@@ -353,6 +354,46 @@
                     <div class="api-types">
                         <h4>支持的文件类型</h4>
                         <p>.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .md, .mp3, .wav, .csv, .html, .xhtml, .png, .jpg, .jpeg, .tiff, .bmp</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="api-docling-md-images" class="api-section">
+                <h2 data-i18n="api-docling-md-images">Docling转MD并导出图片 API</h2>
+                <div class="api-endpoint">
+                    <h3>POST /api/convert-to-md-images-file-docling</h3>
+                    <div class="api-description">
+                        <p>使用Docling转换器将文档转换为Markdown格式，并导出文档中的所有图片（包括页面图片、表格和图像）。所有内容保存到指定目录。</p>
+                        <p><strong>内容类型:</strong> <code>multipart/form-data</code></p>
+                    </div>
+                    <div class="api-params">
+                        <h4>参数</h4>
+                        <ul>
+                            <li><strong>file</strong>: 要转换的文件（multipart/form-data）</li>
+                            <li><strong>output_dir</strong>: 输出目录，用于保存Markdown和图片文件</li>
+                        </ul>
+                    </div>
+                    <div class="api-response">
+                        <h4>响应</h4>
+                        <pre><code>
+{
+    "output_path": "保存的Markdown文件路径",
+    "filename": "原始文件名",
+    "file_size": 文件大小（字节）,
+    "processing_time": 处理耗时（秒）,
+    "converter": "docling",
+    "page_count": 文档页面数量,
+    "table_count": 提取的表格数量,
+    "picture_count": 提取的图片数量,
+    "page_images": ["页面图片路径1", "页面图片路径2", ...],
+    "table_images": ["表格图片路径1", "表格图片路径2", ...],
+    "picture_images": ["图片路径1", "图片路径2", ...]
+}
+                        </code></pre>
+                    </div>
+                    <div class="api-types">
+                        <h4>支持的文件类型</h4>
+                        <p>.pdf, .docx, .xlsx, .pptx, .html, .xhtml, .png, .jpg, .jpeg, .tiff, .bmp</p>
                     </div>
                 </div>
             </section>

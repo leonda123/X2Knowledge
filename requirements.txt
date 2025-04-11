@@ -45,3 +45,4 @@ gunicorn>=20.1.0
 markupsafe>=2.1.1 
 typing_extensions>=4.5.0
 flasgger==0.9.7.1
+PyMuPDF>=1.19.6

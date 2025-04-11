@@ -1,6 +1,6 @@
 ![LOGO](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/x2knowledge-logo.png)
 
-# X2Knowledge V0.4.1 - 知识提取器工具
+# X2Knowledge 0.5.0 - 知识提取器工具
 
 [<a href="/readme_cn.md">中文(简体)</a>] | [<a href="/readme.md">English</a>] 
 
@@ -209,7 +209,7 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
    git clone https://gitee.com/leonda/X2Knowledge.git
    cd X2Knowledge
    ```
-
+   
 2. 构建并启动容器：
    ```
    docker-compose up -d

@@ -477,7 +477,8 @@ def api_convert_md():
             'text': markdown_text,
             'filename': filename,
             'file_size': file_size,
-            'processing_time': round(processing_time, 2)
+            'processing_time': round(processing_time, 2),
+            'converter': 'docling'
         })
     except Exception as e:
         error_msg = str(e)
@@ -496,6 +497,228 @@ def api_convert_md():
             'error': error_msg,
             'details': traceback.format_exc()
         }), 500
+
+@app.route('/api/convert-to-md-images-file-docling', methods=['POST'])
+@swag_from('swagger_docs/convert_to_md_images_file_docling.yml')
+def api_convert_to_md_images_file_docling():
+    """
+    使用Docling将文件转换为Markdown并导出图片
+    """
+    start_time = time.time()
+    execution_id = datetime.now().strftime("%Y%m%d%H%M%S")
+    
+    # 获取上传的文件
+    if 'file' not in request.files:
+        logger.warning(f"API调用(Docling图片导出){execution_id}：没有文件上传")
+        return jsonify({'error': '没有文件上传'}), 400
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        logger.warning(f"API调用(Docling图片导出){execution_id}：未选择文件")
+        return jsonify({'error': '未选择文件'}), 400
+    
+    # 获取输出目录
+    output_dir = request.form.get('output_dir')
+    if not output_dir:
+        logger.warning(f"API调用(Docling图片导出){execution_id}：未指定输出目录")
+        return jsonify({'error': '未指定输出目录'}), 400
+    
+    # 获取文件扩展名
+    filename = file.filename
+    base_filename = os.path.splitext(filename)[0]
+    file_ext = os.path.splitext(filename)[1].lower()
+    
+    logger.info(f"API调用(Docling图片导出){execution_id}：接收到文件: {filename}, 类型: {file_ext}")
+    
+    # 初始化Docling转换器
+    docling_converter = converter_factory.get_converter("docling")
+    
+    # 检查文件扩展名是否支持
+    if not docling_converter.is_format_supported(file_ext):
+        error_msg = f"Docling不支持的文件类型: {file_ext}"
+        logger.warning(f"API调用(Docling图片导出){execution_id}：{error_msg}")
+        return jsonify({'error': error_msg}), 400
+    
+    # 保存上传的文件
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    try:
+        file.save(file_path)
+        logger.info(f"API调用(Docling图片导出){execution_id}：文件保存成功: {file_path}")
+        
+        # 检查文件大小
+        file_size = os.path.getsize(file_path)
+        logger.info(f"API调用(Docling图片导出){execution_id}：文件大小: {file_size / 1024:.2f} KB")
+        
+        # 检查输出目录是否存在，不存在则创建
+        if not os.path.exists(output_dir):
+            try:
+                os.makedirs(output_dir, exist_ok=True)
+                logger.info(f"API调用(Docling图片导出){execution_id}：创建输出目录: {output_dir}")
+            except Exception as e:
+                error_msg = f"无法创建输出目录: {str(e)}"
+                logger.error(f"API调用(Docling图片导出){execution_id}：{error_msg}")
+                
+                # 删除临时文件
+                try:
+                    os.remove(file_path)
+                    logger.info(f"API调用(Docling图片导出){execution_id}：临时文件已删除: {file_path}")
+                except Exception as del_e:
+                    logger.warning(f"API调用(Docling图片导出){execution_id}：无法删除临时文件: {file_path}, 原因: {str(del_e)}")
+                
+                return jsonify({'error': error_msg}), 500
+        
+        # 使用Docling处理文件
+        try:
+            from docling.document_converter import DocumentConverter
+            from docling.datamodel.pipeline_options import PdfPipelineOptions
+            from docling.datamodel.base_models import InputFormat, FigureElement
+            from docling.document_converter import PdfFormatOption
+            from docling_core.types.doc import ImageRefMode, PictureItem, TableItem
+            
+            # 设置Docling选项，启用图片导出
+            IMAGE_RESOLUTION_SCALE = 2.0
+            pipeline_options = PdfPipelineOptions()
+            pipeline_options.images_scale = IMAGE_RESOLUTION_SCALE
+            pipeline_options.generate_page_images = True
+            pipeline_options.generate_picture_images = True
+            
+            # 创建通用格式选项
+            format_options = {}
+            
+            # 根据文件类型添加适当的格式选项
+            if file_ext.lower() in ['.pdf']:
+                format_options[InputFormat.PDF] = PdfFormatOption(pipeline_options=pipeline_options)
+            # 对于其他格式，不设置特定选项，使用Docling默认设置
+            
+            doc_converter = DocumentConverter(format_options=format_options)
+            
+            logger.info(f"API调用(Docling图片导出){execution_id}：开始转换文件并导出图片")
+            doc_converter = DocumentConverter(
+                format_options={
+                    InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options)
+                }
+            )
+            
+            logger.info(f"API调用(Docling图片导出){execution_id}：开始转换文件并导出图片")
+            
+            # 转换文件
+            conv_res = doc_converter.convert(file_path)
+            doc_filename = conv_res.input.file.stem
+            
+            # 保存Markdown文件
+            md_filename = os.path.join(output_dir, f"{doc_filename}.md")
+            conv_res.document.save_as_markdown(md_filename, image_mode=ImageRefMode.REFERENCED)
+            logger.info(f"API调用(Docling图片导出){execution_id}：Markdown已保存到: {md_filename}")
+            
+            # 保存页面图片
+            page_image_paths = []
+            for page_no, page in conv_res.document.pages.items():
+                page_no = page.page_no
+                page_image_filename = os.path.join(output_dir, f"{doc_filename}-page-{page_no}.png")
+                try:
+                    if hasattr(page, 'image') and page.image is not None and hasattr(page.image, 'pil_image') and page.image.pil_image is not None:
+                        with open(page_image_filename, 'wb') as fp:
+                            page.image.pil_image.save(fp, format="PNG")
+                        page_image_paths.append(page_image_filename)
+                        logger.info(f"API调用(Docling图片导出){execution_id}：页面图片已保存: {page_image_filename}")
+                    else:
+                        logger.warning(f"API调用(Docling图片导出){execution_id}：页面 {page_no} 没有可用的图片")
+                except Exception as e:
+                    logger.warning(f"API调用(Docling图片导出){execution_id}：保存页面 {page_no} 图片时出错: {str(e)}")
+            
+            # 保存图片和表格
+            table_counter = 0  # 实际成功提取的表格数量
+            picture_counter = 0  # 实际成功提取的图片数量
+            table_image_paths = []
+            picture_image_paths = []
+            
+            for element, _level in conv_res.document.iterate_items():
+                if isinstance(element, TableItem):
+                    try:
+                        image = element.get_image(conv_res.document)
+                        if image is not None:
+                            table_counter += 1  # 只有当成功获取图片时才增加计数
+                            element_image_filename = os.path.join(output_dir, f"{doc_filename}-table-{table_counter}.png")
+                            with open(element_image_filename, 'wb') as fp:
+                                image.save(fp, "PNG")
+                            table_image_paths.append(element_image_filename)
+                            logger.info(f"API调用(Docling图片导出){execution_id}：表格图片已保存: {element_image_filename}")
+                        else:
+                            logger.warning(f"API调用(Docling图片导出){execution_id}：无法获取表格图片，图片为None")
+                    except Exception as e:
+                        logger.warning(f"API调用(Docling图片导出){execution_id}：处理表格图片时出错: {str(e)}")
+                
+                if isinstance(element, PictureItem):
+                    try:
+                        image = element.get_image(conv_res.document)
+                        if image is not None:
+                            picture_counter += 1  # 只有当成功获取图片时才增加计数
+                            element_image_filename = os.path.join(output_dir, f"{doc_filename}-picture-{picture_counter}.png")
+                            with open(element_image_filename, 'wb') as fp:
+                                image.save(fp, "PNG")
+                            picture_image_paths.append(element_image_filename)
+                            logger.info(f"API调用(Docling图片导出){execution_id}：图片已保存: {element_image_filename}")
+                        else:
+                            logger.warning(f"API调用(Docling图片导出){execution_id}：无法获取图片，图片为None")
+                    except Exception as e:
+                        logger.warning(f"API调用(Docling图片导出){execution_id}：处理图片时出错: {str(e)}")
+            
+            # 读取Markdown内容
+            with open(md_filename, 'r', encoding='utf-8') as f:
+                markdown_text = f.read()
+            
+            processing_time = time.time() - start_time
+            logger.info(f"API调用(Docling图片导出){execution_id}：处理完成，耗时: {processing_time:.2f}秒")
+            
+            # 返回处理结果
+            return jsonify({
+                'output_path': md_filename,
+                'filename': filename,
+                'file_size': file_size,
+                'processing_time': round(processing_time, 2),
+                'converter': 'docling',
+                'page_count': len(page_image_paths),
+                'table_count': table_counter,
+                'picture_count': picture_counter,
+                'page_images': page_image_paths,
+                'table_images': table_image_paths,
+                'picture_images': picture_image_paths
+            })
+            
+        except ImportError as e:
+            error_msg = f"Docling库导入错误: {str(e)}"
+            logger.error(f"API调用(Docling图片导出){execution_id}：{error_msg}")
+            return jsonify({'error': error_msg}), 500
+        except Exception as e:
+            error_msg = f"Docling处理失败: {str(e)}"
+            logger.error(f"API调用(Docling图片导出){execution_id}：{error_msg}")
+            logger.error(traceback.format_exc())
+            return jsonify({'error': error_msg, 'details': traceback.format_exc()}), 500
+    
+    except Exception as e:
+        error_msg = f"处理文件时出错: {str(e)}"
+        logger.error(f"API调用(Docling图片导出){execution_id}：{error_msg}")
+        logger.error(traceback.format_exc())
+        
+        # 删除临时文件
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                logger.info(f"API调用(Docling图片导出){execution_id}：临时文件已删除: {file_path}")
+            except Exception as del_e:
+                logger.warning(f"API调用(Docling图片导出){execution_id}：无法删除临时文件: {file_path}, 原因: {str(del_e)}")
+        
+        return jsonify({'error': error_msg, 'details': traceback.format_exc()}), 500
+    
+    finally:
+        # 删除临时文件
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                logger.info(f"API调用(Docling图片导出){execution_id}：临时文件已删除: {file_path}")
+            except Exception as del_e:
+                logger.warning(f"API调用(Docling图片导出){execution_id}：无法删除临时文件: {file_path}, 原因: {str(del_e)}")
 
 # Docling转换为Markdown
 @app.route('/convert-to-md-docling', methods=['POST'])
@@ -686,7 +909,7 @@ def api_convert_html_docling():
     if file.filename == '':
         logger.warning("API调用(Docling HTML)：未选择文件")
         return jsonify({'error': '未选择文件'}), 400
-                
+    
     # 获取文件扩展名
     filename = file.filename
     file_ext = os.path.splitext(filename)[1].lower()
@@ -869,7 +1092,7 @@ def api_convert_html_marker():
         logger.warning("API调用(Marker HTML)：未选择文件")
         return jsonify({'error': '未选择文件'}), 400
                 
-    # 获取文件扩展名
+                # 获取文件扩展名
     filename = file.filename
     file_ext = os.path.splitext(filename)[1].lower()
     
@@ -959,8 +1182,8 @@ def api_convert_json_marker():
     if file.filename == '':
         logger.warning("API调用(Marker JSON)：未选择文件")
         return jsonify({'error': '未选择文件'}), 400
-    
-    # 获取文件扩展名
+                
+                # 获取文件扩展名
     filename = file.filename
     file_ext = os.path.splitext(filename)[1].lower()
     
@@ -1063,9 +1286,9 @@ def api_convert_file():
         except Exception as e:
             error_msg = f"无法创建输出目录: {str(e)}"
             logger.error(f"API调用(保存文本)：{error_msg}")
-            return jsonify({'error': error_msg}), 500
-    
-    # 获取文件扩展名
+        return jsonify({'error': error_msg}), 500
+                
+                # 获取文件扩展名
     filename = file.filename
     file_ext = os.path.splitext(filename)[1].lower()
     
@@ -1080,13 +1303,6 @@ def api_convert_file():
         # 检查文件大小
         file_size = os.path.getsize(file_path)
         logger.info(f"API调用(保存文本)：文件大小: {file_size / 1024:.2f} KB")
-        
-        # 对所有文件类型尝试转换编码为UTF-8
-        try:
-            logger.info("API调用(保存文本)：尝试转换文件编码为UTF-8")
-            convert_file_to_utf8(file_path, file_ext)
-        except Exception as e:
-            logger.warning(f"API调用(保存文本)：转换编码失败: {str(e)}，将使用原始文件")
         
         # 根据文件类型调用相应的转换函数
         if file_ext in ['.doc', '.docx']:
@@ -1205,9 +1421,9 @@ def api_convert_md_file():
         except Exception as e:
             error_msg = f"无法创建输出目录: {str(e)}"
             logger.error(f"API调用(保存MD)：{error_msg}")
-            return jsonify({'error': error_msg}), 500
-    
-    # 获取文件扩展名
+        return jsonify({'error': error_msg}), 500
+                
+                # 获取文件扩展名
     filename = file.filename
     file_ext = os.path.splitext(filename)[1].lower()
     
@@ -1419,7 +1635,7 @@ def api_convert_md_file_marker():
     if file.filename == '':
         logger.warning("API调用(Marker保存)：未选择文件")
         return jsonify({'error': '未选择文件'}), 400
-    
+                
     # 检查输出目录是否存在，不存在则创建
     if not os.path.exists(output_dir):
         try:
@@ -1429,8 +1645,8 @@ def api_convert_md_file_marker():
             error_msg = f"无法创建输出目录: {str(e)}"
             logger.error(f"API调用(Marker保存)：{error_msg}")
             return jsonify({'error': error_msg}), 500
-    
-    # 获取文件扩展名
+                
+                # 获取文件扩展名
     filename = file.filename
     file_ext = os.path.splitext(filename)[1].lower()
     
@@ -1513,6 +1729,153 @@ def api_convert_md_file_marker():
             'error': error_msg,
             'details': traceback.format_exc()
         }), 500
+
+# 工具函数：从文档中提取图片
+def extract_images_from_document(file_path, output_dir, base_filename):
+    """
+    从文档中提取所有图片并保存到指定目录
+    
+    Args:
+        file_path (str): 文档文件路径
+        output_dir (str): 图片保存目录
+        base_filename (str): 原始文件名，用于构造图片名称
+        
+    Returns:
+        tuple: (图片数量, 图片路径列表)
+    """
+    image_paths = []
+    file_ext = os.path.splitext(file_path)[1].lower()
+    timestamp = int(time.time())
+    
+    # 确保输出目录存在
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # 支持的文件类型
+    supported_extensions = ['.docx', '.xls', '.xlsx', '.pptx']
+    if file_ext not in supported_extensions:
+        raise ValueError(f"不支持的文件类型: {file_ext}, 支持的类型: {', '.join(supported_extensions)}")
+    
+    try:
+        # 从Word文档提取图片
+        if file_ext == '.docx':
+            from docx import Document
+            from docx.parts.image import ImagePart
+            
+            doc = Document(file_path)
+            
+            # 获取所有图片附件
+            image_parts = []
+            
+            # 获取文档主体中的所有图片
+            for rel_id, rel in doc.part.rels.items():
+                if isinstance(rel.target_part, ImagePart):
+                    # 收集图片信息，包括rel_id作为标识
+                    image_parts.append((rel_id, rel.target_part))
+            
+            # 扫描文档，记录图片出现的顺序
+            ordered_images = []
+            
+            # 遍历文档中的段落
+            for para in doc.paragraphs:
+                # 检查段落中的图片
+                for run in para.runs:
+                    if run._element.xpath('.//a:blip'):
+                        for blip in run._element.xpath('.//a:blip'):
+                            embed = blip.get('{http://schemas.openxmlformats.org/officeDocument/2006/relationships}embed')
+                            if embed and embed not in [img[0] for img in ordered_images]:
+                                if embed in doc.part.rels:
+                                    rel = doc.part.rels[embed]
+                                    if isinstance(rel.target_part, ImagePart):
+                                        ordered_images.append((embed, rel.target_part))
+            
+            # 如果通过扫描没有找到所有图片，使用原始收集的图片集合
+            if not ordered_images:
+                ordered_images = image_parts
+            
+            # 保存图片，按顺序命名
+            for i, (rel_id, img_part) in enumerate(ordered_images, 1):
+                image_filename = f"{base_filename}_{timestamp}_photo{i}.png"
+                image_path = os.path.join(output_dir, image_filename)
+                
+                with open(image_path, 'wb') as f:
+                    f.write(img_part.blob)
+                
+                image_paths.append(image_path)
+                logger.info(f"提取图片: {image_filename}")
+        
+        # 从Excel提取图片
+        elif file_ext in ['.xls', '.xlsx']:
+            import openpyxl
+            
+            workbook = openpyxl.load_workbook(file_path)
+            image_index = 0
+            
+            # 遍历所有工作表并提取图片
+            for sheet_name in workbook.sheetnames:
+                sheet = workbook[sheet_name]
+                
+                if hasattr(sheet, '_images'):
+                    for image in sheet._images:
+                        image_index += 1
+                        image_filename = f"{base_filename}_{timestamp}_photo{image_index}.png"
+                        image_path = os.path.join(output_dir, image_filename)
+                        
+                        # 提取并保存图片
+                        with open(image_path, 'wb') as f:
+                            f.write(image._data())
+                        
+                        image_paths.append(image_path)
+                        logger.info(f"提取图片: {image_filename}")
+        
+        # 从PowerPoint提取图片
+        elif file_ext == '.pptx':
+            from pptx import Presentation
+            
+            prs = Presentation(file_path)
+            image_index = 0
+            image_dict = {}  # 用于跟踪已保存图片，避免重复
+            
+            # 遍历所有幻灯片并提取图片
+            for slide in prs.slides:
+                for shape in slide.shapes:
+                    if hasattr(shape, 'image') and shape.image:
+                        # 检查是否已保存过此图片（避免重复）
+                        image_hash = hash(shape.image.blob)
+                        if image_hash not in image_dict:
+                            image_index += 1
+                            image_filename = f"{base_filename}_{timestamp}_photo{image_index}.png"
+                            image_path = os.path.join(output_dir, image_filename)
+                            
+                            # 提取并保存图片
+                            with open(image_path, 'wb') as f:
+                                f.write(shape.image.blob)
+                            
+                            image_paths.append(image_path)
+                            image_dict[image_hash] = image_path
+                            logger.info(f"提取图片: {image_filename}")
+                    
+                    # 检查组合图形
+                    if hasattr(shape, 'shapes'):
+                        for subshape in shape.shapes:
+                            if hasattr(subshape, 'image') and subshape.image:
+                                image_hash = hash(subshape.image.blob)
+                                if image_hash not in image_dict:
+                                    image_index += 1
+                                    image_filename = f"{base_filename}_{timestamp}_photo{image_index}.png"
+                                    image_path = os.path.join(output_dir, image_filename)
+                                    
+                                    # 提取并保存图片
+                                    with open(image_path, 'wb') as f:
+                                        f.write(subshape.image.blob)
+                                    
+                                    image_paths.append(image_path)
+                                    image_dict[image_hash] = image_path
+                                    logger.info(f"提取图片: {image_filename}")
+        
+        return len(image_paths), image_paths
+    
+    except Exception as e:
+        raise Exception(f"提取图片过程中出错: {str(e)}")
 
 @app.route('/about')
 def about_page():

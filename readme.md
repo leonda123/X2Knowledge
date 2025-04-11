@@ -1,6 +1,6 @@
 ![LOGO](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/x2knowledge-logo.png)
 
-# X2Knowledge V0.4.1- Document Conversion Tool
+# X2Knowledge V0.5.0- Document Conversion Tool
 
 [<a href="/readme_cn.md">中文(简体)</a>] | [<a href="/readme.md">English</a>] 
 
@@ -102,6 +102,7 @@ The tool provides a REST API for programmatic access:
 - **Markdown Conversion with File Save (Marker)**: `POST /api/convert-to-md-file-marker`
 - **HTML Conversion (Marker)**: `POST /api/convert-to-html-marker`
 - **JSON Conversion (Marker)**: `POST /api/convert-to-json-marker`
+- **Image Extraction**: `POST /api/extract-images`
 
 For API testing and documentation, use the "API Test" button in the web interface to access Swagger UI.
 
