@@ -1,80 +1,74 @@
 ![LOGO](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/x2knowledge-logo.png)
 
-# X2Knowledge V0.5.0- Document Conversion Tool
+# X2Knowledge V0.5.2 - Document Conversion Tool
 
 [<a href="/readme_cn.md">中文(简体)</a>] | [<a href="/readme.md">English</a>] 
 
-X2Knowledge is an efficient open source knowledge extractor tool designed for enterprise knowledge base construction. It supports intelligent conversion of files in various formats such as PDF, Word, PPT, Excel, WAV, MP3, etc. into structured TXT or Markdown formats, helping users to quickly and standardizedly enter various types of documents into the enterprise knowledge base system. Through advanced format parsing and content extraction technology, the project significantly improves the efficiency and accuracy of knowledge conversion and is an ideal pre-processing tool for RAG (retrieval enhancement generation) applications and enterprise knowledge management.
+X2Knowledge is an efficient open source knowledge extractor tool designed for enterprise knowledge base construction. It supports intelligent conversion of files in various formats such as PDF, Word, PPT, Excel, WAV, MP3, etc. into structured Markdown, HTML, and text formats, helping users to quickly and standardizedly enter various types of documents into the enterprise knowledge base system.
+Through advanced format parsing and content extraction technology, the project significantly improves the efficiency and accuracy of knowledge conversion and is an ideal pre-processing tool for RAG (retrieval enhancement generation) applications and enterprise knowledge management.
 
 ![Design schematic](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/x2knowledge_en.png?raw=true)
 
-[Demo website](http://115.190.8.7:8080/)：http://115.190.8.7:8080/ The server performance is poor. Please use the docling interface for local testing. The server does not have a cuda environment!
+[Demo website] (X2Knowledge v0.2.1 demo environment): http://115.190.8.7:8080/ The server performance is poor. Please use the docling interface for local testing. The server does not have a cuda environment!
 
-Due to the diversity of personal or corporate documents, in the process of building a knowledge base, how to process documents in RAG/Agent to achieve the expected results plays a vital role. However, with the development of AI technology, open source and commercial tools are emerging, and how to choose and use these tools has become a big problem.
+Due to the diversity of personal or corporate documents, in the process of building a knowledge base, how to process documents in RAG/Agent applications can achieve the expected results plays a vital role. However, with the development of AI technology, open source and commercial tools have emerged, and how to choose and use these tools has become a major problem. The emergence of this tool successfully solved the problem of large models replying to pictures and texts
 
 This project adheres to the principles of: 1. Either free, 2. Either fast, 3. Either high accuracy, 4. Unified interface, 5. Continuous update.
-At the same time, everyone is welcome to discuss together. In the future, I plan to integrate excellent open source projects such as olmOCR, MinerU, Marker, etc. into the project within my limited time.
+At the same time, everyone is welcome to discuss together. In the future, I plan to connect excellent open source projects such as olmOCR and MinerU to the project within my limited time.
 
-Everyone, please stay tuned!
+## v0.5.2
 
-## Note! Marker is not enabled by default (offline model files are too large), and need to be enabled manually in requirements.txt.
+### Update features:
+
+- Temporarily remove the reference to the marker module function, and the introduction in the future is to be planned.
+- Use Docling to extract and save images from documents, and support viewing in preview mode.
+- Swagger interface, API calls are more intuitive.
 
 ## Features
 
-- **Multiple Conversion Engines**
-  - **MarkItDown**: Fast and efficient for Office documents (DOCX, XLSX, PPTX)
-  - **Docling**: Enhanced PDF conversion with better table recognition and VLM capabilities
-  - **Marker**: High-precision document conversion with excellent table, formula and image extraction
+- **Multiple conversion engines**
+- **MarkItDown**: Optimized for Office documents (DOCX, XLSX, PPTX, CSV), fast and efficient
+- **Docling**: Enhanced PDF conversion with better table recognition and VLM capabilities
 
 - **Convert multiple file formats to text or Markdown**
-  - Support for Word (.doc, .docx), Excel (.xls, .xlsx), PowerPoint (.ppt, .pptx), PDF, text files, and more
-  - Maintains document structure in Markdown conversion mode
-  - Extracts text from images via OCR
+- Support Word (.doc, .docx), Excel (.xls, .xlsx), PowerPoint (.ppt, .pptx), PDF, text files, etc.
+- Maintain document structure in Markdown conversion mode
+- Extract text from images via OCR
+- **New**: Extract and save images from documents using Docling, supporting viewing in preview mode
 
-- **Multiple Output Formats**
-  - **Text**: Simple plain text extraction
-  - **Markdown**: Preserves document structure including headings, lists, and tables
-  - **HTML**: Full HTML output with image and formula support
-  - **JSON**: Structured document representation with metadata
+- **Multiple output formats**
+- **Text**: Simple plain text extraction
+- **Markdown**: Preserve document structure, including headers, lists, and tables
+- **HTML**: Full HTML output with image and formula support
 
-- **OCR Support**
-  - Automatically extracts text from images embedded in documents
-  - Works with images in Word, PowerPoint, and PDF files
+- **Audio conversion**
+- Convert audio files (.mp3, .wav) to text/Markdown descriptions
+- Extract metadata including duration, channels and sampling rate
 
-- **Audio Conversion**
-  - Convert audio files (.mp3, .wav) to text/Markdown description
-  - Extracts metadata including duration, channels, and sample rate
-
-- **UTF-8 Encoding**
-  - Automatically converts documents to UTF-8 encoding
-  - Resolves Chinese character display issues
-  - No manual encoding configuration needed
-
-- **Large File Support**
-  - Supports files up to 50MB
-  - Efficient processing of large documents
+- **Large file support**
+- Supports files up to 50MB
+- Efficient handling of large documents
 
 ## Converter Comparison
 
 Below is a comparison of the three document conversion engines available in X2Knowledge:
 
-| Feature | MarkItDown | Docling | Marker |
-|---------|------------|---------|--------|
-| **Speed** | ★★★★★ (Fastest) | ★★★☆☆ (Moderate) | ★★☆☆☆ (Slower) |
-| **Accuracy** | ★★★☆☆ (Good) | ★★★★☆ (Very Good) | ★★★★★ (Excellent) |
-| **Table Handling** | ★★★☆☆ (Basic) | ★★★★☆ (Advanced) | ★★★★★ (Superior) |
-| **Formula Support** | ★☆☆☆☆ (Limited) | ★★★☆☆ (Decent) | ★★★★★ (Excellent) |
-| **Image Extraction** | ★☆☆☆☆ (Basic OCR) | ★★★★☆ (VLM Support) | ★★★★★ (Detailed) |
-| **Resource Usage** | ★★★★★ (Minimal) | ★★☆☆☆ (Heavy) | ★★☆☆☆ (Heavy) |
-| **Best For** | Office documents | PDF documents | Complex documents with tables & formulas |
-| **GPU Acceleration** | No | Yes | Yes |
-| **Supported Formats** | DOC, DOCX, XLS, XLSX, PPT, PPTX, PDF, TXT, MD | PDF, DOCX, XLSX, PPTX, Images, HTML | PDF, DOCX, XLSX, PPTX, Images, HTML |
-| **Output Formats** | Text, Markdown | Text, Markdown, HTML, JSON | Text, Markdown, HTML, JSON |
+| Feature | MarkItDown | Docling |
+|---------|------------|---------|
+| **Speed** | ★★★★★ (Fastest) | ★★★☆☆ (Moderate) |
+| **Accuracy** | ★★★☆☆ (Good) | ★★★★☆ (Very Good) |
+| **Table Handling** | ★★★☆☆ (Basic) | ★★★★☆ (Advanced) |
+| **Formula Support** | ★☆☆☆☆ (Limited) | ★★★☆☆ (Decent) |
+| **Image Extraction** | ★☆☆☆☆ (Basic OCR) | ★★★★☆ (VLM Support) |
+| **Resource Usage** | ★★★★★ (Minimal) | ★★☆☆☆ (Heavy) |
+| **Best For** | Office documents | PDF documents with tables & formulas |
+| **GPU Acceleration** | No | Yes |
+| **Supported Formats** | DOC, DOCX, XLS, XLSX, PPT, PPTX, PDF, TXT, MD | PDF, DOCX, XLSX, PPTX, Images, HTML |
+| **Output Formats** | Text, Markdown | Text, Markdown, HTML, JSON |
 
 Choose the converter that best fits your needs:
 - **MarkItDown**: When you need quick conversion of Office documents with good fidelity
 - **Docling**: When you need better handling of PDF documents with tables and images
-- **Marker**: When you need the highest possible accuracy for complex documents, especially with formulas and tables
 
 ## Usage
 
@@ -91,34 +85,22 @@ Choose the converter that best fits your needs:
 
 The tool provides a REST API for programmatic access:
 
-- **Text Conversion**: `POST /api/convert`
-- **Text Conversion with File Save**: `POST /api/convert-file`
-- **Markdown Conversion (MarkItDown)**: `POST /api/convert-to-md`
-- **Markdown Conversion with File Save (MarkItDown)**: `POST /api/convert-to-md-file`
-- **Markdown Conversion (Docling)**: `POST /api/convert-to-md-docling`
-- **Markdown Conversion with File Save (Docling)**: `POST /api/convert-to-md-file-docling`
-- **HTML Conversion (Docling)**: `POST /api/convert-to-html-docling`
-- **Markdown Conversion (Marker)**: `POST /api/convert-to-md-marker`
-- **Markdown Conversion with File Save (Marker)**: `POST /api/convert-to-md-file-marker`
-- **HTML Conversion (Marker)**: `POST /api/convert-to-html-marker`
-- **JSON Conversion (Marker)**: `POST /api/convert-to-json-marker`
-- **Image Extraction**: `POST /api/extract-images`
+Provided:
+- [x] **Text conversion**: `POST /api/convert`
+- [x] **Text conversion and save file**: `POST /api/convert-file`
+- [x] **Markdown conversion (MarkItDown)**: `POST /api/convert-to-md`
+- [x] **Markdown conversion and save file (MarkItDown)**: `POST /api/convert-to-md-file`
+- [x] **Markdown conversion (Docling)**: `POST /api/convert-to-md-docling`
+- [x] **Markdown conversion and save file (Docling)**: `POST /api/convert-to-md-file-docling`
+- [x] **Markdown conversion and extract image (Docling)**: `POST /api/convert-to-md-images-file-docling`
+- [x] **HTML conversion (Docling)**: `POST /api/convert-to-html-docling`
+To be provided:
+- [ ] **Convert URL to MD**
+- [ ] **Extract only tables from PDF, XML, and Office to Excel**
+- [ ] **Recognition of PDF and code reference parts**
+- [x] **welcome to raise more requirements. **
 
 For API testing and documentation, use the "API Test" button in the web interface to access Swagger UI.
-
-## Supported Formats
-
-### Input Formats
-- **Office Documents**: DOC, DOCX, XLS, XLSX, PPT, PPTX, CSV
-- **Text/Markup**: PDF, TXT, MD, HTML, XHTML, EPUB
-- **Images**: PNG, JPEG, TIFF, BMP
-- **Audio**: MP3, WAV
-
-### Output Formats
-- **Plain Text**
-- **Markdown**
-- **HTML**
-- **JSON**
 
 ## System screenshot
 
@@ -126,25 +108,14 @@ For API testing and documentation, use the "API Test" button in the web interfac
 
 #### Home page
 ![Home page](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/home.png?raw=true)
-#### API call
-![API call](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/API.png?raw=true)
-#### Original format
-![Original format](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/original%20format.png?raw=true)
-#### MD format
-![MD format](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/MD%20format.png?raw=true)
-### Effect
-#### WORD file
-![WORD file](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/word1.png?raw=true)
-#### WORD conversion effect
-![WORD conversion effect](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/word2.png?raw=true)
-#### WORD table conversion effect
-![WORD table conversion effect](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/word4.png?raw=true)
-#### Execel effect
-![Execel effect](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/excel2.png?raw=true)
-#### PPT effect
-![PPT effect](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/ppt1.png?raw=true)
-#### docling pdf to md
-![docling pdf to md](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/docling_pdf_md.png?raw=true)
+#### Swagger
+![API call](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/swagger.png?raw=true)
+### Reply effect (take dify as an example, Fastgpt, Maxkb, coze webui that supports MD display can all be realized)
+#### Graphics and texts reply
+![Graphics and texts reply](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/dify_test_1.png?raw=true)
+![Graphics and texts reply](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/dify_test_3.png?raw=true)
+#### Form reply
+![Form reply](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/dify_test_2.png?raw=true)
 
 ## Installation and Deployment
 
@@ -152,13 +123,12 @@ For API testing and documentation, use the "API Test" button in the web interfac
 
 #### Requirements
 
-- Python 3.6+
+- Python 3.12+
 - Flask
 - pytesseract (for OCR functionality)
 - Tesseract OCR engine
 - MarkItDown library
 - Docling library (optional, for enhanced PDF conversion)
-- Marker library (optional, for high-precision document conversion)
 
 #### Setup
 
@@ -179,11 +149,6 @@ For API testing and documentation, use the "API Test" button in the web interfac
    ```
    # For Docling support
    pip install docling
-   
-   # For Marker support
-   pip install marker-pdf
-   # For additional format support
-   pip install marker-pdf[full]
    ```
 
 4. Install Tesseract OCR engine (for OCR functionality):
@@ -235,7 +200,7 @@ Docker makes deploying X2Knowledge easier by avoiding environment configuration 
 
 ## Key Advantages
 
-- **Multiple Conversion Engines**: Choose the best engine for your document type - MarkItDown for Office documents, Docling for PDFs, Marker for high-precision needs
+- **Multiple Conversion Engines**: Choose the best engine for your document type - MarkItDown for Office documents, Docling for PDFs
 - **High-Performance Document Processing**: Optimized document parsing engine that efficiently handles various document formats
 - **Low Resource Consumption**: Runs smoothly even on servers with modest configurations
 - **Accurate Structure Preservation**: Especially in Markdown conversion, accurately preserves the original document structure
@@ -250,7 +215,6 @@ Docker makes deploying X2Knowledge easier by avoiding environment configuration 
 - Some complex document layouts might not be perfectly preserved in Markdown conversion
 - OCR accuracy depends on image quality and text complexity
 - Docling works best with CUDA acceleration, but will fall back to CPU mode if unavailable
-- Marker requires PyTorch and may need specific PyTorch installation for GPU acceleration
 
 ## Future Plans
 

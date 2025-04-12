@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'encoding-benefit': '此功能可以有效解决中文乱码问题，无需用户手动设置编码。',
             
             // 页脚
-            'footer': '© 2025 X2Knowledge v0.4.0 - 知识提取器工具 | 使用Flask和JavaScript构建',
+            'footer': '© 2025 X2Knowledge v0.5.2 - 知识提取器工具 | 使用Flask和JavaScript构建',
             
             // API文档页面
             'api-doc-title': 'X2Knowledge - 知识提取器工具 - API文档',
@@ -141,6 +141,9 @@ document.addEventListener('DOMContentLoaded', function() {
             'docling-converter-label': '使用 Docling 转换器',
             'docling-converter-desc': '对PDF有优化的表格识别和VLM，准确率大大提升，支持更多输入格式，但需要CUDA环境最佳（当前使用CPU加速）',
             'docling-warning': '且时间较长，不建议在本测试环境使用！',
+            'docling-images-converter-label': '使用 Docling 转换器（带图片）',
+            'docling-images-converter-desc': '与普通Docling相同，但会提取文档中的图片并保存到静态文件夹中，支持预览图片',
+            'docling-images-warning': '处理需要较长时间，不建议处理大文件！',
             'marker-converter-label': '使用 Marker 转换器',
             'marker-converter-desc': '高精度文档转换器，优秀的表格和公式处理能力，支持多种文档格式和图片',
             'marker-warning': '需要安装PyTorch，性能取决于系统配置',
@@ -148,6 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // 文件格式支持
             'markitdown-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md',
             'docling-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .md, .mp3, .wav, .html, .xhtml, .png, .jpg, .jpeg, .tiff, .bmp',
+            'docling-images-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .md, .mp3, .wav, .html, .xhtml',
             'marker-supported-formats': '.pdf, .png, .jpg, .jpeg, .pptx, .docx, .xlsx, .html',
             
             // 批量转换API
@@ -252,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'encoding-benefit': 'This feature effectively solves Chinese character encoding issues without manual encoding settings.',
             
             // Footer
-            'footer': '© 2025 X2Knowledge v0.4.0 - Document Conversion Tool | Built with Flask and JavaScript',
+            'footer': '© 2025 X2Knowledge v0.5.2 - Document Conversion Tool | Built with Flask and JavaScript',
             
             // API Documentation Page
             'api-doc-title': 'X2Knowledge - Document Conversion Tool - API Documentation',
@@ -320,6 +324,9 @@ document.addEventListener('DOMContentLoaded', function() {
             'docling-converter-label': 'Use Docling Converter',
             'docling-converter-desc': 'Optimized table recognition and VLM for PDFs, greatly improved accuracy, supports more input formats, but works best with CUDA environment (currently using CPU acceleration)',
             'docling-warning': 'and takes longer, not recommended for this test environment!',
+            'docling-images-converter-label': 'Use Docling Converter (with Images)',
+            'docling-images-converter-desc': 'Same as regular Docling, but extracts images from the document and saves them to a static folder for preview',
+            'docling-images-warning': 'Processing takes longer, not recommended for large files!',
             'marker-converter-label': 'Use Marker Converter',
             'marker-converter-desc': 'High-precision document converter, excellent table and formula processing capabilities, supports multiple document formats and images',
             'marker-warning': 'Requires PyTorch, performance depends on system configuration',
@@ -327,6 +334,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // File Format Support
             'markitdown-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md',
             'docling-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .md, .mp3, .wav, .html, .xhtml, .png, .jpg, .jpeg, .tiff, .bmp',
+            'docling-images-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .md, .mp3, .wav, .html, .xhtml',
             'marker-supported-formats': '.pdf, .png, .jpg, .jpeg, .pptx, .docx, .xlsx, .html',
             
             // Batch Conversion API

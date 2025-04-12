@@ -8,8 +8,8 @@
     <!-- 引入Marked库用于Markdown渲染 -->
     <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
     <!-- 引入highlight.js用于代码高亮 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/github.min.css') }}">
+    <script src="{{ url_for('static', filename='js/dist/highlight.min.js') }}"></script>
     <style>
         .converter-options {
             margin-bottom: 15px;
@@ -168,8 +168,8 @@
                         </p>
                         
                         <div class="converter-option">
-                            <input type="radio" disabled id="marker-converter" name="converter" value="marker">
-                            <label for="marker-converter" data-i18n="marker-converter-label">使用 Marker 转换器</label>
+                            <input type="radio" id="docling-images-converter" name="converter" value="docling-images">
+                            <label for="docling-images-converter" data-i18n="docling-images-converter-label">使用 Docling 转换器（带图片）</label>
                         </div>
                         <p class="converter-description">
                             <span data-i18n="marker-converter-desc">高精度文档转换器，优秀的表格和公式处理能力，支持多种文档格式和图片</span>
@@ -210,7 +210,7 @@
         </main>
 
         <footer>
-            <p data-i18n="footer">© 2025 X2Knowledge v0.4.0 - 知识提取器工具 | 使用Flask和JavaScript构建</p>
+            <p data-i18n="footer">© 2025 X2Knowledge v0.5.2 - 知识提取器工具 | 使用Flask和JavaScript构建</p>
             <div class="github-links">
                 <a href="https://github.com/leonda123/X2Knowledge.git" class="github-link" target="_blank">
                     <svg class="github-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">

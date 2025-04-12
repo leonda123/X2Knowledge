@@ -359,9 +359,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const markitdownConverter = document.getElementById('markitdown-converter');
     const doclingConverter = document.getElementById('docling-converter');
     const markerConverter = document.getElementById('marker-converter');
+    const doclingImagesConverter = document.getElementById('docling-images-converter');
     const supportedFileTypes = document.getElementById('supportedFileTypes');
     
-    if (markitdownConverter && doclingConverter && markerConverter) {
+    if (markitdownConverter && doclingConverter && markerConverter && doclingImagesConverter) {
         // 初始更新文件类型信息
         updateSupportedFormats();
         
@@ -369,6 +370,7 @@ document.addEventListener('DOMContentLoaded', function() {
         markitdownConverter.addEventListener('change', updateSupportedFormats);
         doclingConverter.addEventListener('change', updateSupportedFormats);
         markerConverter.addEventListener('change', updateSupportedFormats);
+        doclingImagesConverter.addEventListener('change', updateSupportedFormats);
     }
     
     // 更新支持的文件格式显示
@@ -378,12 +380,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // 根据当前选择的转换器更新显示的支持格式
         const isDocling = doclingConverter && doclingConverter.checked;
         const isMarker = markerConverter && markerConverter.checked;
+        const isDoclingImages = doclingImagesConverter && doclingImagesConverter.checked;
         
         let formatKey = 'markitdown-supported-formats';
         if (isDocling) {
             formatKey = 'docling-supported-formats';
         } else if (isMarker) {
             formatKey = 'marker-supported-formats';
+        } else if (isDoclingImages) {
+            formatKey = 'docling-images-supported-formats';
         }
         
         const formatText = getTranslatedText('supported-types-md') || '支持的文件类型:';
@@ -435,8 +440,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // 根据选择的转换器确定API端点
             const isDoclingSelected = doclingConverter && doclingConverter.checked;
             const isMarkerSelected = markerConverter && markerConverter.checked;
+            const isDoclingImagesSelected = doclingImagesConverter && doclingImagesConverter.checked;
             
-            if (isDoclingSelected) {
+            if (isDoclingImagesSelected) {
+                apiEndpoint = '/convert-to-md-images-file-docling';  // 新增带图片的Docling路径
+            } else if (isDoclingSelected) {
                 apiEndpoint = '/convert-to-md-docling';  // 使用现有docling路径
             } else if (isMarkerSelected) {
                 apiEndpoint = '/convert-to-md-marker';   // 使用现有marker路径
@@ -488,11 +496,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (type === 'markdown') {
                 const useDocling = doclingConverter && doclingConverter.checked;
                 const useMarker = markerConverter && markerConverter.checked;
+                const useDoclingImages = doclingImagesConverter && doclingImagesConverter.checked;
                 
                 if (useDocling) {
                     resultType += ' (使用Docling)';
                 } else if (useMarker) {
                     resultType += ' (使用Marker)';
+                } else if (useDoclingImages) {
+                    resultType += ' (使用带图片的Docling)';
                 } else {
                     resultType += ' (使用MarkItDown)';
                 }
