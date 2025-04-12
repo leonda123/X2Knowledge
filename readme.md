@@ -85,7 +85,8 @@ Choose the converter that best fits your needs:
 
 The tool provides a REST API for programmatic access:
 
-Provided:
+### Provided:
+
 - [x] **Text conversion**: `POST /api/convert`
 - [x] **Text conversion and save file**: `POST /api/convert-file`
 - [x] **Markdown conversion (MarkItDown)**: `POST /api/convert-to-md`
@@ -94,7 +95,9 @@ Provided:
 - [x] **Markdown conversion and save file (Docling)**: `POST /api/convert-to-md-file-docling`
 - [x] **Markdown conversion and extract image (Docling)**: `POST /api/convert-to-md-images-file-docling`
 - [x] **HTML conversion (Docling)**: `POST /api/convert-to-html-docling`
-To be provided:
+
+### To be provided:
+
 - [ ] **Convert URL to MD**
 - [ ] **Extract only tables from PDF, XML, and Office to Excel**
 - [ ] **Recognition of PDF and code reference parts**

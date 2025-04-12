@@ -9,12 +9,14 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 
 ![设计示意图](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/x2knowledge_cn.png)
 
-[演示网站](X2Knowledge v0.2.1演示环境)：http://115.190.8.7:8080/ 服务器性能不佳，请在本地测试使用docling接口，服务器没有cuda环境！
+X2Knowledge v0.2.1演示环境：http://115.190.8.7:8080/ 服务器性能不佳，请在本地测试使用docling接口，服务器没有cuda环境！
 
-由于个人或企业文档的多样性，在构建知识库的过程中，文档的处理如何在RAG/Agent的应用中能达到预期的效果，起到至关重要的作用。但是随着AI技术的发展，不断开源和商用的工具涌现，如何在选择和使用这些工具成为了一大难题。该工具的出现成功解决了大模型回复图文的
+由于个人或企业文档的多样性，在构建知识库的过程中，文档的处理如何在RAG/Agent的应用中能达到预期的效果，起到至关重要的作用。但是随着AI技术的发展，不断开源和商用的工具涌现，如何在选择和使用这些工具成为了一大难题。该工具的出现成功解决了大模型回复图文的问题。
 
 本项目秉着：1.要么免费、2.要么速度快、3.要么准确率高、4.接口统一、5.持续更新的原则。
 同时也欢迎大家一起讨论，后续计划在本人有限的时间内将olmOCR、MinerU等等优秀的开源项目接入到项目中。
+
+给自己打一个广告，如果你也使用cursor开发，不如尝试一下cursorrules中文网：http://www.cursorrulescn.cn/ （已备案），收录大量的中文cursorrules。
 
 ## v0.5.2
 
@@ -84,7 +86,8 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 
 本工具提供了REST API，以便程序化访问：
 
-已提供：
+### 已提供：
+
 - [x] **文本转换**：`POST /api/convert`
 - [x] **文本转换并保存文件**：`POST /api/convert-file`
 - [x] **Markdown转换（MarkItDown）**：`POST /api/convert-to-md`
@@ -93,7 +96,9 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 - [x] **Markdown转换并保存文件（Docling）**：`POST /api/convert-to-md-file-docling`
 - [x] **Markdown转换并提取图片（Docling）**：`POST /api/convert-to-md-images-file-docling`
 - [x] **HTML转换（Docling）**：`POST /api/convert-to-html-docling`
-待提供：
+
+### 待提供：
+
 - [ ] **URL转MD**
 - [ ] **PDF、XML、Office只提取表格到excel中**
 - [ ] **针对PDF及代码引用部分的识别**

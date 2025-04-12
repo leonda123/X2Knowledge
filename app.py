@@ -142,13 +142,6 @@ def convert():
         file_size = os.path.getsize(file_path)
         logger.info(f"文件大小: {file_size / 1024:.2f} KB")
         
-        # 对所有文件类型尝试转换编码为UTF-8
-        try:
-            logger.info("尝试转换文件编码为UTF-8")
-            convert_file_to_utf8(file_path, file_ext)
-        except Exception as e:
-            logger.warning(f"转换编码失败: {str(e)}，将使用原始文件")
-        
         # 根据文件类型调用相应的转换函数
         if file_ext in ['.doc', '.docx']:
             logger.info(f"开始转换Word文档: {filename}")
@@ -327,13 +320,6 @@ def api_convert():
         # 检查文件大小
         file_size = os.path.getsize(file_path)
         logger.info(f"API调用：文件大小: {file_size / 1024:.2f} KB")
-        
-        # 对所有文件类型尝试转换编码为UTF-8
-        try:
-            logger.info("API调用：尝试转换文件编码为UTF-8")
-            convert_file_to_utf8(file_path, file_ext)
-        except Exception as e:
-            logger.warning(f"API调用：转换编码失败: {str(e)}，将使用原始文件")
         
         # 根据文件类型调用相应的转换函数
         if file_ext in ['.doc', '.docx']:
