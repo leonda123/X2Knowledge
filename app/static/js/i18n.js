@@ -149,9 +149,9 @@ document.addEventListener('DOMContentLoaded', function() {
             'marker-warning': '需要安装PyTorch，性能取决于系统配置',
             
             // 文件格式支持
-            'markitdown-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md',
-            'docling-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .md, .mp3, .wav, .html, .xhtml, .png, .jpg, .jpeg, .tiff, .bmp',
-            'docling-images-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .md, .mp3, .wav, .html, .xhtml',
+            'markitdown-supported-formats': '.pdf, .docx, .pptx, .xlsx, .xls, .csv, .json, .xml, .wav, .mp3',
+            'docling-supported-formats': '.pdf, .docx, .xlsx, .pptx, .md, .html, .xhtml, .csv, .png, .jpg, .jpeg, .tiff, .bmp',
+            'docling-images-supported-formats': '.pdf, .docx, .xlsx, .pptx, .md, .html, .xhtml',
             'marker-supported-formats': '.pdf, .png, .jpg, .jpeg, .pptx, .docx, .xlsx, .html',
             
             // 批量转换API
@@ -332,9 +332,9 @@ document.addEventListener('DOMContentLoaded', function() {
             'marker-warning': 'Requires PyTorch, performance depends on system configuration',
             
             // File Format Support
-            'markitdown-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md',
-            'docling-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .md, .mp3, .wav, .html, .xhtml, .png, .jpg, .jpeg, .tiff, .bmp',
-            'docling-images-supported-formats': '.doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .md, .mp3, .wav, .html, .xhtml',
+            'markitdown-supported-formats': '.pdf, .docx, .pptx, .xlsx, .xls, .csv, .json, .xml, .wav, .mp3',
+            'docling-supported-formats': '.pdf, .docx, .xlsx, .pptx, .md, .html, .xhtml, .csv, .png, .jpg, .jpeg, .tiff, .bmp',
+            'docling-images-supported-formats': '.pdf, .docx, .xlsx, .pptx, .md, .html, .xhtml',
             'marker-supported-formats': '.pdf, .png, .jpg, .jpeg, .pptx, .docx, .xlsx, .html',
             
             // Batch Conversion API

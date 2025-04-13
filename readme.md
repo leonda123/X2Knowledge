@@ -63,7 +63,7 @@ Below is a comparison of the three document conversion engines available in X2Kn
 | **Resource Usage** | ★★★★★ (Minimal) | ★★☆☆☆ (Heavy) |
 | **Best For** | Office documents | PDF documents with tables & formulas |
 | **GPU Acceleration** | No | Yes |
-| **Supported Formats** | DOC, DOCX, XLS, XLSX, PPT, PPTX, PDF, TXT, MD | PDF, DOCX, XLSX, PPTX, Images, HTML |
+| **Supported Formats** | DOC, DOCX, XLS, XLSX, PPT, PPTX, PDF, TXT, MD | PDF, DOCX, XLSX, PPTX, CSV, Images, HTML |
 | **Output Formats** | Text, Markdown | Text, Markdown, HTML, JSON |
 
 Choose the converter that best fits your needs:

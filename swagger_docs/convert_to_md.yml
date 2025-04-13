@@ -6,7 +6,7 @@ parameters:
     in: formData
     type: file
     required: true
-    description: 要转换为Markdown的文件，支持doc、docx、xls、xlsx、ppt、pptx、pdf、txt、md等格式
+    description: 要转换为Markdown的文件，支持的文件格式（PDF、DOCX、PPTX、XLSX、XLS、CSV、JSON、XML、WAV、MP3）
 
 responses:
   200:

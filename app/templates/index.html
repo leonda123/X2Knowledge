@@ -156,7 +156,11 @@
                             <input type="radio" id="markitdown-converter" name="converter" value="markitdown" checked>
                             <label for="markitdown-converter" data-i18n="markitdown-converter-label">使用 MarkItDown 转换器 (默认)</label>
                         </div>
-                        <p class="converter-description" data-i18n="markitdown-converter-desc">对原生Office格式文件（DOCX, XLSX, PPTX）支持非常好，速度快、准确率高，但对PDF格式文件效果较差</p>
+                        <p class="converter-description">
+                            <span data-i18n="markitdown-converter-desc">对原生Office格式文件（DOCX, XLSX, PPTX）支持非常好，速度快、准确率高，但对PDF格式文件效果较差</span>
+                            <br>
+                            <span style="font-size: 0.85em;">支持的文件格式：PDF、DOCX、PPTX、XLSX、XLS、CSV、JSON、XML、WAV、MP3</span>
+                        </p>
                         
                         <div class="converter-option">
                             <input type="radio" id="docling-converter" name="converter" value="docling">
@@ -165,6 +169,8 @@
                         <p class="converter-description">
                             <span data-i18n="docling-converter-desc">对PDF有优化的表格识别和VLM，准确率大大提升，支持更多输入格式，但需要CUDA环境最佳（当前使用CPU加速）</span>
                             <span data-i18n="docling-warning" style="color: red; font-weight: bold;">且时间较长，不建议在本测试环境使用！</span>
+                            <br>
+                            <span style="font-size: 0.85em;">支持的文件格式：PDF、DOCX、XLSX、PPTX、Markdown、AsciiDoc、HTML、XHTML、CSV、PNG、JPEG、TIFF、BMP</span>
                         </p>
                         
                         <div class="converter-option">
@@ -172,17 +178,19 @@
                             <label for="docling-images-converter" data-i18n="docling-images-converter-label">使用 Docling 转换器（带图片）</label>
                         </div>
                         <p class="converter-description">
-                            <span data-i18n="marker-converter-desc">高精度文档转换器，优秀的表格和公式处理能力，支持多种文档格式和图片</span>
-                            <span data-i18n="marker-warning" style="color: orange; font-weight: bold;">需要安装PyTorch，性能取决于系统配置</span>
+                            <span data-i18n="marker-converter-desc">目前仅支持PDF、DOCX识别图文</span>
+                            <span data-i18n="marker-warning" style="color: orange; font-weight: bold;">将识别的图片存储在/static/images/目录下，请及时清理</span>
+                            <br>
+                            <span style="font-size: 0.85em;">支持的文件格式：PDF、DOCX</span>
                         </p>
                     </div>
                     
                     <p><span data-i18n="drop-files">拖拽文件到此处或</span><label for="fileInputMarkdown" class="file-label" data-i18n="choose-file">选择文件</label></p>
-                    <input type="file" id="fileInputMarkdown" accept=".doc,.docx,.xls,.xlsx,.ppt,.pptx,.pdf,.txt,.md,.mp3,.wav,.csv,.html,.xhtml,.png,.jpg,.jpeg,.tiff,.bmp,.xml" hidden>
-                    <p class="file-types" id="supportedFileTypes" data-i18n="supported-types-md">支持的文件类型: .doc, .docx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .md, .mp3, .wav, .xml</p>
+                    <input type="file" id="fileInputMarkdown" accept=".pdf,.docx,.xlsx,.pptx,.md,.html,.xhtml,.csv,.png,.jpg,.jpeg,.tiff,.bmp,.json,.xml,.wav,.mp3,.xls" hidden>
+                
                     <p class="file-note" data-i18n="markdown-note-structure">注意: 转换为Markdown格式可以更好地保留文档结构</p>
                     <p class="markdown-note" data-i18n="markdown-feature-structure">Markdown功能: 保留文档标题、列表、表格等结构</p>
-                    <p class="markdown-note" data-i18n="markdown-feature-audio">新增功能: 支持音频文件(.mp3, .wav)转换为Markdown描述</p>
+                    <p class="markdown-note" data-i18n="markdown-feature-audio">office原生文件推荐markitdown，pdf片文件推荐docling-images</p>
                 </div>
             </div>
 

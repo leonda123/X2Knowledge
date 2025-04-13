@@ -65,7 +65,7 @@ X2Knowledge v0.2.1演示环境：http://115.190.8.7:8080/ 服务器性能不佳�
 | **资源占用** | ★★★★★ (最小) | ★★☆☆☆ (大量) |
 | **最适用于** | Office文档 | PDF文档和带表格的文档 |
 | **GPU加速** | 否 | 是 |
-| **支持的格式** | DOC, DOCX, XLS, XLSX, PPT, PPTX, PDF, TXT, MD | PDF, DOCX, XLSX, PPTX, 图片, HTML |
+| **支持的格式** | DOC, DOCX, XLS, XLSX, PPT, PPTX, PDF, TXT, MD | PDF, DOCX, XLSX, PPTX, CSV, 图片, HTML |
 | **输出格式** | 文本, Markdown | 文本, Markdown, HTML, JSON |
 
 选择最适合您需求的转换器：

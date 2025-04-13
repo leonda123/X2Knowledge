@@ -23,4 +23,4 @@ ENV/
 Thumbs.db 
 
 # 数据文件
-static/images/exported/*
+static/images/exported/
