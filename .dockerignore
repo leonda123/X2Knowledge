@@ -45,3 +45,4 @@ docker-compose.yml
 # 其他
 .DS_Store
 node_modules/ 
+README_STRUCTURE.md

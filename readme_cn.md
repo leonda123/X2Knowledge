@@ -25,6 +25,7 @@ X2Knowledge v0.2.1演示环境：http://115.190.8.7:8080/ 服务器性能不佳�
 - 暂时剔除marker模块功能的引用，未来引入待规划。
 - 使用Docling从文档中提取并保存图片，支持在预览模式中查看。
 - Swagger界面，API调用更直观。
+- **新增**：URL转Markdown功能现在支持使用CSS选择器精确提取网页特定内容。
 
 ## 功能特点
 
@@ -42,6 +43,11 @@ X2Knowledge v0.2.1演示环境：http://115.190.8.7:8080/ 服务器性能不佳�
   - **文本**：简单的纯文本提取
   - **Markdown**：保留文档结构，包括标题、列表和表格
   - **HTML**：带有图片和公式支持的完整HTML输出
+
+- **网页转换功能**
+  - 将网页内容转换为结构化Markdown文档
+  - **新增**：支持使用CSS选择器（如 #content, .article, main）精确提取网页中的特定内容
+  - 可选择性移除页眉页脚，获取更干净的主要内容
 
 - **音频转换**
   - 将音频文件(.mp3, .wav)转换为文本/Markdown描述
@@ -84,7 +90,7 @@ X2Knowledge v0.2.1演示环境：http://115.190.8.7:8080/ 服务器性能不佳�
 
 ## REST API
 
-本工具提供了REST API，以便程序化访问：
+本工具提供了REST API，以便程序化访问，详见[<a href="/api_document.md">参考文档</a>]：
 
 ### 已提供：
 
@@ -96,12 +102,13 @@ X2Knowledge v0.2.1演示环境：http://115.190.8.7:8080/ 服务器性能不佳�
 - [x] **Markdown转换并保存文件（Docling）**：`POST /api/convert-to-md-file-docling`
 - [x] **Markdown转换并提取图片（Docling）**：`POST /api/convert-to-md-images-file-docling`
 - [x] **HTML转换（Docling）**：`POST /api/convert-to-html-docling`
+- [x] **URL转Markdown**：`POST /api/convert-url-to-md`
+- [x] **URL转Markdown文件**：`POST /api/convert-url-to-md-file`
 
 ### 待提供：
 
-- [ ] **URL转MD**
-- [ ] **PDF、XML、Office只提取表格到excel中**
-- [ ] **针对PDF及代码引用部分的识别**
+- [ ] **从PDF、XML和Office中仅提取表格到Excel**
+- [ ] **识别PDF和代码参考部分**
 - [x] **X2Knowledge交流群：158236726，欢迎大家提出更多的需求。**
 
 
@@ -113,6 +120,8 @@ X2Knowledge v0.2.1演示环境：http://115.190.8.7:8080/ 服务器性能不佳�
 
 #### 主页
 ![主页](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/home_cn.png)
+#### url转md
+![url转md](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/url2md_cn.png)
 #### Swagger
 ![API调用](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/swagger.png)
 ### 回复效果(已dify为例，Fastgpt、Maxkb、coze支持MD展示的webui等均可实现)

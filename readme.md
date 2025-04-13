@@ -23,6 +23,7 @@ At the same time, everyone is welcome to discuss together. In the future, I plan
 - Temporarily remove the reference to the marker module function, and the introduction in the future is to be planned.
 - Use Docling to extract and save images from documents, and support viewing in preview mode.
 - Swagger interface, API calls are more intuitive.
+- **New**: URL to Markdown conversion now supports using CSS selectors to precisely extract specific content from webpages.
 
 ## Features
 
@@ -40,6 +41,11 @@ At the same time, everyone is welcome to discuss together. In the future, I plan
 - **Text**: Simple plain text extraction
 - **Markdown**: Preserve document structure, including headers, lists, and tables
 - **HTML**: Full HTML output with image and formula support
+
+- **Web content conversion**
+- Convert webpage content to structured Markdown documents
+- **New**: Support using CSS selectors (like #content, .article, main) to precisely extract specific content from webpages
+- Option to remove headers and footers for cleaner main content
 
 - **Audio conversion**
 - Convert audio files (.mp3, .wav) to text/Markdown descriptions
@@ -83,7 +89,7 @@ Choose the converter that best fits your needs:
 
 ## REST API
 
-The tool provides a REST API for programmatic access:
+This tool provides a REST API for programmatic access, see the [<a href="/api_document.md">reference document</a>] for details:
 
 ### Provided:
 
@@ -95,10 +101,11 @@ The tool provides a REST API for programmatic access:
 - [x] **Markdown conversion and save file (Docling)**: `POST /api/convert-to-md-file-docling`
 - [x] **Markdown conversion and extract image (Docling)**: `POST /api/convert-to-md-images-file-docling`
 - [x] **HTML conversion (Docling)**: `POST /api/convert-to-html-docling`
+- [x] **URL to Markdown conversion**: `POST /api/convert-url-to-md`
+- [x] **URL to Markdown file conversion**: `POST /api/convert-url-to-md-file`
 
 ### To be provided:
 
-- [ ] **Convert URL to MD**
 - [ ] **Extract only tables from PDF, XML, and Office to Excel**
 - [ ] **Recognition of PDF and code reference parts**
 - [x] **welcome to raise more requirements. **
@@ -111,6 +118,8 @@ For API testing and documentation, use the "API Test" button in the web interfac
 
 #### Home page
 ![Home page](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/home.png?raw=true)
+#### Url to MD
+![Url to MD](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/url2md.png?raw=true)
 #### Swagger
 ![API call](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/swagger.png?raw=true)
 ### Reply effect (take dify as an example, Fastgpt, Maxkb, coze webui that supports MD display can all be realized)

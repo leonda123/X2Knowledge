@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="400" height="150" viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg">
+  <!-- 蓝色长方形背景 -->
+  <rect x="5" y="5" width="390" height="140" rx="15" ry="15" fill="#0066cc" />
+  
+  <!-- 白色X字符 -->
+  <path d="M55,35 L105,115 M105,35 L55,115" stroke="white" stroke-width="14" stroke-linecap="round" />
+  
+  <!-- 2Knowledge字样 -->
+  <text x="250" y="85" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="white" text-anchor="middle">X2Knowledge</text>
+</svg> 

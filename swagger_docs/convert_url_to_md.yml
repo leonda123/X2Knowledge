@@ -1,0 +1,64 @@
+tags:
+  - name: URL转Markdown
+
+parameters:
+  - name: url
+    in: formData
+    type: string
+    required: true
+    description: 要转换为Markdown的网页URL地址
+  - name: remove_header_footer
+    in: formData
+    type: boolean
+    required: false
+    default: true
+    description: 是否移除网页的页眉和页脚
+  - name: selector
+    in: formData
+    type: string
+    required: false
+    description: CSS选择器，用于选择页面的特定内容，如 '#content'、'.article'、'main' 等
+
+responses:
+  200:
+    description: 转换成功
+    schema:
+      type: object
+      properties:
+        text:
+          type: string
+          description: 转换后的Markdown文本
+        url:
+          type: string
+          description: 原始URL
+        processing_time:
+          type: number
+          format: float
+          description: 处理耗时（秒）
+  400:
+    description: 请求错误
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          description: 错误信息
+  500:
+    description: 服务器错误
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          description: 错误信息
+        details:
+          type: string
+          description: 详细错误信息
+
+consumes:
+  - application/x-www-form-urlencoded
+produces:
+  - application/json
+
+summary: 将网页URL转换为Markdown格式
+description: 使用Docling引擎将URL网页内容转换为Markdown格式，可选择移除页眉页脚或使用CSS选择器提取特定内容 

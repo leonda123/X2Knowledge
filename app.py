@@ -14,6 +14,7 @@ from app.utils.converters import (
     convert_to_markdown
 )
 from app.utils.converter_factory import converter_factory
+from app.utils.url_converter import URLConverter
 # 导入flasgger相关模块
 from flasgger import Swagger, swag_from
 import re
@@ -1741,6 +1742,143 @@ def convert_to_md_images_file_docling():
 def about_page():
     logger.info("访问关于页面")
     return render_template('about.html')
+
+# API：将URL转换为Markdown
+@app.route('/api/convert-url-to-md', methods=['POST'])
+@swag_from('swagger_docs/convert_url_to_md.yml')
+def api_convert_url_to_md():
+    """
+    将URL网页内容转换为Markdown格式
+    """
+    start_time = time.time()
+    
+    # 检查是否提供了URL
+    if 'url' not in request.form:
+        logger.warning("API调用(URL转MD)：未提供URL")
+        return jsonify({'error': '未提供URL'}), 400
+    
+    url = request.form['url']
+    remove_header_footer = request.form.get('remove_header_footer', 'true').lower() in ['true', '1', 't', 'y', 'yes']
+    
+    logger.info(f"API调用(URL转MD)：开始处理URL: {url}，移除页眉页脚: {remove_header_footer}")
+    
+    # 初始化URL转换器
+    url_converter = URLConverter()
+    
+    try:
+        # 将URL转换为Markdown
+        markdown_text = url_converter.convert_url_to_markdown(url, remove_header_footer)
+        
+        processing_time = time.time() - start_time
+        logger.info(f"API调用(URL转MD)：URL转换完成，耗时: {processing_time:.2f}秒")
+        
+        # 返回API响应
+        return jsonify({
+            'text': markdown_text,
+            'url': url,
+            'processing_time': round(processing_time, 2)
+        })
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"API调用(URL转MD)：转换失败: {error_msg}")
+        logger.error(traceback.format_exc())
+        
+        return jsonify({
+            'error': error_msg,
+            'details': traceback.format_exc()
+        }), 500
+
+# API：将URL转换为Markdown文件并保存
+@app.route('/api/convert-url-to-md-file', methods=['POST'])
+@swag_from('swagger_docs/convert_url_to_md_file.yml')
+def api_convert_url_to_md_file():
+    """
+    将URL网页内容转换为Markdown格式并保存为文件
+    """
+    start_time = time.time()
+    
+    # 检查是否提供了URL和输出目录
+    if 'url' not in request.form:
+        logger.warning("API调用(URL转MD文件)：未提供URL")
+        return jsonify({'error': '未提供URL'}), 400
+    
+    if 'output_dir' not in request.form:
+        logger.warning("API调用(URL转MD文件)：未提供输出目录")
+        return jsonify({'error': '未提供输出目录'}), 400
+    
+    url = request.form['url']
+    output_dir = request.form['output_dir']
+    remove_header_footer = request.form.get('remove_header_footer', 'true').lower() in ['true', '1', 't', 'y', 'yes']
+    
+    logger.info(f"API调用(URL转MD文件)：开始处理URL: {url}，输出目录: {output_dir}，移除页眉页脚: {remove_header_footer}")
+    
+    # 确保输出目录存在
+    try:
+        os.makedirs(output_dir, exist_ok=True)
+        logger.info(f"确保输出目录存在: {output_dir}")
+    except Exception as e:
+        error_msg = f"创建输出目录失败: {str(e)}"
+        logger.error(error_msg)
+        return jsonify({'error': error_msg}), 500
+    
+    # 初始化URL转换器
+    url_converter = URLConverter()
+    
+    try:
+        # 将URL转换为Markdown
+        markdown_text = url_converter.convert_url_to_markdown(url, remove_header_footer)
+        
+        # 从URL中提取文件名
+        import re
+        from urllib.parse import urlparse
+        
+        parsed_url = urlparse(url)
+        domain = parsed_url.netloc
+        path = parsed_url.path
+        
+        # 生成安全的文件名
+        if path and path != '/':
+            # 从路径中提取最后一部分作为文件名
+            filename_base = path.strip('/').split('/')[-1]
+            # 清理文件名
+            filename_base = re.sub(r'[\\/*?:"<>|]', '_', filename_base)
+            if not filename_base:
+                filename_base = domain
+        else:
+            filename_base = domain
+        
+        # 如果文件名太长或为空，则使用域名
+        if len(filename_base) > 100 or not filename_base:
+            filename_base = domain.replace('.', '_')
+        
+        # 添加时间戳避免重名
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        filename = f"{filename_base}_{timestamp}.md"
+        
+        # 保存为Markdown文件
+        output_path = os.path.join(output_dir, filename)
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(markdown_text)
+        
+        processing_time = time.time() - start_time
+        logger.info(f"API调用(URL转MD文件)：URL转换完成并保存到: {output_path}，耗时: {processing_time:.2f}秒")
+        
+        # 返回API响应
+        return jsonify({
+            'output_path': output_path,
+            'url': url,
+            'filename': filename,
+            'processing_time': round(processing_time, 2)
+        })
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"API调用(URL转MD文件)：转换失败: {error_msg}")
+        logger.error(traceback.format_exc())
+        
+        return jsonify({
+            'error': error_msg,
+            'details': traceback.format_exc()
+        }), 500
 
 if __name__ == '__main__':
     logger.info("应用启动")

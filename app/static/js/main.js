@@ -12,6 +12,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const newConvertBtn = document.getElementById('newConvertBtn');
     const fullscreenBtn = document.getElementById('fullscreenBtn'); // 全屏按钮
     
+    // URL转Markdown元素
+    const urlInput = document.getElementById('urlInput');
+    const removeHeaderFooter = document.getElementById('removeHeaderFooter');
+    const urlSelector = document.getElementById('urlSelector');
+    const convertUrlBtn = document.getElementById('convertUrlBtn');
+    
     // Tab切换功能
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -35,9 +41,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (activeTab === 'text') {
                     dropAreaText.style.display = 'block';
                     dropAreaMarkdown.style.display = 'none';
-                } else {
+                    document.querySelector('#tab-url').style.display = 'none';
+                } else if (activeTab === 'markdown') {
                     dropAreaText.style.display = 'none';
                     dropAreaMarkdown.style.display = 'block';
+                    document.querySelector('#tab-url').style.display = 'none';
+                } else if (activeTab === 'url') {
+                    dropAreaText.style.display = 'none';
+                    dropAreaMarkdown.style.display = 'none';
+                    document.querySelector('#tab-url').style.display = 'block';
                 }
             }
         });
@@ -280,9 +292,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (activeTab === 'text') {
             dropAreaText.style.display = 'block';
             dropAreaMarkdown.style.display = 'none';
-        } else {
+            document.querySelector('#tab-url').style.display = 'none';
+        } else if (activeTab === 'markdown') {
             dropAreaText.style.display = 'none';
             dropAreaMarkdown.style.display = 'block';
+            document.querySelector('#tab-url').style.display = 'none';
+        } else if (activeTab === 'url') {
+            dropAreaText.style.display = 'none';
+            dropAreaMarkdown.style.display = 'none';
+            document.querySelector('#tab-url').style.display = 'block';
         }
     }
     
@@ -358,18 +376,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // 添加转换器选择变化的事件处理
     const markitdownConverter = document.getElementById('markitdown-converter');
     const doclingConverter = document.getElementById('docling-converter');
-    const markerConverter = document.getElementById('marker-converter');
     const doclingImagesConverter = document.getElementById('docling-images-converter');
     const supportedFileTypes = document.getElementById('supportedFileTypes');
     
-    if (markitdownConverter && doclingConverter && markerConverter && doclingImagesConverter) {
+    if (markitdownConverter && doclingConverter && doclingImagesConverter) {
         // 初始更新文件类型信息
         updateSupportedFormats();
         
         // 添加转换器切换事件
         markitdownConverter.addEventListener('change', updateSupportedFormats);
         doclingConverter.addEventListener('change', updateSupportedFormats);
-        markerConverter.addEventListener('change', updateSupportedFormats);
         doclingImagesConverter.addEventListener('change', updateSupportedFormats);
     }
     
@@ -379,14 +395,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 根据当前选择的转换器更新显示的支持格式
         const isDocling = doclingConverter && doclingConverter.checked;
-        const isMarker = markerConverter && markerConverter.checked;
         const isDoclingImages = doclingImagesConverter && doclingImagesConverter.checked;
         
         let formatKey = 'markitdown-supported-formats';
         if (isDocling) {
             formatKey = 'docling-supported-formats';
-        } else if (isMarker) {
-            formatKey = 'marker-supported-formats';
         } else if (isDoclingImages) {
             formatKey = 'docling-images-supported-formats';
         }
@@ -439,15 +452,12 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             // 根据选择的转换器确定API端点
             const isDoclingSelected = doclingConverter && doclingConverter.checked;
-            const isMarkerSelected = markerConverter && markerConverter.checked;
             const isDoclingImagesSelected = doclingImagesConverter && doclingImagesConverter.checked;
             
             if (isDoclingImagesSelected) {
                 apiEndpoint = '/convert-to-md-images-file-docling';  // 新增带图片的Docling路径
             } else if (isDoclingSelected) {
                 apiEndpoint = '/convert-to-md-docling';  // 使用现有docling路径
-            } else if (isMarkerSelected) {
-                apiEndpoint = '/convert-to-md-marker';   // 使用现有marker路径
             } else {
                 apiEndpoint = '/convert-to-md';          // 使用现有markitdown路径
             }
@@ -495,13 +505,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // 添加使用的转换器信息（如果是Markdown）
             if (type === 'markdown') {
                 const useDocling = doclingConverter && doclingConverter.checked;
-                const useMarker = markerConverter && markerConverter.checked;
                 const useDoclingImages = doclingImagesConverter && doclingImagesConverter.checked;
                 
                 if (useDocling) {
                     resultType += ' (使用Docling)';
-                } else if (useMarker) {
-                    resultType += ' (使用Marker)';
                 } else if (useDoclingImages) {
                     resultType += ' (使用带图片的Docling)';
                 } else {
@@ -641,39 +648,195 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 新的转换按钮
     newConvertBtn.addEventListener('click', function() {
-        resultContainer.style.display = 'none';
-        markdownViewControls.style.display = 'none';
-        markdownPreview.style.display = 'none';
-        
-        // 根据当前激活的tab显示对应的上传区域
-        // 第一步，获取当前活动的标签
-        const activeTabButton = document.querySelector('.tab-button.active');
-        
-        if (activeTabButton) {
-            // 使用数据属性获取标签类型
-            activeTab = activeTabButton.dataset.tab;
-            
-            // 显示相应的上传区域
-            if (activeTab === 'text') {
-                dropAreaText.style.display = 'block';
-                dropAreaMarkdown.style.display = 'none';
-            } else {
-                dropAreaText.style.display = 'none';
-                dropAreaMarkdown.style.display = 'block';
-            }
-        } else {
-            // 如果没有找到活动标签，默认显示文本转换
-            dropAreaText.style.display = 'block';
-            dropAreaMarkdown.style.display = 'none';
-            activeTab = 'text';
-            
-            // 既然没有活动标签，手动设置第一个为活动
-            tabButtons[0].classList.add('active');
-            tabContents[0].classList.add('active');
-        }
-        
-        fileInputText.value = ''; 
-        fileInputMarkdown.value = '';
-        errorContainer.style.display = 'none';
+        // 刷新页面
+        window.location.reload();
     });
+
+    // 添加URL转换事件监听
+    if (convertUrlBtn) {
+        convertUrlBtn.addEventListener('click', function() {
+            // 获取URL和选项
+            const url = urlInput.value.trim();
+            const shouldRemoveHeaderFooter = removeHeaderFooter.checked;
+            const selector = urlSelector ? urlSelector.value.trim() : '';
+            
+            // 验证URL
+            if (!url) {
+                showError('请输入有效的URL');
+                return;
+            }
+            
+            // 显示加载指示器
+            loadingIndicator.style.display = 'block';
+            
+            // 隐藏URL输入区域
+            const urlInputContainer = document.querySelector('.url-input-container');
+            if (urlInputContainer) {
+                urlInputContainer.style.display = 'none';
+            }
+            
+            // 记录开始时间
+            conversionStartTime = Date.now();
+            
+            // 创建FormData对象
+            const formData = new FormData();
+            formData.append('url', url);
+            formData.append('remove_header_footer', shouldRemoveHeaderFooter);
+            if (selector) {
+                formData.append('selector', selector);
+            }
+            
+            // 发送请求到API
+            fetch('/api/convert-url-to-md', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.error || 'URL转换失败');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                // 计算转换时间
+                const conversionTime = ((Date.now() - conversionStartTime) / 1000).toFixed(2);
+                
+                // 获取Markdown内容
+                const markdown = data.text || '';
+                
+                // 显示转换结果
+                resultText.textContent = markdown;
+                loadingIndicator.style.display = 'none';
+                resultContainer.style.display = 'block';
+                
+                // 添加转换信息
+                const resultHeader = document.querySelector('.result-header h2');
+                resultHeader.textContent = `转换结果 (URL转Markdown, 用时: ${conversionTime}秒, 字符数: ${markdown.length})`;
+                
+                // 如果文本为空，显示提示
+                if (!markdown || markdown.trim() === '') {
+                    resultText.textContent = '[URL中未找到内容]';
+                }
+                
+                // 保存原始Markdown并显示视图控件
+                originalMarkdown = markdown;
+                markdownViewControls.style.display = 'flex';
+                
+                // 默认显示预览视图
+                const previewButton = document.querySelector('.view-btn[data-view="preview"]');
+                if (previewButton) {
+                    previewButton.click();
+                }
+                
+                // 设置文件名为URL的域名部分（用于下载）
+                try {
+                    const urlObj = new URL(url);
+                    currentFileName = urlObj.hostname.replace(/\./g, '_');
+                } catch (e) {
+                    currentFileName = 'url_content';
+                }
+            })
+            .catch(error => {
+                loadingIndicator.style.display = 'none';
+                
+                // 显示错误并恢复URL输入区域
+                if (urlInputContainer) {
+                    urlInputContainer.style.display = 'block';
+                }
+                
+                console.error('URL转换错误:', error);
+                showError(`URL转换失败: ${error.message}`);
+            });
+        });
+    }
+    
+    // 添加Enter键触发URL转换
+    if (urlInput) {
+        urlInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                convertUrlBtn.click();
+            }
+        });
+    }
+
+    // 模态框相关
+    // Swagger模态框
+    const swaggerBtn = document.getElementById('swagger-btn');
+    const swaggerModal = document.getElementById('swagger-modal');
+    const closeSwaggerBtn = document.getElementById('close-swagger-modal');
+    
+    // CSS选择器帮助模态框
+    const selectorHelpBtn = document.getElementById('selectorHelpBtn');
+    const selectorHelpModal = document.getElementById('selectorHelpModal');
+    const closeSelectorHelpBtn = document.getElementById('closeSelectorHelpBtn');
+    const selectorTabs = document.querySelectorAll('.selector-tab');
+    const selectorTabContents = document.querySelectorAll('.selector-tab-content');
+    
+    // 打开Swagger模态框
+    swaggerBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        swaggerModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // 防止背景滚动
+    });
+    
+    // 关闭Swagger模态框
+    closeSwaggerBtn.addEventListener('click', function() {
+        swaggerModal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // 恢复背景滚动
+    });
+    
+    // 点击模态框背景关闭模态框
+    swaggerModal.addEventListener('click', function(e) {
+        if (e.target === swaggerModal) {
+            swaggerModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+    
+    // 选择器帮助模态框事件
+    if (selectorHelpBtn && selectorHelpModal) {
+        // 打开选择器帮助模态框
+        selectorHelpBtn.addEventListener('click', function() {
+            selectorHelpModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        });
+        
+        // 关闭选择器帮助模态框
+        closeSelectorHelpBtn.addEventListener('click', function() {
+            selectorHelpModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+        
+        // 点击模态框背景关闭模态框
+        selectorHelpModal.addEventListener('click', function(e) {
+            if (e.target === selectorHelpModal) {
+                selectorHelpModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // 选择器教程标签页切换
+        selectorTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // 移除所有标签页的active类
+                selectorTabs.forEach(t => t.classList.remove('active'));
+                // 添加当前标签页的active类
+                this.classList.add('active');
+                
+                // 获取当前标签页对应的内容
+                const tabId = this.getAttribute('data-tab');
+                
+                // 隐藏所有内容
+                selectorTabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // 显示当前内容
+                document.getElementById(tabId + '-selectors').classList.add('active');
+            });
+        });
+    }
 });

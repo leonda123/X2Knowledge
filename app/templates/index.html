@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>X2Knowledge - 知识提取器工具</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/logo/x2knowledge-icon.svg') }}" type="image/svg+xml">
     <!-- 引入Marked库用于Markdown渲染 -->
     <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
     <!-- 引入highlight.js用于代码高亮 -->
@@ -31,6 +32,137 @@
             color: #666;
             margin-top: -3px;
             margin-bottom: 8px;
+        }
+        /* URL选择器样式 */
+        .url-selector-group {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .url-selector-input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            margin-top: 5px;
+        }
+        .url-selector-hint {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 3px;
+        }
+        .selector-help-button {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 5px 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #0066cc;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-align: center;
+        }
+        .selector-help-button:hover {
+            background-color: #e0e0e0;
+            text-decoration: underline;
+        }
+        /* 选择器教程模态框样式 */
+        .selector-modal-content {
+            max-width: 800px;
+            width: 90%;
+            max-height: 90%;
+            overflow: hidden;
+        }
+        .selector-modal-body {
+            padding: 0;
+            overflow-y: auto;
+            max-height: calc(90vh - 60px);
+        }
+        .selector-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            background-color: #f5f5f5;
+        }
+        .selector-tab {
+            padding: 10px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1em;
+            color: #555;
+            outline: none;
+            transition: background-color 0.2s;
+        }
+        .selector-tab:hover {
+            background-color: #e9e9e9;
+        }
+        .selector-tab.active {
+            border-bottom: 2px solid #0066cc;
+            color: #0066cc;
+            font-weight: bold;
+            background-color: #fff;
+        }
+        .selector-tab-content {
+            display: none;
+            padding: 20px;
+        }
+        .selector-tab-content.active {
+            display: block;
+        }
+        .selector-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .selector-table th, .selector-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .selector-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        .selector-table code {
+            background-color: #f0f0f0;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .selector-tips {
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #0066cc;
+        }
+        .selector-tips h4 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        .selector-tips ol {
+            padding-left: 20px;
+        }
+        .selector-tips li {
+            margin-bottom: 8px;
+        }
+        /* Logo样式 */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .header-logo {
+            height: 80px;
+            max-width: 100%;
+        }
+        .footer-logo {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .footer-logo-img {
+            height: 40px;
+            width: 40px;
         }
         /* 模态框样式 */
         .modal {
@@ -121,6 +253,7 @@
             <div class="tab-controls">
                 <button class="tab-button" data-tab="text" data-i18n="tab-text">转为文本</button>
                 <button class="tab-button active" data-tab="markdown" data-i18n="tab-markdown">转为Markdown</button>
+                <button class="tab-button" data-tab="url" data-i18n="tab-url">URL转Markdown</button>
             </div>
             
             <div class="tab-content" id="tab-text">
@@ -178,8 +311,8 @@
                             <label for="docling-images-converter" data-i18n="docling-images-converter-label">使用 Docling 转换器（带图片）</label>
                         </div>
                         <p class="converter-description">
-                            <span data-i18n="marker-converter-desc">目前仅支持PDF、DOCX识别图文</span>
-                            <span data-i18n="marker-warning" style="color: orange; font-weight: bold;">将识别的图片存储在/static/images/目录下，请及时清理</span>
+                            <span data-i18n="docling-images-converter-desc">目前仅支持PDF、DOCX识别图文</span>
+                            <span data-i18n="docling-images-warning" style="color: orange; font-weight: bold;">将识别的图片存储在/static/images/目录下，请及时清理</span>
                             <br>
                             <span style="font-size: 0.85em;">支持的文件格式：PDF、DOCX</span>
                         </p>
@@ -190,7 +323,35 @@
                 
                     <p class="file-note" data-i18n="markdown-note-structure">注意: 转换为Markdown格式可以更好地保留文档结构</p>
                     <p class="markdown-note" data-i18n="markdown-feature-structure">Markdown功能: 保留文档标题、列表、表格等结构</p>
-                    <p class="markdown-note" data-i18n="markdown-feature-audio">office原生文件推荐markitdown，pdf片文件推荐docling-images</p>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-url">
+                <div class="url-input-container">
+                    <div class="url-input-form">
+                        <div class="url-input-group">
+                            <label for="urlInput" data-i18n="url-input-label">输入网页URL：</label>
+                            <input type="url" id="urlInput" class="url-input" placeholder="https://example.com" required>
+                        </div>
+                        <div class="url-options">
+                            <label class="url-option">
+                                <input type="checkbox" id="removeHeaderFooter" checked>
+                                <span data-i18n="remove-header-footer">移除页眉和页脚</span>
+                            </label>
+                            <div class="url-selector-group">
+                                <label for="urlSelector" data-i18n="selector-label">CSS选择器（可选）：</label>
+                                <input type="text" id="urlSelector" class="url-selector-input" placeholder="#content, .article, main">
+                                <span class="url-selector-hint" data-i18n="selector-hint">输入CSS选择器来提取特定内容</span>
+                                <div class="selector-help-button" id="selectorHelpBtn" data-i18n="selector-help-button">查看选择器教程</div>
+                            </div>
+                        </div>
+                        <button id="convertUrlBtn" class="btn" data-i18n="convert-url">转换URL</button>
+                    </div>
+                    <div class="url-description">
+                        <p data-i18n="url-convert-description">将网页内容转换为结构化的Markdown格式，保留原始内容的结构、链接和图片。</p>
+                        <p data-i18n="url-convert-tip">提示：移除页眉页脚选项可以帮助您获取更干净的主要内容。</p>
+                        <p data-i18n="selector-tip">选择器提示：使用CSS选择器（如 #content, .article, main）可以精确提取页面中的特定内容。</p>
+                    </div>
                 </div>
             </div>
 
@@ -218,7 +379,7 @@
         </main>
 
         <footer>
-            <p data-i18n="footer">© 2025 X2Knowledge v0.5.2 - 知识提取器工具 | 使用Flask和JavaScript构建</p>
+            <p data-i18n="footer">© 2025 X2Knowledge v0.5.2 - 知识提取器工具 | by leonda</p>
             <div class="github-links">
                 <a href="https://github.com/leonda123/X2Knowledge.git" class="github-link" target="_blank">
                     <svg class="github-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
@@ -244,6 +405,149 @@
         </div>
         <div class="fullscreen-content">
             <div id="fullscreenPreview" class="markdown-preview fullscreen-preview"></div>
+        </div>
+    </div>
+
+    <!-- CSS选择器教程模态框 -->
+    <div id="selectorHelpModal" class="modal">
+        <div class="modal-content selector-modal-content">
+            <div class="modal-header">
+                <h3 data-i18n="selector-help-title">CSS选择器使用教程</h3>
+                <button id="closeSelectorHelpBtn" class="close-modal-btn">×</button>
+            </div>
+            <div class="modal-body selector-modal-body">
+                <div class="selector-tabs">
+                    <button class="selector-tab active" data-tab="basic" data-i18n="selector-tab-basic">基础选择器</button>
+                    <button class="selector-tab" data-tab="advanced" data-i18n="selector-tab-advanced">高级选择器</button>
+                    <button class="selector-tab" data-tab="examples" data-i18n="selector-tab-examples">常用示例</button>
+                </div>
+                <div class="selector-tab-content active" id="basic-selectors">
+                    <h4 data-i18n="basic-selectors-title">基础CSS选择器</h4>
+                    <table class="selector-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="selector-syntax">语法</th>
+                                <th data-i18n="selector-example">示例</th>
+                                <th data-i18n="selector-description">描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>#id</code></td>
+                                <td><code>#content</code></td>
+                                <td data-i18n="selector-id-desc">选择ID为"content"的元素</td>
+                            </tr>
+                            <tr>
+                                <td><code>.class</code></td>
+                                <td><code>.article</code></td>
+                                <td data-i18n="selector-class-desc">选择所有class为"article"的元素</td>
+                            </tr>
+                            <tr>
+                                <td><code>tag</code></td>
+                                <td><code>main</code></td>
+                                <td data-i18n="selector-tag-desc">选择所有&lt;main&gt;标签元素</td>
+                            </tr>
+                            <tr>
+                                <td><code>tag.class</code></td>
+                                <td><code>div.content</code></td>
+                                <td data-i18n="selector-tag-class-desc">选择所有class为"content"的div元素</td>
+                            </tr>
+                            <tr>
+                                <td><code>*</code></td>
+                                <td><code>*</code></td>
+                                <td data-i18n="selector-all-desc">选择所有元素（不推荐使用）</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="selector-tab-content" id="advanced-selectors">
+                    <h4 data-i18n="advanced-selectors-title">高级CSS选择器</h4>
+                    <table class="selector-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="selector-syntax">语法</th>
+                                <th data-i18n="selector-example">示例</th>
+                                <th data-i18n="selector-description">描述</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>parent > child</code></td>
+                                <td><code>article > p</code></td>
+                                <td data-i18n="selector-child-desc">选择所有父元素为&lt;article&gt;的&lt;p&gt;元素</td>
+                            </tr>
+                            <tr>
+                                <td><code>ancestor descendant</code></td>
+                                <td><code>article p</code></td>
+                                <td data-i18n="selector-descendant-desc">选择所有位于&lt;article&gt;内的&lt;p&gt;元素</td>
+                            </tr>
+                            <tr>
+                                <td><code>[attribute]</code></td>
+                                <td><code>[role="main"]</code></td>
+                                <td data-i18n="selector-attribute-desc">选择所有具有role="main"属性的元素</td>
+                            </tr>
+                            <tr>
+                                <td><code>:first-child</code></td>
+                                <td><code>li:first-child</code></td>
+                                <td data-i18n="selector-first-child-desc">选择每个父元素的第一个&lt;li&gt;子元素</td>
+                            </tr>
+                            <tr>
+                                <td><code>selector1, selector2</code></td>
+                                <td><code>main, .content, #article</code></td>
+                                <td data-i18n="selector-multiple-desc">同时选择多个元素，用逗号分隔</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="selector-tab-content" id="examples-selectors">
+                    <h4 data-i18n="common-examples-title">常用网站内容提取示例</h4>
+                    <table class="selector-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="website-type">网站类型</th>
+                                <th data-i18n="selector-to-try">推荐选择器</th>
+                                <th data-i18n="selector-purpose">提取内容</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-i18n="blog-articles">博客文章</td>
+                                <td><code>article, .post, .entry-content, #content</code></td>
+                                <td data-i18n="blog-articles-desc">提取文章正文，跳过评论和侧边栏</td>
+                            </tr>
+                            <tr>
+                                <td data-i18n="news-sites">新闻网站</td>
+                                <td><code>.article-body, .story-body, [itemprop="articleBody"]</code></td>
+                                <td data-i18n="news-sites-desc">提取新闻正文，跳过相关新闻和广告</td>
+                            </tr>
+                            <tr>
+                                <td data-i18n="documentation">技术文档</td>
+                                <td><code>main, .main-content, .documentation, .markdown-body</code></td>
+                                <td data-i18n="documentation-desc">提取文档内容，跳过导航菜单</td>
+                            </tr>
+                            <tr>
+                                <td data-i18n="forum-posts">论坛帖子</td>
+                                <td><code>.thread-content, .post-message, .message-body</code></td>
+                                <td data-i18n="forum-posts-desc">提取帖子内容，跳过回复和侧边栏</td>
+                            </tr>
+                            <tr>
+                                <td data-i18n="product-pages">产品页面</td>
+                                <td><code>.product-description, #product-details, [itemprop="description"]</code></td>
+                                <td data-i18n="product-pages-desc">提取产品描述，跳过推荐产品</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="selector-tips">
+                        <h4 data-i18n="finding-selectors-title">如何找到正确的选择器</h4>
+                        <ol>
+                            <li data-i18n="finding-selectors-tip1">在网页上右击要提取的内容区域，选择"检查元素"</li>
+                            <li data-i18n="finding-selectors-tip2">在开发者工具中查看HTML结构，找到包含所需内容的主要元素</li>
+                            <li data-i18n="finding-selectors-tip3">查看该元素的ID或class属性，使用#id或.class作为选择器</li>
+                            <li data-i18n="finding-selectors-tip4">如果尝试一个选择器没效果，可以组合多个选择器（用逗号分隔）增加匹配概率</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

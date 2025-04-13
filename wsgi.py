@@ -1,14 +1,9 @@
-import importlib.util
-import sys
+"""
+WSGI入口文件，用于生产环境部署
+"""
+from app import app, logger
 
-# 动态加载app.py模块
-spec = importlib.util.spec_from_file_location("app_module", "app.py")
-app_module = importlib.util.module_from_spec(spec)
-sys.modules["app_module"] = app_module
-spec.loader.exec_module(app_module)
-
-# 获取app实例
-app = app_module.app
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000) 
+if __name__ == '__main__':
+    logger.info("应用启动")
+    app.run(host='0.0.0.0', port=5000)
+    logger.info("应用关闭") 
