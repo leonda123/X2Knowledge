@@ -27,7 +27,7 @@ bp = Blueprint('api', __name__)
 
 # API: 基本文本转换
 @bp.route('/convert', methods=['POST'])
-@swag_from('../swagger_docs/convert.yml')
+@swag_from('../../swagger_docs/convert.yml')
 def api_convert():
     start_time = time.time()
     
@@ -116,7 +116,7 @@ def api_convert():
 
 # API：转换为Markdown
 @bp.route('/convert-to-md', methods=['POST'])
-@swag_from('../swagger_docs/convert_to_md.yml')
+@swag_from('../../swagger_docs/convert_to_md.yml')
 def api_convert_md():
     start_time = time.time()
     
@@ -185,7 +185,7 @@ def api_convert_md():
 
 # API：将文件转换为文本并保存到指定目录
 @bp.route('/convert-file', methods=['POST'])
-@swag_from('../swagger_docs/convert_file.yml')
+@swag_from('../../swagger_docs/convert_file.yml')
 def api_convert_file():
     start_time = time.time()
     
@@ -298,7 +298,7 @@ def api_convert_file():
 
 # API：将文件转换为Markdown并保存到指定目录
 @bp.route('/convert-to-md-file', methods=['POST'])
-@swag_from('../swagger_docs/convert_to_md_file.yml')
+@swag_from('../../swagger_docs/convert_to_md_file.yml')
 def api_convert_md_file():
     start_time = time.time()
     
@@ -390,7 +390,7 @@ def api_convert_md_file():
 
 # API：将URL转换为Markdown
 @bp.route('/convert-url-to-md', methods=['POST'])
-@swag_from('../swagger_docs/convert_url_to_md.yml')
+@swag_from('../../swagger_docs/convert_url_to_md.yml')
 def api_convert_url_to_md():
     """
     将URL网页内容转换为Markdown格式
@@ -436,7 +436,7 @@ def api_convert_url_to_md():
 
 # API：将URL转换为Markdown文件并保存
 @bp.route('/convert-url-to-md-file', methods=['POST'])
-@swag_from('../swagger_docs/convert_url_to_md_file.yml')
+@swag_from('../../swagger_docs/convert_url_to_md_file.yml')
 def api_convert_url_to_md_file():
     """
     将URL网页内容转换为Markdown格式并保存为文件
