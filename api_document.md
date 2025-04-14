@@ -12,6 +12,7 @@
   - [使用Docling将文件转换为Markdown格式并保存到指定目录](#使用docling将文件转换为markdown格式并保存到指定目录)
   - [使用Docling将文件转换为Markdown格式并导出图片](#使用docling将文件转换为markdown格式并导出图片)
   - [使用Docling将文件转换为HTML格式](#使用docling将文件转换为html格式)
+  - [使用Docling提取文件中的表格并导出为指定格式](#使用docling提取文件中的表格并导出为指定格式)
 - [URL转Markdown](#url转markdown)
   - [将网页URL转换为Markdown格式](#将网页url转换为markdown格式)
   - [将网页URL转换为Markdown格式并保存到指定目录](#将网页url转换为markdown格式并保存到指定目录)
@@ -281,6 +282,61 @@
     "filename": "原始文件名",
     "file_size": "文件大小（字节）",
     "processing_time": "处理耗时（秒）"
+  }
+  ```
+- 400: 请求错误
+  ```json
+  {
+    "error": "错误信息"
+  }
+  ```
+- 500: 服务器错误
+  ```json
+  {
+    "error": "错误信息",
+    "details": "详细错误信息"
+  }
+  ```
+
+### 使用Docling提取文件中的表格并导出为指定格式
+
+**接口**: `POST /api/export-tables-docling`
+
+**说明**: 使用Docling引擎从文档中提取表格，并根据需要导出为Markdown、CSV或HTML格式
+
+**参数**:
+- `file`：要提取表格的文件，支持的文件格式（PDF、DOCX、XLSX、PPTX、HTML、XHTML、CSV）(必需)
+- `output_dir`：保存表格文件的输出目录路径 (必需)
+- `export_formats`：导出格式，多种格式用逗号分隔，支持md、csv、html，默认全部导出 (可选)
+
+**响应**:
+- 200: 表格提取成功
+  ```json
+  {
+    "filename": "原始文件名",
+    "file_size": "文件大小（字节）",
+    "processing_time": "处理耗时（秒）",
+    "export_formats": ["导出的格式列表，如 md、csv、html"],
+    "table_count": "提取的表格数量",
+    "tables": [
+      {
+        "index": "表格索引（从1开始）",
+        "csv_path": "CSV格式表格文件的保存路径（如果导出CSV格式）",
+        "md_path": "Markdown格式表格文件的保存路径（如果导出MD格式）",
+        "html_path": "HTML格式表格文件的保存路径（如果导出HTML格式）"
+      }
+    ]
+  }
+  ```
+- 200 (无表格): 文档中没有表格
+  ```json
+  {
+    "warning": "文档中未检测到表格",
+    "filename": "原始文件名",
+    "file_size": "文件大小（字节）",
+    "processing_time": "处理耗时（秒）",
+    "table_count": 0,
+    "tables": []
   }
   ```
 - 400: 请求错误

@@ -9,7 +9,7 @@ X2Knowledge 是一个高效的开源知识提取器工具，专为企业知识�
 
 ![设计示意图](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/x2knowledge_cn.png)
 
-X2Knowledge v0.2.1演示环境：http://115.190.8.7:8080/ 服务器性能不佳，请在本地测试使用docling接口，服务器没有cuda环境！
+X2Knowledge v0.5.2演示环境：http://115.190.8.7:8080/ 服务器性能不佳，请在本地测试使用docling接口，服务器没有cuda环境！
 
 由于个人或企业文档的多样性，在构建知识库的过程中，文档的处理如何在RAG/Agent的应用中能达到预期的效果，起到至关重要的作用。但是随着AI技术的发展，不断开源和商用的工具涌现，如何在选择和使用这些工具成为了一大难题。该工具的出现成功解决了大模型回复图文的问题。
 
@@ -18,7 +18,7 @@ X2Knowledge v0.2.1演示环境：http://115.190.8.7:8080/ 服务器性能不佳�
 
 给自己打一个广告，如果你也使用cursor开发，不如尝试一下cursorrules中文网：http://www.cursorrulescn.cn/ （已备案），收录大量的中文cursorrules。
 
-## v0.5.2
+## v0.5.3
 
 ### 更新特性：
 
@@ -26,6 +26,7 @@ X2Knowledge v0.2.1演示环境：http://115.190.8.7:8080/ 服务器性能不佳�
 - 使用Docling从文档中提取并保存图片，支持在预览模式中查看。
 - Swagger界面，API调用更直观。
 - **新增**：URL转Markdown功能现在支持使用CSS选择器精确提取网页特定内容。
+- **新增**：文件提取表格功能支持导出CSV、HTML、Markdown。
 
 ## 功能特点
 
@@ -101,6 +102,7 @@ X2Knowledge v0.2.1演示环境：http://115.190.8.7:8080/ 服务器性能不佳�
 - [x] **Markdown转换（Docling）**：`POST /api/convert-to-md-docling`
 - [x] **Markdown转换并保存文件（Docling）**：`POST /api/convert-to-md-file-docling`
 - [x] **Markdown转换并提取图片（Docling）**：`POST /api/convert-to-md-images-file-docling`
+- [x] **提取文件中的表格并导出为指定格式（Docling）**：`POST /api/export-tables-docling`
 - [x] **HTML转换（Docling）**：`POST /api/convert-to-html-docling`
 - [x] **URL转Markdown**：`POST /api/convert-url-to-md`
 - [x] **URL转Markdown文件**：`POST /api/convert-url-to-md-file`

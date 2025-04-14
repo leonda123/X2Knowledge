@@ -805,3 +805,183 @@ def api_convert_to_md_images_file_docling():
             except Exception as del_e:
                 logger.warning(f"API调用(Docling图片导出){execution_id}：无法删除临时文件: {file_path}, 原因: {str(del_e)}")
 
+# 使用Doling 导出表格
+@bp.route('/api/export-tables-docling', methods=['POST'])
+@swag_from('../../swagger_docs/export_tables_docling.yml')
+def api_export_tables_docling():
+    """
+    使用Docling将文件中的表格导出为指定格式(md、csv、html)
+    """
+    start_time = time.time()
+    execution_id = datetime.now().strftime("%Y%m%d%H%M%S")
+    
+    # 获取上传的文件
+    if 'file' not in request.files:
+        logger.warning(f"API调用(Docling表格导出){execution_id}：没有文件上传")
+        return jsonify({'error': '没有文件上传'}), 400
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        logger.warning(f"API调用(Docling表格导出){execution_id}：未选择文件")
+        return jsonify({'error': '未选择文件'}), 400
+    
+    # 获取输出目录
+    output_dir = request.form.get('output_dir')
+    if not output_dir:
+        logger.warning(f"API调用(Docling表格导出){execution_id}：未指定输出目录")
+        return jsonify({'error': '未指定输出目录'}), 400
+    
+    # 获取导出格式，默认全部导出
+    export_formats = request.form.get('export_formats', 'md,csv,html').lower().split(',')
+    valid_formats = {'md', 'csv', 'html'}
+    export_formats = [fmt.strip() for fmt in export_formats if fmt.strip() in valid_formats]
+    
+    if not export_formats:
+        logger.warning(f"API调用(Docling表格导出){execution_id}：未指定有效的导出格式")
+        return jsonify({'error': '未指定有效的导出格式，支持的格式为：md、csv、html'}), 400
+    
+    # 获取文件扩展名
+    filename = file.filename
+    base_filename = os.path.splitext(filename)[0]
+    file_ext = os.path.splitext(filename)[1].lower()
+    
+    logger.info(f"API调用(Docling表格导出){execution_id}：接收到文件: {filename}, 类型: {file_ext}, 导出格式: {export_formats}")
+    
+    # 初始化Docling转换器
+    docling_converter = converter_factory.get_converter("docling")
+    
+    # 检查文件扩展名是否支持
+    if not docling_converter.is_format_supported(file_ext):
+        error_msg = f"Docling不支持的文件类型: {file_ext}"
+        logger.warning(f"API调用(Docling表格导出){execution_id}：{error_msg}")
+        return jsonify({'error': error_msg}), 400
+    
+    # 保存上传的文件
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    try:
+        file.save(file_path)
+        logger.info(f"API调用(Docling表格导出){execution_id}：文件保存成功: {file_path}")
+        
+        # 检查文件大小
+        file_size = os.path.getsize(file_path)
+        logger.info(f"API调用(Docling表格导出){execution_id}：文件大小: {file_size / 1024:.2f} KB")
+        
+        # 检查输出目录是否存在，不存在则创建
+        if not os.path.exists(output_dir):
+            try:
+                os.makedirs(output_dir, exist_ok=True)
+                logger.info(f"API调用(Docling表格导出){execution_id}：创建输出目录: {output_dir}")
+            except Exception as e:
+                error_msg = f"无法创建输出目录: {str(e)}"
+                logger.error(f"API调用(Docling表格导出){execution_id}：{error_msg}")
+                cleanup_temp_file(file_path, f"API调用(Docling表格导出){execution_id}：")
+                return jsonify({'error': error_msg}), 500
+        
+        # 使用Docling处理文件
+        try:
+            import pandas as pd
+            from docling.document_converter import DocumentConverter
+            
+            logger.info(f"API调用(Docling表格导出){execution_id}：开始转换文件并导出表格")
+            
+            # 创建文档转换器
+            doc_converter = DocumentConverter()
+            
+            # 转换文件
+            conv_res = doc_converter.convert(file_path)
+            doc_filename = conv_res.input.file.stem
+            
+            # 保存表格
+            table_outputs = []
+            
+            if not conv_res.document.tables:
+                logger.warning(f"API调用(Docling表格导出){execution_id}：文档中未检测到表格")
+                return jsonify({
+                    'warning': '文档中未检测到表格',
+                    'filename': filename,
+                    'file_size': file_size,
+                    'processing_time': round(time.time() - start_time, 2),
+                    'table_count': 0,
+                    'tables': []
+                })
+            
+            for table_ix, table in enumerate(conv_res.document.tables):
+                table_outputs_item = {'index': table_ix + 1}
+                
+                # 导出表格到DataFrame
+                try:
+                    table_df = table.export_to_dataframe()
+                    logger.info(f"API调用(Docling表格导出){execution_id}：成功提取表格 {table_ix + 1}")
+                    
+                    # 保存为CSV
+                    if 'csv' in export_formats:
+                        csv_filename = f"{doc_filename}-table-{table_ix+1}.csv"
+                        csv_path = os.path.join(output_dir, csv_filename)
+                        table_df.to_csv(csv_path, index=False, encoding='utf-8')
+                        logger.info(f"API调用(Docling表格导出){execution_id}：表格已保存为CSV: {csv_path}")
+                        table_outputs_item['csv_path'] = csv_path
+                    
+                    # 保存为Markdown
+                    if 'md' in export_formats:
+                        md_filename = f"{doc_filename}-table-{table_ix+1}.md"
+                        md_path = os.path.join(output_dir, md_filename)
+                        with open(md_path, 'w', encoding='utf-8') as f:
+                            f.write(table_df.to_markdown(index=False))
+                        logger.info(f"API调用(Docling表格导出){execution_id}：表格已保存为Markdown: {md_path}")
+                        table_outputs_item['md_path'] = md_path
+                    
+                    # 保存为HTML
+                    if 'html' in export_formats:
+                        html_filename = f"{doc_filename}-table-{table_ix+1}.html"
+                        html_path = os.path.join(output_dir, html_filename)
+                        with open(html_path, 'w', encoding='utf-8') as f:
+                            f.write(table.export_to_html(doc=conv_res.document))
+                        logger.info(f"API调用(Docling表格导出){execution_id}：表格已保存为HTML: {html_path}")
+                        table_outputs_item['html_path'] = html_path
+                    
+                    # 添加到输出列表
+                    table_outputs.append(table_outputs_item)
+                    
+                except Exception as table_error:
+                    error_msg = f"处理表格 {table_ix + 1} 时出错: {str(table_error)}"
+                    logger.error(f"API调用(Docling表格导出){execution_id}：{error_msg}")
+                    logger.error(traceback.format_exc())
+                    # 继续处理其他表格，不中断
+            
+            processing_time = time.time() - start_time
+            logger.info(f"API调用(Docling表格导出){execution_id}：处理完成，耗时: {processing_time:.2f}秒")
+            
+            # 返回处理结果
+            return jsonify({
+                'filename': filename,
+                'file_size': file_size,
+                'processing_time': round(processing_time, 2),
+                'export_formats': export_formats,
+                'table_count': len(table_outputs),
+                'tables': table_outputs
+            })
+            
+        except ImportError as e:
+            error_msg = f"Docling库导入错误: {str(e)}"
+            logger.error(f"API调用(Docling表格导出){execution_id}：{error_msg}")
+            logger.error(traceback.format_exc())
+            cleanup_temp_file(file_path, f"API调用(Docling表格导出){execution_id}：")
+            return jsonify({'error': error_msg}), 500
+        except Exception as e:
+            error_msg = f"Docling处理失败: {str(e)}"
+            logger.error(f"API调用(Docling表格导出){execution_id}：{error_msg}")
+            logger.error(traceback.format_exc())
+            cleanup_temp_file(file_path, f"API调用(Docling表格导出){execution_id}：")
+            return jsonify({'error': error_msg, 'details': traceback.format_exc()}), 500
+    
+    except Exception as e:
+        error_msg = f"处理文件时出错: {str(e)}"
+        logger.error(f"API调用(Docling表格导出){execution_id}：{error_msg}")
+        logger.error(traceback.format_exc())
+        cleanup_temp_file(file_path, f"API调用(Docling表格导出){execution_id}：")
+        return jsonify({'error': error_msg, 'details': traceback.format_exc()}), 500
+    
+    finally:
+        # 删除临时文件
+        cleanup_temp_file(file_path, f"API调用(Docling表格导出){execution_id}：")

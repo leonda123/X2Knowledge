@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'encoding-benefit': '此功能可以有效解决中文乱码问题，无需用户手动设置编码。',
             
             // 页脚
-            'footer': '© 2025 X2Knowledge v0.5.2 - 知识提取器工具 | by leonda',
+            'footer': '© 2025 X2Knowledge v0.5.3 - 知识提取器工具 | by leonda',
             
             // API文档页面
             'api-doc-title': 'X2Knowledge - 知识提取器工具 - API文档',
@@ -306,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'encoding-benefit': 'This feature effectively solves Chinese character encoding issues without manual encoding settings.',
             
             // Footer
-            'footer': '© 2025 X2Knowledge v0.5.2 - Document Conversion Tool | Built with Flask and JavaScript',
+            'footer': '© 2025 X2Knowledge v3 - Document Conversion Tool | Built with Flask and JavaScript',
             
             // API Documentation Page
             'api-doc-title': 'X2Knowledge - Document Conversion Tool - API Documentation',

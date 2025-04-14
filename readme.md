@@ -9,14 +9,14 @@ Through advanced format parsing and content extraction technology, the project s
 
 ![Design schematic](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/x2knowledge_en.png?raw=true)
 
-[Demo website] (X2Knowledge v0.2.1 demo environment): http://115.190.8.7:8080/ The server performance is poor. Please use the docling interface for local testing. The server does not have a cuda environment!
+[Demo website] (X2Knowledge v0.5.2 demo environment): http://115.190.8.7:8080/ The server performance is poor. Please use the docling interface for local testing. The server does not have a cuda environment!
 
 Due to the diversity of personal or corporate documents, in the process of building a knowledge base, how to process documents in RAG/Agent applications can achieve the expected results plays a vital role. However, with the development of AI technology, open source and commercial tools have emerged, and how to choose and use these tools has become a major problem. The emergence of this tool successfully solved the problem of large models replying to pictures and texts
 
 This project adheres to the principles of: 1. Either free, 2. Either fast, 3. Either high accuracy, 4. Unified interface, 5. Continuous update.
 At the same time, everyone is welcome to discuss together. In the future, I plan to connect excellent open source projects such as olmOCR and MinerU to the project within my limited time.
 
-## v0.5.2
+## v0.5.3
 
 ### Update features:
 
@@ -24,6 +24,7 @@ At the same time, everyone is welcome to discuss together. In the future, I plan
 - Use Docling to extract and save images from documents, and support viewing in preview mode.
 - Swagger interface, API calls are more intuitive.
 - **New**: URL to Markdown conversion now supports using CSS selectors to precisely extract specific content from webpages.
+- **New**: The file extraction table function supports exporting CSV, HTML, and Markdown.
 
 ## Features
 
@@ -100,6 +101,7 @@ This tool provides a REST API for programmatic access, see the [<a href="/api_do
 - [x] **Markdown conversion (Docling)**: `POST /api/convert-to-md-docling`
 - [x] **Markdown conversion and save file (Docling)**: `POST /api/convert-to-md-file-docling`
 - [x] **Markdown conversion and extract image (Docling)**: `POST /api/convert-to-md-images-file-docling`
+- [x] **Extract tables from a file and export them to a specified format (Docling)**: `POST /api/export-tables-docling`
 - [x] **HTML conversion (Docling)**: `POST /api/convert-to-html-docling`
 - [x] **URL to Markdown conversion**: `POST /api/convert-url-to-md`
 - [x] **URL to Markdown file conversion**: `POST /api/convert-url-to-md-file`
