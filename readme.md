@@ -1,6 +1,6 @@
 ![LOGO](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/x2knowledge-logo.png)
 
-# X2Knowledge V0.5.2 - Document Conversion Tool
+# X2Knowledge V0.5.3 - Document Conversion Tool
 
 [<a href="/readme_cn.md">中文(简体)</a>] | [<a href="/readme.md">English</a>] 
 

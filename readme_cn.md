@@ -1,6 +1,6 @@
 ![LOGO](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/x2knowledge-logo.png)
 
-# X2Knowledge v0.5.2 - 知识提取器工具
+# X2Knowledge v0.5.3 - 知识提取器工具
 
 [<a href="/readme_cn.md">中文(简体)</a>] | [<a href="/readme.md">English</a>] 
 
