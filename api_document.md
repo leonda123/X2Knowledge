@@ -1,498 +1,554 @@
-# X2Knowledge API文档
+# X2Knowledge API Documentation
 
-## 目录
-- [文件转文本](#文件转文本)
-  - [文件转文本](#文件转文本-1)
-  - [文件转文本并保存](#文件转文本并保存)
-- [使用Markitdown将文件转Markdown](#使用Markitdown将文件转Markdown)
-  - [使用Markitdown将文件转Markdown](#使用Markitdown将文件转Markdown-1)
-  - [使用Markitdown将文件转Markdown并保存](#使用Markitdown将文件转Markdown并保存)
-- [Docling转换](#docling转换)
-  - [使用Docling将文件转换为Markdown格式](#使用docling将文件转换为markdown格式)
-  - [使用Docling将文件转换为Markdown格式并保存到指定目录](#使用docling将文件转换为markdown格式并保存到指定目录)
-  - [使用Docling将在线文档转换为Markdown格式](#使用docling将在线文档转换为markdown格式)
-  - [使用Docling将在线文档转换为Markdown格式并保存到指定目录](#使用docling将在线文档转换为markdown格式并保存到指定目录)
-  - [使用Docling将文件转换为Markdown格式并导出图片](#使用docling将文件转换为markdown格式并导出图片)
-  - [使用Docling将文件转换为HTML格式](#使用docling将文件转换为html格式)
-  - [使用Docling提取文件中的表格并导出为指定格式](#使用docling提取文件中的表格并导出为指定格式)
-- [URL转Markdown](#url转markdown)
-  - [将网页URL转换为Markdown格式](#将网页url转换为markdown格式)
-  - [将网页URL转换为Markdown格式并保存到指定目录](#将网页url转换为markdown格式并保存到指定目录)
+## Table of contents
+- [File to text](#File to text)
+- [File to text](#File to text-1)
+- [Convert the file to text and save](#Convert the file to text and save)
+- [Use Markitdown to convert files to Markdown](#Use Markitdown to convert files to Markdown)
+- [Use Markitdown to convert files to Markdown](#Use Markitdown to convert files to Markdown-1)
+- [Use Markitdown to convert files to Markdown and save](#Use Markitdown to convert files to Markdown and save)
+- [ Docling conversion](#docling conversion)
+- [Use Docling to convert files to Markdown format](#Use Docling to convert files to Markdown format)
+- [Use Docling to convert the file to Markdown format and save it to the specified directory](#Use Docling to convert the file to Markdown format and save it to the specified directory)
+- [Use Docling to convert online documents to Markdown format](#Use Docling to convert online documents to Markdown format)
+- [Use Docling to convert online documents to Markdown format and save to a specified directory](#Use Docling to convert online documents to Markdown format and save to a specified directory)
+- [Use Docling to convert files to Markdown format and export images](#Use Docling to convert files to Markdown format and export images)
+- [Use Docling to convert files to HTML format](#Use Docling to convert files to HTML format)
+- [Use Docling to extract tables from files and export them to a specified format](#Use Docling to extract tables from files and export them to a specified format)
+- [URL to Markdown](#url to markdown)
+- [Convert web page URL to Markdown format](#Convert web page URL to Markdown format)
+- [Convert the webpage URL to Markdown format and save it to the specified directory](#Convert the webpage URL to Markdown format and save it to the specified directory)
+- [Warehouse preprocessing](#Warehouse preprocessing)
+- [Pre-processing before storage: convert Markdown to JSON and CSV format](#Pre-processing before storage: convert Markdown to JSON and CSV format)
 
 ---
 
-## 文件转文本
+## Convert file to text
 
-### 文件转文本
+### Convert files to text
 
-**接口**: `POST /api/convert`
+**Interface**: `POST / api /convert`
 
-**说明**: 将各种格式的文件转换为纯文本格式
+**Description**: Convert files of various formats to plain text format
 
-**参数**:
-- `file`：要转换为文本的文件，支持doc、docx、xls、xlsx、ppt、pptx、pdf、txt、md等格式 (必需)
+**parameter**:
+- `file`: the file to be converted to text, supporting doc, docx, xls , xlsx, ppt, pptx, pdf, txt, md and other formats (required)
 
-**响应**:
-- 200: 转换成功
-  ```json
-  {
-    "text": "转换后的文本内容"
-  }
-  ```
-- 400: 请求错误
-  ```json
-  {
-    "error": "错误信息"
-  }
-  ```
-- 500: 服务器错误
-  ```json
-  {
-    "error": "错误信息",
-    "details": "详细错误信息"
-  }
-  ```
+**response**:
+- 200: Conversion successful
+``` json
+{
+"text": "Converted text content"
+}
+```
+- 400: Bad Request
+``` json
+{
+"error": "Error message"
+}
+```
+- 500: Server Error
+``` json
+{
+"error": "Error message",
+"details": "Detailed error information"
+}
+```
 
-### 文件转文本并保存
+### Convert files to text and save
 
-**接口**: `POST /api/convert-file`
+**Interface**: `POST / api /convert-file`
 
-**说明**: 将各种格式的文件转换为纯文本格式并保存为.txt文件
+**Description**: Convert files of various formats to plain text format and save as .txt files
 
-**参数**:
-- `file`：要转换为文本的文件 (必需)
-- `output_dir`：输出文件的目录路径 (必需)
+**parameter**:
+- `file`: the file to be converted to text (required)
+- ` output_dir` : Directory path for output files (required)
 
-**响应**:
-- 200: 转换成功
-  ```json
-  {
-    "output_path": "保存的文件路径",
-    "filename": "原始文件名",
-    "file_size": "文件大小（字节）",
-    "processing_time": "处理耗时（秒）"
-  }
-  ```
-- 400: 请求错误
-  ```json
-  {
-    "error": "错误信息"
-  }
-  ```
-- 500: 服务器错误
-  ```json
-  {
-    "error": "错误信息",
-    "details": "详细错误信息"
-  }
-  ```
+**response**:
+- 200: Conversion successful
+``` json
+{
+" output_path ": "Saved file path",
+"filename": "Original file name",
+" file_size ": "File size (bytes)",
+" processing_time ": "Processing time (seconds)"
+}
+```
+- 400: Bad Request
+``` json
+{
+"error": "Error message"
+}
+```
+- 500: Server Error
+``` json
+{
+"error": "Error message",
+"details": "Detailed error information"
+}
+```
 
-## 使用Markitdown将文件转Markdown
+## Use Markitdown to convert files to Markdown
 
-### 使用Markitdown将文件转Markdown
+Convert files to Markdown using Markitdown
 
-**接口**: `POST /api/convert-to-md`
+**Interface**: `POST / api /convert-to-md`
 
-**说明**: 使用MarkItDown引擎将各种格式的文件转换为Markdown格式
+**Description**: Use the MarkItDown engine to convert files in various formats to Markdown format
 
-**参数**:
-- `file`：要转换为Markdown的文件，支持的文件格式（PDF、DOCX、PPTX、XLSX、XLS、CSV、JSON、XML、WAV、MP3）(必需)
+**parameter**:
+- `file`: the file to be converted to Markdown, supported file formats (PDF, DOCX, PPTX, XLSX, XLS, CSV, JSON, XML, WAV, MP3) (required)
 
-**响应**:
-- 200: 转换成功
-  ```json
-  {
-    "text": "转换后的Markdown文本",
-    "filename": "原始文件名",
-    "file_size": "文件大小（字节）",
-    "processing_time": "处理耗时（秒）"
-  }
-  ```
-- 400: 请求错误
-  ```json
-  {
-    "error": "错误信息"
-  }
-  ```
-- 500: 服务器错误
-  ```json
-  {
-    "error": "错误信息",
-    "details": "详细错误信息"
-  }
-  ```
+**response**:
+- 200: Conversion successful
+``` json
+{
+"text": "Converted Markdown text",
+"filename": "Original file name",
+" file_size ": "File size (bytes)",
+" processing_time ": "Processing time (seconds)"
+}
+```
+- 400: Bad Request
+``` json
+{
+"error": "Error message"
+}
+```
+- 500: Server Error
+``` json
+{
+"error": "Error message",
+"details": "Detailed error information"
+}
+```
 
-### 使用Markitdown将文件转Markdown并保存
+### Use Markitdown to convert the file to Markdown and save it
 
-**接口**: `POST /api/convert-to-md-file`
+**Interface**: `POST / api /convert-to-md-file`
 
-**说明**: 使用MarkItDown引擎将各种格式的文件转换为Markdown格式并保存为文件
+**Description**: Use the MarkItDown engine to convert files of various formats into Markdown format and save them as files
 
-**参数**:
-- `file`：要转换为Markdown的文件，支持MarkItDown支持的文件格式 (必需)
-- `output_dir`：输出文件的目录路径 (必需)
+**parameter**:
+- `file`: the file to be converted to Markdown, supporting file formats supported by MarkItDown (required)
+- ` output_dir` : Directory path for output files (required)
 
-**响应**:
-- 200: 转换成功
-  ```json
-  {
-    "output_path": "保存的文件路径",
-    "filename": "原始文件名",
-    "file_size": "文件大小（字节）",
-    "processing_time": "处理耗时（秒）"
-  }
-  ```
-- 400: 请求错误
-  ```json
-  {
-    "error": "错误信息"
-  }
-  ```
-- 500: 服务器错误
-  ```json
-  {
-    "error": "错误信息",
-    "details": "详细错误信息"
-  }
-  ```
+**response**:
+- 200: Conversion successful
+``` json
+{
+" output_path ": "Saved file path",
+"filename": "Original file name",
+" file_size ": "File size (bytes)",
+" processing_time ": "Processing time (seconds)"
+}
+```
+- 400: Bad Request
+``` json
+{
+"error": "Error message"
+}
+```
+- 500: Server Error
+``` json
+{
+"error": "Error message",
+"details": "Detailed error information"
+}
+```
 
-## Docling转换
+## Docling Conversion
 
-### 使用Docling将文件转换为Markdown格式
+### Convert files to Markdown format using Docling
 
-**接口**: `POST /api/convert-to-md-docling`
+**Interface**: `POST / api /convert-to-md - docling`
 
-**说明**: 使用Docling引擎将各种格式的文件转换为Markdown格式
+**Description**: Use the Docling engine to convert files in various formats to Markdown format
 
-**参数**:
-- `file`：要转换为Markdown的文件，支持的文件格式（PDF、DOCX、XLSX、PPTX、Markdown、AsciiDoc、HTML、XHTML、CSV、PNG、JPEG、TIFF、BMP）(必需)
+**parameter**:
+- `file`: the file to be converted to Markdown, supported file formats (PDF, DOCX, XLSX, PPTX, Markdown, AsciiDoc , HTML, XHTML, CSV, PNG, JPEG, TIFF, BMP) (required)
 
-**响应**:
-- 200: 转换成功
-  ```json
-  {
-    "text": "转换后的Markdown文本",
-    "filename": "原始文件名",
-    "file_size": "文件大小（字节）",
-    "processing_time": "处理耗时（秒）"
-  }
-  ```
-- 400: 请求错误
-  ```json
-  {
-    "error": "错误信息"
-  }
-  ```
-- 500: 服务器错误
-  ```json
-  {
-    "error": "错误信息",
-    "details": "详细错误信息"
-  }
-  ```
+**response**:
+- 200: Conversion successful
+``` json
+{
+"text": "Converted Markdown text",
+"filename": "Original file name",
+" file_size ": "File size (bytes)",
+" processing_time ": "Processing time (seconds)"
+}
+```
+- 400: Bad Request
+``` json
+{
+"error": "Error message"
+}
+```
+- 500: Server Error
+``` json
+{
+"error": "Error message",
+"details": "Detailed error information"
+}
+```
 
-### 使用Docling将文件转换为Markdown格式并保存到指定目录
+### Use Docling to convert the file to Markdown format and save it to the specified directory
 
-**接口**: `POST /api/convert-to-md-file-docling`
+**Interface**: `POST / api /convert-to-md-file - docling`
 
-**说明**: 使用Docling引擎将各种格式的文件转换为Markdown格式并保存为文件
+**Description**: Use the Docling engine to convert files of various formats into Markdown format and save them as files
 
-**参数**:
-- `file`：要转换为Markdown的文件，支持的文件格式（PDF、DOCX、XLSX、PPTX、Markdown、AsciiDoc、HTML、XHTML、CSV、PNG、JPEG、TIFF、BMP）(必需)
-- `output_dir`：输出文件的目录路径 (必需)
+**parameter**:
+- `file`: the file to be converted to Markdown, supported file formats (PDF, DOCX, XLSX, PPTX, Markdown, AsciiDoc , HTML, XHTML, CSV, PNG, JPEG, TIFF, BMP) (required)
+- ` output_dir` : Directory path for output files (required)
 
-**响应**:
-- 200: 转换成功
-  ```json
-  {
-    "output_path": "保存的文件路径",
-    "filename": "原始文件名",
-    "file_size": "文件大小（字节）",
-    "processing_time": "处理耗时（秒）",
-    "converter": "使用的转换器名称"
-  }
-  ```
-- 400: 请求错误
-  ```json
-  {
-    "error": "错误信息"
-  }
-  ```
-- 500: 服务器错误
-  ```json
-  {
-    "error": "错误信息",
-    "details": "详细错误信息"
-  }
-  ```
+**response**:
+- 200: Conversion successful
+``` json
+{
+" output_path ": "Saved file path",
+"filename": "Original file name",
+" file_size ": "File size (bytes)",
+" processing_time ": "Processing time (seconds)",
+"converter": "The name of the converter to use"
+}
+```
+- 400: Bad Request
+``` json
+{
+"error": "Error message"
+}
+```
+- 500: Server Error
+``` json
+{
+"error": "Error message",
+"details": "Detailed error information"
+}
+```
 
-### 使用Docling将在线文档转换为Markdown格式
+Convert online documents to Markdown format using Docling
 
-**接口**: `POST /api/convert-online-docling`
+**Interface**: `POST / api /convert-online - docling`
 
-**说明**: 使用Docling引擎将在线文档（如PDF、DOC等）转换为Markdown格式，无需下载文件
+**Description**: Use Docling engine to convert online documents (such as PDF, DOC, etc.) into Markdown format without downloading files
 
-**参数**:
-- `url`：要转换为Markdown的在线文档URL地址，支持PDF等文档格式 (必需)
-- `file_type`：文档类型(如pdf)，若URL中未包含后缀名则需要指定 (可选)
+**parameter**:
+- ` url` : URL of the online document to be converted to Markdown, supports PDF and other document formats (required)
+- ` file_type `: document type (such as pdf), which needs to be specified if the URL does not contain a suffix (optional)
 
-**响应**:
-- 200: 转换成功
-  ```json
-  {
-    "text": "转换后的Markdown文本",
-    "url": "原始URL",
-    "processing_time": "处理耗时（秒）",
-    "converter": "使用的转换器"
-  }
-  ```
-- 400: 请求错误
-  ```json
-  {
-    "error": "错误信息"
-  }
-  ```
-- 500: 服务器错误
-  ```json
-  {
-    "error": "错误信息",
-    "details": "详细错误信息"
-  }
-  ```
+**response**:
+- 200: Conversion successful
+``` json
+{
+"text": "Converted Markdown text",
+" url ": "Original URL",
+" processing_time ": "Processing time (seconds)",
+"converter": "Converter to use"
+}
+```
+- 400: Bad Request
+``` json
+{
+"error": "Error message"
+}
+```
+- 500: Server Error
+``` json
+{
+"error": "Error message",
+"details": "Detailed error information"
+}
+```
 
-### 使用Docling将在线文档转换为Markdown格式并保存到指定目录
+### Use Docling to convert online documents to Markdown format and save them to the specified directory
 
-**接口**: `POST /api/convert-online-docling-save`
+**Interface**: `POST / api /convert-online -docling -save`
 
-**说明**: 使用Docling引擎将在线文档（如PDF、DOC等）转换为Markdown格式，并保存为文件
+**Description**: Use the Docling engine to convert online documents (such as PDF, DOC, etc.) into Markdown format and save them as files
 
-**参数**:
-- `url`：要转换为Markdown的在线文档URL地址，支持PDF等文档格式 (必需)
-- `output_dir`：输出文件的目录路径 (必需)
-- `file_type`：文档类型(如pdf)，若URL中未包含后缀名则需要指定 (可选)
+**parameter**:
+- ` url` : URL of the online document to be converted to Markdown, supports PDF and other document formats (required)
+- ` output_dir` : Directory path for output files (required)
+- ` file_type `: document type (such as pdf), which needs to be specified if the URL does not contain a suffix (optional)
 
-**响应**:
-- 200: 转换成功
-  ```json
-  {
-    "output_path": "保存的文件路径",
-    "url": "原始URL",
-    "filename": "生成的文件名",
-    "processing_time": "处理耗时（秒）",
-    "converter": "使用的转换器"
-  }
-  ```
-- 400: 请求错误
-  ```json
-  {
-    "error": "错误信息"
-  }
-  ```
-- 500: 服务器错误
-  ```json
-  {
-    "error": "错误信息",
-    "details": "详细错误信息"
-  }
-  ```
+**response**:
+- 200: Conversion successful
+``` json
+{
+" output_path ": "Saved file path",
+" url ": "Original URL",
+"filename": "Generated file name",
+" processing_time ": "Processing time (seconds)",
+"converter": "Converter to use"
+}
+```
+- 400: Bad Request
+``` json
+{
+"error": "Error message"
+}
+```
+- 500: Server Error
+``` json
+{
+"error": "Error message",
+"details": "Detailed error information"
+}
+```
 
-### 使用Docling将文件转换为Markdown格式并导出图片
+### Use Docling to convert files to Markdown format and export images
 
-**接口**: `POST /api/convert-to-md-images-file-docling`
+**Interface**: `POST / api /convert-to-md-images-file - docling`
 
-**说明**: 使用Docling引擎将各种格式的文件转换为Markdown格式，并导出文档中的图片（包括页面图片、表格和图像）
+**Description**: Use the Docling engine to convert files of various formats into Markdown format and export images in the document (including page images, tables and images)
 
-**参数**:
-- `file`：要转换为Markdown并提取图片的文件，支持的文件格式（PDF、DOCX、XLSX、PPTX、Markdown、AsciiDoc、HTML、XHTML、CSV、PNG、JPEG、TIFF、BMP）(必需)
-- `output_dir`：输出文件的目录路径，用于保存Markdown和图片 (必需)
+**parameter**:
+- `file`: the file to be converted to Markdown and images to be extracted, supported file formats (PDF, DOCX, XLSX, PPTX, Markdown, AsciiDoc , HTML, XHTML, CSV, PNG, JPEG, TIFF, BMP) (required)
+- ` output_dir` : The directory path of the output files, used to save Markdown and images (required)
 
-**响应**:
-- 200: 转换成功
-  ```json
-  {
-    "output_path": "保存的Markdown文件路径",
-    "filename": "原始文件名",
-    "file_size": "文件大小（字节）",
-    "processing_time": "处理耗时（秒）",
-    "converter": "使用的转换器名称",
-    "page_count": "文档页面数量",
-    "table_count": "提取的表格数量",
-    "picture_count": "提取的图片数量",
-    "page_images": "页面图片的路径列表",
-    "table_images": "表格图片的路径列表",
-    "picture_images": "图片的路径列表"
-  }
-  ```
-- 400: 请求错误
-  ```json
-  {
-    "error": "错误信息"
-  }
-  ```
-- 500: 服务器错误
-  ```json
-  {
-    "error": "错误信息",
-    "details": "详细错误信息"
-  }
-  ```
+**response**:
+- 200: Conversion successful
+``` json
+{
+" output_path ": "Saved Markdown file path",
+"filename": "Original file name",
+" file_size ": "File size (bytes)",
+" processing_time ": "Processing time (seconds)",
+"converter": "The name of the converter used",
+" page_count ": "Number of document pages",
+" table_count ": "Number of tables extracted",
+" picture_count ": "Number of pictures extracted",
+" page_images ": "Path list of page images",
+" table_images ": "Path list of table images",
+" picture_images ": "Path list of pictures"
+}
+```
+- 400: Bad Request
+``` json
+{
+"error": "Error message"
+}
+```
+- 500: Server Error
+``` json
+{
+"error": "Error message",
+"details": "Detailed error information"
+}
+```
 
-### 使用Docling将文件转换为HTML格式
+### Convert files to HTML format using Docling
 
-**接口**: `POST /api/convert-to-html-docling`
+**Interface**: `POST / api /convert-to-html - docling`
 
-**说明**: 使用Docling引擎将各种格式的文件转换为HTML格式
+**Description**: Use the Docling engine to convert files of various formats into HTML format
 
-**参数**:
-- `file`：要转换为HTML的文件，支持的文件格式（PDF、DOCX、XLSX、PPTX、Markdown、AsciiDoc、HTML、XHTML、CSV、PNG、JPEG、TIFF、BMP）(必需)
+**parameter**:
+- `file`: the file to be converted to HTML, supported file formats (PDF, DOCX, XLSX, PPTX, Markdown, AsciiDoc , HTML, XHTML, CSV, PNG, JPEG, TIFF, BMP) (required)
 
-**响应**:
-- 200: 转换成功
-  ```json
-  {
-    "html": "转换后的HTML文本",
-    "filename": "原始文件名",
-    "file_size": "文件大小（字节）",
-    "processing_time": "处理耗时（秒）"
-  }
-  ```
-- 400: 请求错误
-  ```json
-  {
-    "error": "错误信息"
-  }
-  ```
-- 500: 服务器错误
-  ```json
-  {
-    "error": "错误信息",
-    "details": "详细错误信息"
-  }
-  ```
+**response**:
+- 200: Conversion successful
+``` json
+{
+"html": "Converted HTML text",
+"filename": "Original file name",
+" file_size ": "File size (bytes)",
+" processing_time ": "Processing time (seconds)"
+}
+```
+- 400: Bad Request
+``` json
+{
+"error": "Error message"
+}
+```
+- 500: Server Error
+``` json
+{
+"error": "Error message",
+"details": "Detailed error information"
+}
+```
 
-### 使用Docling提取文件中的表格并导出为指定格式
+### Use Docling to extract the table in the file and export it to the specified format
 
-**接口**: `POST /api/export-tables-docling`
+**Interface**: `POST / api /export-tables - docling`
 
-**说明**: 使用Docling引擎从文档中提取表格，并根据需要导出为Markdown、CSV或HTML格式
+**Description**: Use the Docling engine to extract tables from documents and export them to Markdown, CSV or HTML format as needed
 
-**参数**:
-- `file`：要提取表格的文件，支持的文件格式（PDF、DOCX、XLSX、PPTX、HTML、XHTML、CSV）(必需)
-- `output_dir`：保存表格文件的输出目录路径 (必需)
-- `export_formats`：导出格式，多种格式用逗号分隔，支持md、csv、html，默认全部导出 (可选)
+**parameter**:
+- `file`: the file to extract the table from, supported file formats (PDF, DOCX, XLSX, PPTX, HTML, XHTML, CSV) (required)
+- ` output_dir` : Output directory path where table files are saved (required)
+- ` export_formats `: export format, multiple formats are separated by commas, support md, csv, html, all are exported by default (optional)
 
-**响应**:
-- 200: 表格提取成功
-  ```json
-  {
-    "filename": "原始文件名",
-    "file_size": "文件大小（字节）",
-    "processing_time": "处理耗时（秒）",
-    "export_formats": ["导出的格式列表，如 md、csv、html"],
-    "table_count": "提取的表格数量",
+**response**:
+- 200: Table extraction successful
+``` json
+{
+"filename": "Original file name",
+" file_size ": "File size (bytes)",
+" processing_time ": "Processing time (seconds)",
+" export_formats ": ["Export format list, such as md, csv, html"],
+" table_count ": "Number of tables extracted",
     "tables": [
       {
-        "index": "表格索引（从1开始）",
-        "csv_path": "CSV格式表格文件的保存路径（如果导出CSV格式）",
-        "md_path": "Markdown格式表格文件的保存路径（如果导出MD格式）",
-        "html_path": "HTML格式表格文件的保存路径（如果导出HTML格式）"
+"index": "Table index (starting from 1)",
+" csv_path ": "The path where the CSV format table file is saved (if exported in CSV format)",
+" md_path ": "The path where the Markdown format table file is saved (if exported to MD format)",
+" html_path ": "The path where the HTML format table file is saved (if exported to HTML format)"
       }
     ]
   }
   ```
-- 200 (无表格): 文档中没有表格
-  ```json
-  {
-    "warning": "文档中未检测到表格",
-    "filename": "原始文件名",
-    "file_size": "文件大小（字节）",
-    "processing_time": "处理耗时（秒）",
-    "table_count": 0,
+- 200 (No Table): There is no table in the document
+``` json
+{
+"warning": "No table detected in the document",
+"filename": "Original file name",
+" file_size ": "File size (bytes)",
+" processing_time ": "Processing time (seconds)",
+" table_count ": 0,
     "tables": []
   }
   ```
-- 400: 请求错误
-  ```json
-  {
-    "error": "错误信息"
-  }
-  ```
-- 500: 服务器错误
-  ```json
-  {
-    "error": "错误信息",
-    "details": "详细错误信息"
-  }
-  ```
+- 400: Bad Request
+``` json
+{
+"error": "Error message"
+}
+```
+- 500: Server Error
+``` json
+{
+"error": "Error message",
+"details": "Detailed error information"
+}
+```
 
-## URL转Markdown
+## Convert URL to Markdown
 
-### 将网页URL转换为Markdown格式
+### Convert web page URL to Markdown format
 
-**接口**: `POST /api/convert-url-to-md`
+**Interface**: `POST / api /convert- url -to-md`
 
-**说明**: 使用Docling引擎将URL网页内容转换为Markdown格式，可选择移除页眉页脚或使用CSS选择器提取特定内容
+**Description**: Use the Docling engine to convert URL webpage content into Markdown format. You can choose to remove headers and footers or use CSS selectors to extract specific content.
 
-**参数**:
-- `url`：要转换为Markdown的网页URL地址 (必需)
-- `remove_header_footer`：是否移除网页的页眉和页脚 (可选，默认值：true)
-- `selector`：CSS选择器，用于选择页面的特定内容，如 '#content'、'.article'、'main' 等 (可选)
+**parameter**:
+- ` url` : URL of the web page to be converted to Markdown (required)
+- ` remove_header_footer` : whether to remove the header and footer of the web page (optional, default value: true)
+- `selector`: CSS selector used to select specific content of the page, such as '#content', '.article', 'main', etc. (optional)
 
-**响应**:
-- 200: 转换成功
-  ```json
-  {
-    "text": "转换后的Markdown文本",
-    "url": "原始URL",
-    "processing_time": "处理耗时（秒）"
-  }
-  ```
-- 400: 请求错误
-  ```json
-  {
-    "error": "错误信息"
-  }
-  ```
-- 500: 服务器错误
-  ```json
-  {
-    "error": "错误信息",
-    "details": "详细错误信息"
-  }
-  ```
+**response**:
+- 200: Conversion successful
+``` json
+{
+"text": "Converted Markdown text",
+" url ": "Original URL",
+" processing_time ": "Processing time (seconds)"
+}
+```
+- 400: Bad Request
+``` json
+{
+"error": "Error message"
+}
+```
+- 500: Server Error
+``` json
+{
+"error": "Error message",
+"details": "Detailed error information"
+}
+```
 
-### 将网页URL转换为Markdown格式并保存到指定目录
+### Convert the webpage URL to Markdown format and save it to the specified directory
 
-**接口**: `POST /api/convert-url-to-md-file`
+**Interface**: `POST / api /convert- url -to-md-file`
 
-**说明**: 使用Docling引擎将URL网页内容转换为Markdown格式，可选择移除页眉页脚或使用CSS选择器提取特定内容，并保存为文件
+**Description**: Use the Docling engine to convert URL webpage content into Markdown format. You can choose to remove headers and footers or use CSS selectors to extract specific content and save it as a file
 
-**参数**:
-- `url`：要转换为Markdown的网页URL地址 (必需)
-- `output_dir`：输出文件的目录路径 (必需)
-- `remove_header_footer`：是否移除网页的页眉和页脚 (可选，默认值：true)
-- `selector`：CSS选择器，用于选择页面的特定内容，如 '#content'、'.article'、'main' 等 (可选)
+**parameter**:
+- ` url` : URL of the web page to be converted to Markdown (required)
+- ` output_dir` : Directory path for output files (required)
+- ` remove_header_footer` : whether to remove the header and footer of the web page (optional, default value: true)
+- `selector`: CSS selector used to select specific content of the page, such as '#content', '.article', 'main', etc. (optional)
 
-**响应**:
-- 200: 转换成功
-  ```json
-  {
-    "output_path": "保存的文件路径",
-    "url": "原始URL",
-    "filename": "生成的文件名",
-    "processing_time": "处理耗时（秒）"
-  }
-  ```
-- 400: 请求错误
-  ```json
-  {
-    "error": "错误信息"
-  }
-  ```
-- 500: 服务器错误
-  ```json
-  {
-    "error": "错误信息",
-    "details": "详细错误信息"
+**response**:
+- 200: Conversion successful
+``` json
+{
+" output_path ": "Saved file path",
+" url ": "Original URL",
+"filename": "Generated file name",
+" processing_time ": "Processing time (seconds)"
+}
+```
+- 400: Bad Request
+``` json
+{
+"error": "Error message"
+}
+```
+- 500: Server Error
+``` json
+{
+"error": "Error message",
+"details": "Detailed error information"
+}
+```
+
+## Pre-processing before entering the warehouse
+
+### Pre-processing before storage: convert Markdown to JSON and CSV formats
+
+**Interface**: `POST /preprocess-for-storage`
+
+**Description**: Process Markdown files or text into JSON and CSV formats for data preparation before knowledge base entry
+
+**parameter**:
+- `file`: Markdown file, either provided with the text parameter (optional)
+- `text`: Markdown text content, either provided with the file parameter or not (optional)
+- ` output_dir` : Output directory path, defaults to app.config ['STORAGE_FOLDER'] (optional)
+- `filename`: output file name (without extension), defaults to original file name or timestamp (optional)
+- `format`: output format, optional json , csv or both (output two formats at the same time), the default is both (optional)
+
+**Processing rules**:
+1. Collect the title (#) as question, and collect all the text content under the title as answer, until the next title appears
+2. If it is a second-level title or above, the question title will be concatenated with the parent title in the format of "{parent title},{current title}"
+3. Only headers with content will be processed, empty headers will be ignored
+
+**Output JSON format**:
+``` json
+[
+{
+"question": "Title text",
+"answer": "Content text under the title"
+},
+...
+]
+```
+
+**response**:
+- 200: Processed successfully
+``` json
+{
+" json_path ": "Generated JSON file path (returned when format is json or both)",
+" csv_path ": "Generated CSV file path (returned when format is csv or both)",
+" qa_count ": "Number of question-answer pairs generated"
+}
+```
+- 400: Incorrect request parameters
+``` json
+{
+"error": "Error message"
+}
+```
+- 500: Internal server error
+``` json
+{
+"error": "Error message",
+"details": "Detailed error information"
   }
   ```

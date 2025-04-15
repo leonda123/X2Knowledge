@@ -1,12 +1,14 @@
 """
 Web表单处理路由，处理网页上的表单提交
 """
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 import os
 import traceback
 import time
+import json
 from datetime import datetime
 import re
+from flasgger import swag_from
 
 from app import logger, app
 from app.utils.converters import (
@@ -20,6 +22,7 @@ from app.utils.converters import (
 )
 from app.utils.converter_factory import converter_factory
 from app.utils.common import cleanup_temp_file
+from app.utils.md_processor import process_markdown_file, process_markdown_text, parse_markdown_to_qa, save_as_json, save_as_csv
 
 # 创建Web表单处理蓝图
 bp = Blueprint('web', __name__)
@@ -164,3 +167,105 @@ def convert_md_route():
             'error': f'转换为Markdown失败: {error_msg}', 
             'details': traceback.format_exc()
         }), 500
+# 入库预处理：将Markdown处理为JSON和CSV格式
+@bp.route('/preprocess-for-storage', methods=['POST'])
+@swag_from('../../swagger_docs/preprocess_for_storage.yml')
+def preprocess_for_storage():
+    """
+    将Markdown文件或文本处理为JSON和CSV格式，用于知识库入库前的数据准备
+    
+    详细描述见swagger_docs/preprocess_for_storage.yml
+    """
+    try:
+        # 检查是否提供了文件或文本内容
+        if 'file' not in request.files and 'text' not in request.form:
+            logger.warning("没有提供Markdown文件或文本内容")
+            return jsonify({'error': '请提供Markdown文件或文本内容'}), 400
+        
+        # 设置输出目录，如果未提供则使用默认目录
+        output_dir = request.form.get('output_dir', current_app.config.get('STORAGE_FOLDER', 'storage'))
+        
+        # 获取输出格式
+        output_format = request.form.get('format', 'both').lower()
+        if output_format not in ['json', 'csv', 'both']:
+            logger.warning(f"不支持的输出格式: {output_format}")
+            return jsonify({'error': '输出格式必须是json、csv或both'}), 400
+        
+        # 确保输出目录存在
+        os.makedirs(output_dir, exist_ok=True)
+        
+        # 处理文件上传方式
+        if 'file' in request.files and request.files['file'].filename:
+            file = request.files['file']
+            filename = file.filename
+            
+            # 检查是否为Markdown文件
+            if not filename.lower().endswith('.md'):
+                logger.warning(f"不支持的文件格式: {filename}")
+                return jsonify({'error': '仅支持Markdown(.md)文件格式'}), 400
+            
+            # 保存上传的文件
+            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+            logger.info(f"文件保存成功: {file_path}")
+            
+            # 设置输出文件名（不含扩展名）
+            output_filename = request.form.get('filename', os.path.splitext(filename)[0])
+            
+            # 读取Markdown文件
+            with open(file_path, 'r', encoding='utf-8') as f:
+                markdown_text = f.read()
+            
+            # 解析Markdown为问答对
+            qa_pairs = parse_markdown_to_qa(markdown_text)
+            
+            # 删除临时文件
+            cleanup_temp_file(file_path)
+            
+        # 处理文本内容方式
+        else:
+            text = request.form.get('text', '')
+            if not text:
+                logger.warning("提供的Markdown文本内容为空")
+                return jsonify({'error': 'Markdown文本内容不能为空'}), 400
+            
+            # 设置输出文件名（不含扩展名）
+            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+            output_filename = request.form.get('filename', f"markdown_{timestamp}")
+            
+            # 解析Markdown为问答对
+            qa_pairs = parse_markdown_to_qa(text)
+        
+        # 根据输出格式保存文件
+        result = {}
+        
+        # 生成输出文件路径
+        json_path = os.path.join(output_dir, f"{output_filename}.json")
+        csv_path = os.path.join(output_dir, f"{output_filename}.csv")
+        
+        # 保存为JSON
+        if output_format in ['json', 'both']:
+            save_as_json(qa_pairs, json_path)
+            result['json_path'] = json_path
+        
+        # 保存为CSV
+        if output_format in ['csv', 'both']:
+            save_as_csv(qa_pairs, csv_path)
+            result['csv_path'] = csv_path
+        
+        # 添加问答对数量到结果
+        result['qa_count'] = len(qa_pairs)
+        
+        # 返回成功结果
+        return jsonify(result)
+        
+    except Exception as e:
+        # 详细记录异常信息
+        error_msg = str(e)
+        logger.error(f"预处理失败: {error_msg}")
+        logger.error(traceback.format_exc())
+        
+        return jsonify({
+            'error': f'预处理失败: {error_msg}',
+            'details': traceback.format_exc()
+        }), 500 

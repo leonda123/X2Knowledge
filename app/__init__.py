@@ -26,9 +26,12 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 限制上传文件大小为50MB
 app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['STORAGE_FOLDER'] = 'storage'  # 添加存储文件夹配置
 
 # 确保上传文件夹存在
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+# 确保存储文件夹存在
+os.makedirs(app.config['STORAGE_FOLDER'], exist_ok=True)
 
 # 配置Swagger
 swagger_config = {

@@ -109,10 +109,10 @@ X2Knowledge v0.5.2演示环境：http://115.190.8.7:8080/ 服务器性能不佳�
 - [x] **在线文档转Markdown并保存文件（Docling）**：`POST /api/convert-online-docling-save`
 - [x] **URL转Markdown**：`POST /api/convert-url-to-md`
 - [x] **URL转Markdown文件**：`POST /api/convert-url-to-md-file`
+- [x] **知识库入库预处理**: `POST /preprocess-for-storage` (将Markdown转换为JSON/CSV格式的问答对)
 
 ### 待提供：
 
-- [ ] **从PDF、XML和Office中仅提取表格到Excel**
 - [ ] **识别PDF和代码参考部分**
 - [x] **X2Knowledge交流群：158236726，欢迎大家提出更多的需求。**
 

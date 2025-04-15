@@ -91,7 +91,7 @@ Choose the converter that best fits your needs:
 
 ## REST API
 
-This tool provides a REST API for programmatic access, see the [<a href="/api_document.md">reference document</a>] for details:
+This tool provides a REST API for programmatic access, see the [<a href="/api_document_cn.md">reference document</a>] for details:
 
 ### Provided:
 
@@ -108,10 +108,10 @@ This tool provides a REST API for programmatic access, see the [<a href="/api_do
 - [x] **Online document to Markdown file conversion (Docling)**: `POST /api/convert-online-docling-save`
 - [x] **URL to Markdown conversion**: `POST /api/convert-url-to-md`
 - [x] **URL to Markdown file conversion**: `POST /api/convert-url-to-md-file`
+- [x] **Preprocessing for knowledge base storage**: `POST /preprocess-for-storage` (Converts Markdown into JSON/CSV QA pairs)
 
 ### To be provided:
 
-- [ ] **Extract only tables from PDF, XML, and Office to Excel**
 - [ ] **Recognition of PDF and code reference parts**
 - [x] **welcome to raise more requirements. **
 
