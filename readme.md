@@ -1,6 +1,6 @@
 ![LOGO](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/x2knowledge-logo.png)
 
-# X2Knowledge V0.5.3 - Document Conversion Tool
+# X2Knowledge V0.5.4 - Document Conversion Tool
 
 [<a href="/readme_cn.md">中文(简体)</a>] | [<a href="/readme.md">English</a>] 
 
@@ -16,7 +16,7 @@ Due to the diversity of personal or corporate documents, in the process of build
 This project adheres to the principles of: 1. Either free, 2. Either fast, 3. Either high accuracy, 4. Unified interface, 5. Continuous update.
 At the same time, everyone is welcome to discuss together. In the future, I plan to connect excellent open source projects such as olmOCR and MinerU to the project within my limited time.
 
-## v0.5.3
+## v0.5.4
 
 ### Update features:
 
@@ -25,6 +25,7 @@ At the same time, everyone is welcome to discuss together. In the future, I plan
 - Swagger interface, API calls are more intuitive.
 - **New**: URL to Markdown conversion now supports using CSS selectors to precisely extract specific content from webpages.
 - **New**: The file extraction table function supports exporting CSV, HTML, and Markdown.
+- **New**: The online document conversion to Markdown function supports saving to local computer.
 
 ## Features
 
@@ -103,6 +104,8 @@ This tool provides a REST API for programmatic access, see the [<a href="/api_do
 - [x] **Markdown conversion and extract image (Docling)**: `POST /api/convert-to-md-images-file-docling`
 - [x] **Extract tables from a file and export them to a specified format (Docling)**: `POST /api/export-tables-docling`
 - [x] **HTML conversion (Docling)**: `POST /api/convert-to-html-docling`
+- [x] **Online document to Markdown conversion (Docling)**: `POST /api/convert-online-docling`
+- [x] **Online document to Markdown file conversion (Docling)**: `POST /api/convert-online-docling-save`
 - [x] **URL to Markdown conversion**: `POST /api/convert-url-to-md`
 - [x] **URL to Markdown file conversion**: `POST /api/convert-url-to-md-file`
 

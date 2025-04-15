@@ -1,0 +1,69 @@
+tags:
+  - name: Docling在线文档转换
+
+parameters:
+  - name: url
+    in: formData
+    type: string
+    required: true
+    description: 要转换为Markdown的在线文档URL地址，支持PDF等文档格式
+  - name: output_dir
+    in: formData
+    type: string
+    required: true
+    description: 输出文件的目录路径
+  - name: file_type
+    in: formData
+    type: string
+    required: false
+    description: 文档类型(如pdf)，若URL中未包含后缀名则需要指定
+
+responses:
+  200:
+    description: 转换成功
+    schema:
+      type: object
+      properties:
+        output_path:
+          type: string
+          description: 保存的文件路径
+        url:
+          type: string
+          description: 原始URL
+        filename:
+          type: string
+          description: 生成的文件名
+        processing_time:
+          type: number
+          format: float
+          description: 处理耗时（秒）
+        converter:
+          type: string
+          description: 使用的转换器
+  400:
+    description: 请求错误
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          description: 错误信息
+  500:
+    description: 服务器错误
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          description: 错误信息
+        details:
+          type: string
+          description: 详细错误信息
+
+consumes:
+  - application/x-www-form-urlencoded
+produces:
+  - application/json
+
+summary: 使用Docling将在线文档转换为Markdown格式并保存到指定目录
+description: 使用Docling引擎将在线文档（如PDF、DOC等）转换为Markdown格式，并保存为文件 

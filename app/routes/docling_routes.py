@@ -985,3 +985,262 @@ def api_export_tables_docling():
     finally:
         # 删除临时文件
         cleanup_temp_file(file_path, f"API调用(Docling表格导出){execution_id}：")
+
+# 使用Docling 将在线文档转换为Markdown
+@bp.route('/api/convert-online-docling', methods=['POST'])
+@swag_from('../../swagger_docs/convert_online_docling.yml')
+def api_convert_online_docling():
+    """
+    使用Docling将在线文档转换为Markdown
+    """
+    start_time = time.time()
+    execution_id = datetime.now().strftime("%Y%m%d%H%M%S")
+    
+    # 获取URL参数
+    url = request.form.get('url')
+    if not url:
+        logger.warning(f"API调用(Docling在线文档){execution_id}：未提供URL")
+        return jsonify({'error': '未提供URL'}), 400
+    
+    # 获取文件类型参数（可选）
+    file_type = request.form.get('file_type')
+    
+    logger.info(f"API调用(Docling在线文档){execution_id}：接收到URL: {url}")
+    
+    # 从URL中提取文件类型（如果未提供）
+    if not file_type:
+        import re
+        # 尝试从URL中提取文件扩展名
+        match = re.search(r'\.([a-zA-Z0-9]+)(?:[\?#]|$)', url)
+        if match:
+            file_type = match.group(1).lower()
+            logger.info(f"API调用(Docling在线文档){execution_id}：从URL提取文件类型: {file_type}")
+        else:
+            logger.warning(f"API调用(Docling在线文档){execution_id}：无法从URL确定文件类型，使用默认值pdf")
+            file_type = 'pdf'  # 默认为PDF
+    
+    # 初始化Docling转换器
+    docling_converter = converter_factory.get_converter("docling")
+    if not hasattr(docling_converter, 'is_available') or not docling_converter.is_available:
+        logger.error(f"API调用(Docling在线文档){execution_id}：Docling转换器不可用")
+        return jsonify({'error': 'Docling转换器不可用，请确认已安装docling库'}), 500
+    
+    # 检查文件类型是否支持
+    if not docling_converter.is_format_supported(f".{file_type}"):
+        error_msg = f"Docling不支持的文件类型: {file_type}"
+        logger.warning(f"API调用(Docling在线文档){execution_id}：{error_msg}")
+        return jsonify({'error': error_msg}), 400
+    
+    # 创建临时目录用于下载文件
+    temp_dir = os.path.join(app.config['UPLOAD_FOLDER'], f"online_{execution_id}")
+    try:
+        if not os.path.exists(temp_dir):
+            os.makedirs(temp_dir)
+        
+        # 从URL下载文件
+        import requests
+        from urllib.parse import urlparse
+        
+        logger.info(f"API调用(Docling在线文档){execution_id}：开始下载文件: {url}")
+        try:
+            response = requests.get(url, stream=True, timeout=30)
+            response.raise_for_status()  # 如果请求返回错误状态码，则引发异常
+            
+            # 获取文件名
+            parsed_url = urlparse(url)
+            filename = os.path.basename(parsed_url.path)
+            
+            # 如果URL中没有文件名，则创建一个
+            if not filename or '.' not in filename:
+                filename = f"document_{execution_id}.{file_type}"
+            
+            # 保存下载的文件
+            file_path = os.path.join(temp_dir, filename)
+            with open(file_path, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+            
+            file_size = os.path.getsize(file_path)
+            logger.info(f"API调用(Docling在线文档){execution_id}：文件下载成功，路径: {file_path}，大小: {file_size / 1024:.2f} KB")
+            
+            # 使用Docling转换为Markdown
+            logger.info(f"API调用(Docling在线文档){execution_id}：开始使用Docling转换文件")
+            markdown_text = docling_converter.convert_to_markdown(file_path)
+            
+            processing_time = time.time() - start_time
+            logger.info(f"API调用(Docling在线文档){execution_id}：转换完成，耗时: {processing_time:.2f}秒")
+            
+            # 返回转换结果
+            return jsonify({
+                'text': markdown_text,
+                'url': url,
+                'processing_time': round(processing_time, 2),
+                'converter': 'docling'
+            })
+            
+        except requests.exceptions.RequestException as e:
+            error_msg = f"下载文件失败: {str(e)}"
+            logger.error(f"API调用(Docling在线文档){execution_id}：{error_msg}")
+            return jsonify({'error': error_msg}), 500
+        
+    except Exception as e:
+        error_msg = f"处理在线文档失败: {str(e)}"
+        logger.error(f"API调用(Docling在线文档){execution_id}：{error_msg}")
+        logger.error(traceback.format_exc())
+        return jsonify({
+            'error': error_msg,
+            'details': traceback.format_exc()
+        }), 500
+    
+    finally:
+        # 清理临时文件
+        import shutil
+        try:
+            if os.path.exists(temp_dir):
+                shutil.rmtree(temp_dir)
+                logger.info(f"API调用(Docling在线文档){execution_id}：已清理临时目录: {temp_dir}")
+        except Exception as e:
+            logger.warning(f"API调用(Docling在线文档){execution_id}：清理临时目录失败: {str(e)}")
+
+# 使用Docling 将在线文档转换为Markdown并保存至本地
+@bp.route('/api/convert-online-docling-save', methods=['POST'])
+@swag_from('../../swagger_docs/convert_online_docling_save.yml')
+def api_convert_online_docling_save():
+    """
+    使用Docling将在线文档转换为Markdown并保存至本地
+    """
+    start_time = time.time()
+    execution_id = datetime.now().strftime("%Y%m%d%H%M%S")
+    
+    # 获取URL参数
+    url = request.form.get('url')
+    if not url:
+        logger.warning(f"API调用(Docling在线文档保存){execution_id}：未提供URL")
+        return jsonify({'error': '未提供URL'}), 400
+    
+    # 获取输出目录参数
+    output_dir = request.form.get('output_dir')
+    if not output_dir:
+        logger.warning(f"API调用(Docling在线文档保存){execution_id}：未指定输出目录")
+        return jsonify({'error': '未指定输出目录'}), 400
+    
+    # 获取文件类型参数（可选）
+    file_type = request.form.get('file_type')
+    
+    logger.info(f"API调用(Docling在线文档保存){execution_id}：接收到URL: {url}，输出目录: {output_dir}")
+    
+    # 从URL中提取文件类型（如果未提供）
+    if not file_type:
+        import re
+        # 尝试从URL中提取文件扩展名
+        match = re.search(r'\.([a-zA-Z0-9]+)(?:[\?#]|$)', url)
+        if match:
+            file_type = match.group(1).lower()
+            logger.info(f"API调用(Docling在线文档保存){execution_id}：从URL提取文件类型: {file_type}")
+        else:
+            logger.warning(f"API调用(Docling在线文档保存){execution_id}：无法从URL确定文件类型，使用默认值pdf")
+            file_type = 'pdf'  # 默认为PDF
+    
+    # 初始化Docling转换器
+    docling_converter = converter_factory.get_converter("docling")
+    if not hasattr(docling_converter, 'is_available') or not docling_converter.is_available:
+        logger.error(f"API调用(Docling在线文档保存){execution_id}：Docling转换器不可用")
+        return jsonify({'error': 'Docling转换器不可用，请确认已安装docling库'}), 500
+    
+    # 检查文件类型是否支持
+    if not docling_converter.is_format_supported(f".{file_type}"):
+        error_msg = f"Docling不支持的文件类型: {file_type}"
+        logger.warning(f"API调用(Docling在线文档保存){execution_id}：{error_msg}")
+        return jsonify({'error': error_msg}), 400
+    
+    # 检查输出目录是否存在，不存在则创建
+    if not os.path.exists(output_dir):
+        try:
+            os.makedirs(output_dir, exist_ok=True)
+            logger.info(f"API调用(Docling在线文档保存){execution_id}：创建输出目录: {output_dir}")
+        except Exception as e:
+            error_msg = f"无法创建输出目录: {str(e)}"
+            logger.error(f"API调用(Docling在线文档保存){execution_id}：{error_msg}")
+            return jsonify({'error': error_msg}), 500
+    
+    # 创建临时目录用于下载文件
+    temp_dir = os.path.join(app.config['UPLOAD_FOLDER'], f"online_{execution_id}")
+    try:
+        if not os.path.exists(temp_dir):
+            os.makedirs(temp_dir)
+        
+        # 从URL下载文件
+        import requests
+        from urllib.parse import urlparse
+        
+        logger.info(f"API调用(Docling在线文档保存){execution_id}：开始下载文件: {url}")
+        try:
+            response = requests.get(url, stream=True, timeout=30)
+            response.raise_for_status()  # 如果请求返回错误状态码，则引发异常
+            
+            # 获取文件名
+            parsed_url = urlparse(url)
+            filename = os.path.basename(parsed_url.path)
+            
+            # 如果URL中没有文件名，则创建一个
+            if not filename or '.' not in filename:
+                filename = f"document_{execution_id}.{file_type}"
+            
+            # 保存下载的文件
+            file_path = os.path.join(temp_dir, filename)
+            with open(file_path, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+            
+            file_size = os.path.getsize(file_path)
+            logger.info(f"API调用(Docling在线文档保存){execution_id}：文件下载成功，路径: {file_path}，大小: {file_size / 1024:.2f} KB")
+            
+            # 使用Docling转换为Markdown
+            logger.info(f"API调用(Docling在线文档保存){execution_id}：开始使用Docling转换文件")
+            markdown_text = docling_converter.convert_to_markdown(file_path)
+            
+            # 保存Markdown到输出目录
+            base_filename = os.path.splitext(os.path.basename(file_path))[0]
+            output_filename = f"{base_filename}.md"
+            output_path = os.path.join(output_dir, output_filename)
+            
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.write(markdown_text)
+            
+            logger.info(f"API调用(Docling在线文档保存){execution_id}：Markdown已保存到: {output_path}")
+            
+            processing_time = time.time() - start_time
+            logger.info(f"API调用(Docling在线文档保存){execution_id}：转换完成，耗时: {processing_time:.2f}秒")
+            
+            # 返回转换结果
+            return jsonify({
+                'output_path': output_path,
+                'url': url,
+                'filename': output_filename,
+                'processing_time': round(processing_time, 2),
+                'converter': 'docling'
+            })
+            
+        except requests.exceptions.RequestException as e:
+            error_msg = f"下载文件失败: {str(e)}"
+            logger.error(f"API调用(Docling在线文档保存){execution_id}：{error_msg}")
+            return jsonify({'error': error_msg}), 500
+        
+    except Exception as e:
+        error_msg = f"处理在线文档失败: {str(e)}"
+        logger.error(f"API调用(Docling在线文档保存){execution_id}：{error_msg}")
+        logger.error(traceback.format_exc())
+        return jsonify({
+            'error': error_msg,
+            'details': traceback.format_exc()
+        }), 500
+    
+    finally:
+        # 清理临时文件
+        import shutil
+        try:
+            if os.path.exists(temp_dir):
+                shutil.rmtree(temp_dir)
+                logger.info(f"API调用(Docling在线文档保存){execution_id}：已清理临时目录: {temp_dir}")
+        except Exception as e:
+            logger.warning(f"API调用(Docling在线文档保存){execution_id}：清理临时目录失败: {str(e)}")

@@ -10,6 +10,8 @@
 - [Docling转换](#docling转换)
   - [使用Docling将文件转换为Markdown格式](#使用docling将文件转换为markdown格式)
   - [使用Docling将文件转换为Markdown格式并保存到指定目录](#使用docling将文件转换为markdown格式并保存到指定目录)
+  - [使用Docling将在线文档转换为Markdown格式](#使用docling将在线文档转换为markdown格式)
+  - [使用Docling将在线文档转换为Markdown格式并保存到指定目录](#使用docling将在线文档转换为markdown格式并保存到指定目录)
   - [使用Docling将文件转换为Markdown格式并导出图片](#使用docling将文件转换为markdown格式并导出图片)
   - [使用Docling将文件转换为HTML格式](#使用docling将文件转换为html格式)
   - [使用Docling提取文件中的表格并导出为指定格式](#使用docling提取文件中的表格并导出为指定格式)
@@ -208,6 +210,76 @@
     "file_size": "文件大小（字节）",
     "processing_time": "处理耗时（秒）",
     "converter": "使用的转换器名称"
+  }
+  ```
+- 400: 请求错误
+  ```json
+  {
+    "error": "错误信息"
+  }
+  ```
+- 500: 服务器错误
+  ```json
+  {
+    "error": "错误信息",
+    "details": "详细错误信息"
+  }
+  ```
+
+### 使用Docling将在线文档转换为Markdown格式
+
+**接口**: `POST /api/convert-online-docling`
+
+**说明**: 使用Docling引擎将在线文档（如PDF、DOC等）转换为Markdown格式，无需下载文件
+
+**参数**:
+- `url`：要转换为Markdown的在线文档URL地址，支持PDF等文档格式 (必需)
+- `file_type`：文档类型(如pdf)，若URL中未包含后缀名则需要指定 (可选)
+
+**响应**:
+- 200: 转换成功
+  ```json
+  {
+    "text": "转换后的Markdown文本",
+    "url": "原始URL",
+    "processing_time": "处理耗时（秒）",
+    "converter": "使用的转换器"
+  }
+  ```
+- 400: 请求错误
+  ```json
+  {
+    "error": "错误信息"
+  }
+  ```
+- 500: 服务器错误
+  ```json
+  {
+    "error": "错误信息",
+    "details": "详细错误信息"
+  }
+  ```
+
+### 使用Docling将在线文档转换为Markdown格式并保存到指定目录
+
+**接口**: `POST /api/convert-online-docling-save`
+
+**说明**: 使用Docling引擎将在线文档（如PDF、DOC等）转换为Markdown格式，并保存为文件
+
+**参数**:
+- `url`：要转换为Markdown的在线文档URL地址，支持PDF等文档格式 (必需)
+- `output_dir`：输出文件的目录路径 (必需)
+- `file_type`：文档类型(如pdf)，若URL中未包含后缀名则需要指定 (可选)
+
+**响应**:
+- 200: 转换成功
+  ```json
+  {
+    "output_path": "保存的文件路径",
+    "url": "原始URL",
+    "filename": "生成的文件名",
+    "processing_time": "处理耗时（秒）",
+    "converter": "使用的转换器"
   }
   ```
 - 400: 请求错误
