@@ -525,7 +525,7 @@ def convert_to_md_images_file_docling():
             # 修复带有 backslashes 的 Windows 风格路径
             def replace_with_forward_slash(match):
                 path = match.group(1)
-                return f'![Image]({path.replace("\\", "/")})'
+                return '![Image](' + path.replace('\\', '/') + ')'
             
             # 匹配图片链接中的路径并替换反斜杠
             markdown_text = re.sub(r'!\[Image\]\(([^)]+)\)', replace_with_forward_slash, markdown_text)
