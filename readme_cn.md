@@ -1,6 +1,6 @@
 ![LOGO](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/x2knowledge-logo.png)
 
-# X2Knowledge v0.5.4 - 知识提取器工具
+# X2Knowledge v0.6.0 - 知识提取器工具
 
 [<a href="/readme_cn.md">中文(简体)</a>] | [<a href="/readme.md">English</a>] 
 
@@ -18,46 +18,24 @@ X2Knowledge v0.5.2演示环境：http://115.190.8.7:8080/ 服务器性能不佳�
 
 给自己打一个广告，如果你也使用cursor开发，不如尝试一下cursorrules中文网：http://www.cursorrulescn.cn/ （已备案），收录大量的中文cursorrules。
 
-## v0.5.4
+## v0.6.0（重磅更新）
 
-### 更新特性：
-
-- 暂时剔除marker模块功能的引用，未来引入待规划。
-- 使用Docling从文档中提取并保存图片，支持在预览模式中查看。
-- Swagger界面，API调用更直观。
-- **新增**：URL转Markdown功能现在支持使用CSS选择器精确提取网页特定内容。
-- **新增**：文件提取表格功能支持导出CSV、HTML、Markdown。
-- **新增**：在线文档转Markdown功能支持保存到本地。
-
-## 功能特点
-
-- **多种转换引擎**
-  - **MarkItDown**：针对Office文档（DOCX、XLSX、PPTX、CSV）优化，速度快、效率高
-  - **Docling**：增强的PDF转换功能，提供更好的表格识别和VLM能力
+### 功能特点
 
 - **将多种文件格式转换为文本或Markdown**
   - 支持Word (.doc, .docx)、Excel (.xls, .xlsx)、PowerPoint (.ppt, .pptx)、PDF、文本文件等
   - 在Markdown转换模式下保持文档结构
-  - 通过OCR从图像中提取文本
   - **新增**：使用Docling从文档中提取并保存图片，支持在预览模式中查看
-
-- **多种输出格式**
-  - **文本**：简单的纯文本提取
-  - **Markdown**：保留文档结构，包括标题、列表和表格
-  - **HTML**：带有图片和公式支持的完整HTML输出
 
 - **网页转换功能**
   - 将网页内容转换为结构化Markdown文档
   - **新增**：支持使用CSS选择器（如 #content, .article, main）精确提取网页中的特定内容
   - 可选择性移除页眉页脚，获取更干净的主要内容
 
-- **音频转换**
-  - 将音频文件(.mp3, .wav)转换为文本/Markdown描述
-  - 提取元数据，包括时长、声道和采样率
-
-- **大文件支持**
-  - 支持高达50MB的文件
-  - 高效处理大型文档
+- **知识库预处理**
+  - **新增**：将Markdown文件转换为JSON/CSV格式的问答对，用于embedding处理
+  - 自动从标题生成问题，从内容部分生成答案
+  - 支持具有父子关系的层次化标题结构
 
 ## 转换器对比
 
@@ -109,7 +87,7 @@ X2Knowledge v0.5.2演示环境：http://115.190.8.7:8080/ 服务器性能不佳�
 - [x] **在线文档转Markdown并保存文件（Docling）**：`POST /api/convert-online-docling-save`
 - [x] **URL转Markdown**：`POST /api/convert-url-to-md`
 - [x] **URL转Markdown文件**：`POST /api/convert-url-to-md-file`
-- [x] **知识库入库预处理**: `POST /preprocess-for-storage` (将Markdown转换为JSON/CSV格式的问答对)
+- [x] **知识库入库预处理**: `POST /preprocess-for-storage` (将Markdown转换为JSON/CSV格式的问答对，用于embedding处理)
 
 ### 待提供：
 
@@ -123,10 +101,12 @@ X2Knowledge v0.5.2演示环境：http://115.190.8.7:8080/ 服务器性能不佳�
 
 ### 界面
 
-#### 主页
+#### 主页-文档转MD在线模式
 ![主页](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/home_cn.png)
-#### url转md
-![url转md](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/url2md_cn.png)
+#### 网页转md在线模式
+![网页转md](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/url2md_cn.png)
+#### Embedding预处理方法示例及说明
+![Embedding预处理方法示例及说明](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/yuchuli_cn.png)
 #### Swagger
 ![API调用](https://gitee.com/leonda/X2Knowledge/raw/main/screenshot/swagger.png)
 ### 回复效果(已dify为例，Fastgpt、Maxkb、coze支持MD展示的webui等均可实现)

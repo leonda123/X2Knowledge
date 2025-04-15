@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'encoding-benefit': '此功能可以有效解决中文乱码问题，无需用户手动设置编码。',
             
             // 页脚
-            'footer': '© 2025 X2Knowledge v0.5.4 - 知识提取器工具 | by leonda',
+            'footer': '© 2025 X2Knowledge v0.6.0 - 知识提取器工具 | by leonda',
             
             // API文档页面
             'api-doc-title': 'X2Knowledge - 知识提取器工具 - API文档',
@@ -233,7 +233,23 @@ document.addEventListener('DOMContentLoaded', function() {
             'finding-selectors-tip1': '在网页上右击要提取的内容区域，选择"检查元素"',
             'finding-selectors-tip2': '在开发者工具中查看HTML结构，找到包含所需内容的主要元素',
             'finding-selectors-tip3': '查看该元素的ID或class属性，使用#id或.class作为选择器',
-            'finding-selectors-tip4': '如果尝试一个选择器没效果，可以组合多个选择器（用逗号分隔）增加匹配概率'
+            'finding-selectors-tip4': '如果尝试一个选择器没效果，可以组合多个选择器（用逗号分隔）增加匹配概率',
+            
+            // Embedding预处理相关
+            'tab-embedding': 'Embedding预处理',
+            'embedding-title': 'Markdown知识库入库预处理',
+            'embedding-description': '将Markdown文件或文本处理为JSON和CSV格式的问答对，用于知识库入库前的数据准备。',
+            'embedding-rules-title': '处理规则说明：',
+            'embedding-rule-1': '将标题(#)收集为question，标题下的所有文本内容收集为answer，直到下一个标题的出现',
+            'embedding-rule-2': '如果是二级及以上标题，问题标题会拼接上级标题，格式为"{上级标题},{当前标题}"',
+            'embedding-rule-3': '只有包含内容的标题会被处理，空标题会被忽略',
+            'embedding-example-title': '示例：',
+            'embedding-example-md-title': '原始Markdown：',
+            'embedding-example-json-title': '生成的JSON：',
+            'method-rules-title': '方法使用说明：',
+            'method-rule-1': 'POST请求： /preprocess-for-storage 具体参数见swagger页面的调用方法',
+            'method-rule-2': '该方法仅适用于Markdown文件，其他格式文件请使用其他方法',
+            'method-rule-3': '同时文件中至少包含一个标题，否则内容为空'
         },
         'en': {
             // Title and Navigation
@@ -306,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'encoding-benefit': 'This feature effectively solves Chinese character encoding issues without manual encoding settings.',
             
             // Footer
-            'footer': '© 2025 X2Knowledge v3 - Document Conversion Tool | Built with Flask and JavaScript',
+            'footer': '© 2025 X2Knowledge v0.6.0 - Document Conversion Tool | Built with Flask and JavaScript',
             
             // API Documentation Page
             'api-doc-title': 'X2Knowledge - Document Conversion Tool - API Documentation',
@@ -466,7 +482,23 @@ document.addEventListener('DOMContentLoaded', function() {
             'finding-selectors-tip1': 'Right-click on the content area you want to extract and select "Inspect Element"',
             'finding-selectors-tip2': 'Examine the HTML structure in developer tools to find the main element containing desired content',
             'finding-selectors-tip3': 'Look for ID or class attributes of that element, use #id or .class as selector',
-            'finding-selectors-tip4': 'If one selector doesn\'t work, try combining multiple selectors (comma-separated) to increase match probability'
+            'finding-selectors-tip4': 'If one selector doesn\'t work, try combining multiple selectors (comma-separated) to increase match probability',
+            
+            // Embedding preprocessing related
+            'tab-embedding': 'Embedding Preprocessing',
+            'embedding-title': 'Markdown Knowledge Base Preprocessing',
+            'embedding-description': 'Process Markdown files or text into JSON and CSV format QA pairs for knowledge base preparation.',
+            'embedding-rules-title': 'Processing Rules:',
+            'embedding-rule-1': 'Collect headings (#) as questions, and all text content under the heading as answers, until the next heading appears',
+            'embedding-rule-2': 'If it\'s a level 2 or higher heading, the question title will be concatenated with its parent heading in the format "{parent heading},{current heading}"',
+            'embedding-rule-3': 'Only headings with content will be processed, empty headings will be ignored',
+            'embedding-example-title': 'Example:',
+            'embedding-example-md-title': 'Original Markdown:',
+            'embedding-example-json-title': 'Generated JSON:',
+            'method-rules-title': 'Method Usage Instructions:',
+            'method-rule-1': 'POST request: /preprocess-for-storage See swagger page for specific parameters',
+            'method-rule-2': 'This method is only applicable to Markdown files, please use other methods for other file formats',
+            'method-rule-3': 'The file must contain at least one heading, otherwise the content will be empty'
         }
     };
     

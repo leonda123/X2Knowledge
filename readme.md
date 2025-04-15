@@ -1,6 +1,6 @@
 ![LOGO](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/x2knowledge-logo.png)
 
-# X2Knowledge V0.5.4 - Document Conversion Tool
+# X2Knowledge v0.6.0 - Document Conversion Tool
 
 [<a href="/readme_cn.md">中文(简体)</a>] | [<a href="/readme.md">English</a>] 
 
@@ -16,46 +16,24 @@ Due to the diversity of personal or corporate documents, in the process of build
 This project adheres to the principles of: 1. Either free, 2. Either fast, 3. Either high accuracy, 4. Unified interface, 5. Continuous update.
 At the same time, everyone is welcome to discuss together. In the future, I plan to connect excellent open source projects such as olmOCR and MinerU to the project within my limited time.
 
-## v0.5.4
+## v0.6.0
 
-### Update features:
-
-- Temporarily remove the reference to the marker module function, and the introduction in the future is to be planned.
-- Use Docling to extract and save images from documents, and support viewing in preview mode.
-- Swagger interface, API calls are more intuitive.
-- **New**: URL to Markdown conversion now supports using CSS selectors to precisely extract specific content from webpages.
-- **New**: The file extraction table function supports exporting CSV, HTML, and Markdown.
-- **New**: The online document conversion to Markdown function supports saving to local computer.
-
-## Features
-
-- **Multiple conversion engines**
-- **MarkItDown**: Optimized for Office documents (DOCX, XLSX, PPTX, CSV), fast and efficient
-- **Docling**: Enhanced PDF conversion with better table recognition and VLM capabilities
+### Features
 
 - **Convert multiple file formats to text or Markdown**
 - Support Word (.doc, .docx), Excel (.xls, .xlsx), PowerPoint (.ppt, .pptx), PDF, text files, etc.
 - Maintain document structure in Markdown conversion mode
-- Extract text from images via OCR
-- **New**: Extract and save images from documents using Docling, supporting viewing in preview mode
+- **New**: Use Docling to extract and save images from documents, and support viewing in preview mode
 
-- **Multiple output formats**
-- **Text**: Simple plain text extraction
-- **Markdown**: Preserve document structure, including headers, lists, and tables
-- **HTML**: Full HTML output with image and formula support
-
-- **Web content conversion**
+- **Webpage conversion function**
 - Convert webpage content to structured Markdown documents
-- **New**: Support using CSS selectors (like #content, .article, main) to precisely extract specific content from webpages
-- Option to remove headers and footers for cleaner main content
+- **New**: Support using CSS selectors (such as #content, .article, main) to accurately extract specific content from webpages
+- Selectively remove headers and footers to obtain cleaner main content
 
-- **Audio conversion**
-- Convert audio files (.mp3, .wav) to text/Markdown descriptions
-- Extract metadata including duration, channels and sampling rate
-
-- **Large file support**
-- Supports files up to 50MB
-- Efficient handling of large documents
+- **Knowledge base preprocessing**
+- **New**: Convert Markdown files to question-answer pairs in JSON/CSV format for embedding processing
+- Automatically generate questions from titles and answers from content
+- Support hierarchical title structures with parent-child relationships
 
 ## Converter Comparison
 
@@ -108,7 +86,7 @@ This tool provides a REST API for programmatic access, see the [<a href="/api_do
 - [x] **Online document to Markdown file conversion (Docling)**: `POST /api/convert-online-docling-save`
 - [x] **URL to Markdown conversion**: `POST /api/convert-url-to-md`
 - [x] **URL to Markdown file conversion**: `POST /api/convert-url-to-md-file`
-- [x] **Preprocessing for knowledge base storage**: `POST /preprocess-for-storage` (Converts Markdown into JSON/CSV QA pairs)
+- [x] **Preprocessing for knowledge base storage**: `POST /preprocess-for-storage` (Converts Markdown into JSON/CSV QA pairs for embedding processing)
 
 ### To be provided:
 
@@ -125,6 +103,8 @@ For API testing and documentation, use the "API Test" button in the web interfac
 ![Home page](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/home.png?raw=true)
 #### Url to MD
 ![Url to MD](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/url2md.png?raw=true)
+#### Embedding preprocessing method examples and instructions
+![Embedding preprocessing method examples and instructions](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/yuchuli.png?raw=true)
 #### Swagger
 ![API call](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/swagger.png?raw=true)
 ### Reply effect (take dify as an example, Fastgpt, Maxkb, coze webui that supports MD display can all be realized)

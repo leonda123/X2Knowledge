@@ -2,8 +2,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // 获取DOM元素
     const dropAreaText = document.getElementById('dropAreaText');
     const dropAreaMarkdown = document.getElementById('dropAreaMarkdown');
+    const dropAreaEmbedding = document.getElementById('dropAreaEmbedding'); // 新增Embedding拖放区域
     const fileInputText = document.getElementById('fileInputText');
     const fileInputMarkdown = document.getElementById('fileInputMarkdown');
+    const fileInputEmbedding = document.getElementById('fileInputEmbedding'); // 新增Embedding文件输入
     const resultContainer = document.getElementById('resultContainer');
     const resultText = document.getElementById('resultText');
     const loadingIndicator = document.getElementById('loadingIndicator');
@@ -42,14 +44,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     dropAreaText.style.display = 'block';
                     dropAreaMarkdown.style.display = 'none';
                     document.querySelector('#tab-url').style.display = 'none';
+                    document.querySelector('#tab-embedding').style.display = 'none';
                 } else if (activeTab === 'markdown') {
                     dropAreaText.style.display = 'none';
                     dropAreaMarkdown.style.display = 'block';
                     document.querySelector('#tab-url').style.display = 'none';
+                    document.querySelector('#tab-embedding').style.display = 'none';
                 } else if (activeTab === 'url') {
                     dropAreaText.style.display = 'none';
                     dropAreaMarkdown.style.display = 'none';
                     document.querySelector('#tab-url').style.display = 'block';
+                    document.querySelector('#tab-embedding').style.display = 'none';
+                } else if (activeTab === 'embedding') {
+                    dropAreaText.style.display = 'none';
+                    dropAreaMarkdown.style.display = 'none';
+                    document.querySelector('#tab-url').style.display = 'none';
+                    document.querySelector('#tab-embedding').style.display = 'block';
                 }
             }
         });
@@ -293,14 +303,22 @@ document.addEventListener('DOMContentLoaded', function() {
             dropAreaText.style.display = 'block';
             dropAreaMarkdown.style.display = 'none';
             document.querySelector('#tab-url').style.display = 'none';
+            document.querySelector('#tab-embedding').style.display = 'none';
         } else if (activeTab === 'markdown') {
             dropAreaText.style.display = 'none';
             dropAreaMarkdown.style.display = 'block';
             document.querySelector('#tab-url').style.display = 'none';
+            document.querySelector('#tab-embedding').style.display = 'none';
         } else if (activeTab === 'url') {
             dropAreaText.style.display = 'none';
             dropAreaMarkdown.style.display = 'none';
             document.querySelector('#tab-url').style.display = 'block';
+            document.querySelector('#tab-embedding').style.display = 'none';
+        } else if (activeTab === 'embedding') {
+            dropAreaText.style.display = 'none';
+            dropAreaMarkdown.style.display = 'none';
+            document.querySelector('#tab-url').style.display = 'none';
+            document.querySelector('#tab-embedding').style.display = 'block';
         }
     }
     
@@ -837,6 +855,180 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 显示当前内容
                 document.getElementById(tabId + '-selectors').classList.add('active');
             });
+        });
+    }
+
+    // Embedding预处理文件拖放功能
+    if (dropAreaEmbedding) {
+        // 阻止默认行为
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropAreaEmbedding.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        // 拖拽高亮
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropAreaEmbedding.addEventListener(eventName, function() {
+                highlight(dropAreaEmbedding);
+            }, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropAreaEmbedding.addEventListener(eventName, function() {
+                unhighlight(dropAreaEmbedding);
+            }, false);
+        });
+        
+        // 处理文件拖放
+        dropAreaEmbedding.addEventListener('drop', function(e) {
+            let dt = e.dataTransfer;
+            let file = dt.files[0];
+            
+            if (file && file.name.toLowerCase().endsWith('.md')) {
+                handleEmbeddingFile(file);
+            } else {
+                showError('请上传Markdown (.md) 文件');
+            }
+        }, false);
+        
+        // 处理文件选择
+        fileInputEmbedding.addEventListener('change', function() {
+            if (this.files.length) {
+                let file = this.files[0];
+                if (file.name.toLowerCase().endsWith('.md')) {
+                    handleEmbeddingFile(file);
+                } else {
+                    showError('请上传Markdown (.md) 文件');
+                }
+            }
+        });
+    }
+    
+    // 处理Embedding预处理按钮点击
+    if (processEmbeddingBtn) {
+        processEmbeddingBtn.addEventListener('click', function() {
+            processEmbeddingData();
+        });
+    }
+    
+    // 处理Embedding文件
+    function handleEmbeddingFile(file) {
+        // 显示加载指示器
+        tabContents.forEach(content => content.style.display = 'none');
+        loadingIndicator.style.display = 'flex';
+        
+        // 清除文本区域内容
+        embeddingTextarea.value = '';
+        
+        // 设置默认文件名为文件名（不含扩展名）
+        const fileName = file.name.replace(/\.[^/.]+$/, "");
+        outputFilename.value = fileName;
+        
+        // 读取文件内容
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // 将文件内容填充到文本区域
+            embeddingTextarea.value = e.target.result;
+            
+            // 隐藏加载指示器并显示预处理表单
+            loadingIndicator.style.display = 'none';
+            document.getElementById('tab-embedding').style.display = 'block';
+            
+            // 自动处理
+            //processEmbeddingData();
+        };
+        reader.onerror = function() {
+            loadingIndicator.style.display = 'none';
+            document.getElementById('tab-embedding').style.display = 'block';
+            showError('文件读取失败');
+        };
+        reader.readAsText(file);
+    }
+    
+    // 处理Embedding预处理数据
+    function processEmbeddingData() {
+        // 获取用户输入
+        const markdownText = embeddingTextarea.value.trim();
+        const format = outputFormat.value;
+        const filename = outputFilename.value.trim();
+        
+        // 验证输入
+        if (!markdownText) {
+            showError('请提供Markdown文本内容');
+            return;
+        }
+        
+        // 显示加载指示器
+        tabContents.forEach(content => content.style.display = 'none');
+        loadingIndicator.style.display = 'flex';
+        
+        // 准备表单数据
+        const formData = new FormData();
+        formData.append('text', markdownText);
+        formData.append('format', format);
+        if (filename) {
+            formData.append('filename', filename);
+        }
+        
+        // 发送请求
+        fetch('/preprocess-for-storage', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP错误! 状态: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // 处理成功响应
+            loadingIndicator.style.display = 'none';
+            
+            // 显示结果
+            let resultString = '';
+            
+            // 显示处理统计
+            resultString += `# 预处理完成\n\n`;
+            resultString += `- 生成的问答对数量: ${data.qa_count}\n`;
+            
+            // 显示文件路径
+            if (data.json_path) {
+                resultString += `- JSON文件路径: ${data.json_path}\n`;
+            }
+            if (data.csv_path) {
+                resultString += `- CSV文件路径: ${data.csv_path}\n`;
+            }
+            
+            resultString += `\n## 处理说明\n\n`;
+            resultString += `问答对已按照规则从Markdown文本中提取：\n\n`;
+            resultString += `1. 标题作为问题(question)\n`;
+            resultString += `2. 标题下内容作为答案(answer)\n`;
+            resultString += `3. 多级标题使用逗号连接\n`;
+            
+            // 显示结果
+            resultText.textContent = resultString;
+            originalMarkdown = resultString;
+            
+            // 显示Markdown控件并设置为预览模式
+            markdownViewControls.style.display = 'flex';
+            resultContainer.style.display = 'block';
+            resultContent.style.display = 'none';
+            markdownPreview.style.display = 'block';
+            
+            // 更新视图按钮状态
+            viewButtons.forEach(btn => btn.classList.remove('active'));
+            viewButtons[1].classList.add('active'); // 启用预览视图
+            
+            // 显示全屏按钮
+            fullscreenBtn.style.display = 'inline-block';
+            
+            // 渲染Markdown
+            renderMarkdown(resultString);
+        })
+        .catch(error => {
+            loadingIndicator.style.display = 'none';
+            document.getElementById('tab-embedding').style.display = 'block';
+            showError(`预处理失败: ${error.message}`);
         });
     }
 });
