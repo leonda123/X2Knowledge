@@ -9,7 +9,7 @@ Through advanced format parsing and content extraction technology, the project s
 
 ![Design schematic](https://github.com/leonda123/X2Knowledge/blob/main/screenshot/x2knowledge_en.png?raw=true)
 
-[Demo website] (X2Knowledge v0.5.2 demo environment): http://115.190.8.7:8080/ The server performance is poor. Please use the docling interface for local testing. The server does not have a cuda environment!
+[Demo website] (X2Knowledge v0.6.0 demo environment): http://115.190.8.7:8080/ The server performance is poor. Please use the docling interface for local testing. The server does not have a cuda environment!
 
 Due to the diversity of personal or corporate documents, in the process of building a knowledge base, how to process documents in RAG/Agent applications can achieve the expected results plays a vital role. However, with the development of AI technology, open source and commercial tools have emerged, and how to choose and use these tools has become a major problem. The emergence of this tool successfully solved the problem of large models replying to pictures and texts
 
