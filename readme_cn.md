@@ -70,7 +70,7 @@ X2Knowledge v0.6.0 演示环境：http://115.190.8.7:8080/ 服务器性能不佳
 
 ## REST API
 
-本工具提供了REST API，以便程序化访问，详见[<a href="/api_document.md">参考文档</a>]：
+本工具提供了REST API，以便程序化访问，详见[<a href="/api_document_cn.md">参考文档</a>]：
 
 ### 已提供：
 
